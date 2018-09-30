@@ -81,10 +81,10 @@ public class HardwareDrive
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftDrive  = hwMap.get(DcMotor.class, "left drive");
-        rightDrive = hwMap.get(DcMotor.class, "right drive");
-       leftDrive2 = hwMap.get (DcMotor.class, "left drive2");
-       rightDrive2 = hwMap.get(DcMotor.class, "right drive2");
+        leftDrive  = hwMap.get(DcMotor.class, "LeftDrive");
+        rightDrive = hwMap.get(DcMotor.class, "RightDrive");
+       leftDrive2 = hwMap.get (DcMotor.class, "LeftDrive2");
+       rightDrive2 = hwMap.get(DcMotor.class, "RightDrive2");
         //leftArm    = hwMap.get(DcMotor.class, "left_arm");
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors

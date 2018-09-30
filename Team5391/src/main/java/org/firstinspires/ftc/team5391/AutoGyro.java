@@ -29,10 +29,14 @@
 
 package org.firstinspires.ftc.team5391;
 
+import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -77,7 +81,7 @@ public class AutoGyro extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareDrive         robot   = new HardwareDrive();   // Use a Pushbot's hardware
-    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
+    AdafruitBNO055IMU gyro = null;                    // Additional Gyro device
 
     static final double     COUNTS_PER_MOTOR_REV    = 537.6  ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
@@ -103,7 +107,7 @@ public class AutoGyro extends LinearOpMode {
          * The init() method of the hardware class does most of the work here
          */
         robot.init(hardwareMap);
-        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
 
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -114,10 +118,15 @@ public class AutoGyro extends LinearOpMode {
         telemetry.addData(">", "Calibrating Gyro");    //
         telemetry.update();
 
-        gyro.calibrate();
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        gyro.initialize(parameters);
 
         // make sure the gyro is calibrated before continuing
-        while (!isStopRequested() && gyro.isCalibrating())  {
+        while (!isStopRequested() && gyro.isGyroCalibrated())  {
             sleep(50);
             idle();
         }
@@ -131,11 +140,11 @@ public class AutoGyro extends LinearOpMode {
         robot.rightDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
-            telemetry.addData(">", "Robot Heading = %d", gyro.getIntegratedZValue());
+            telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().thirdAngle);
             telemetry.update();
         }
 
-        gyro.resetZAxisIntegrator();
+
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
@@ -150,13 +159,13 @@ public class AutoGyro extends LinearOpMode {
       //  gyroHold( TURN_SPEED,   0.0, 1.0);    // Hold  0 Deg heading for a 1 second
         //gyroDrive(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
         gyroDrive( DRIVE_SPEED, 84, 0.0);
-        gyroTurn(TURN_SPEED, 90);
-        gyroDrive(DRIVE_SPEED, 105, 90);
-        gyroTurn(TURN_SPEED, -90);
-        gyroHold(TURN_SPEED, 0, 2);
-        gyroDrive(DRIVE_SPEED, 84, 0.0);
-       gyroTurn(TURN_SPEED, 45);
-       gyroDrive(DRIVE_SPEED, 72, 45);
+        //gyroTurn(TURN_SPEED, 90);
+        //gyroDrive(DRIVE_SPEED, 105, 90);
+        //gyroTurn(TURN_SPEED, -90);
+        //gyroHold(TURN_SPEED, 0, 2);
+        //gyroDrive(DRIVE_SPEED, 84, 0.0);
+       //gyroTurn(TURN_SPEED, 45);
+       //gyroDrive(DRIVE_SPEED, 72, 45);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -364,7 +373,7 @@ public class AutoGyro extends LinearOpMode {
         double robotError;
 
         // calculate error in -179 to +180 range  (
-        robotError = targetAngle - gyro.getIntegratedZValue();
+        robotError = targetAngle - gyro.getAngularOrientation().thirdAngle;
         while (robotError > 180)  robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
