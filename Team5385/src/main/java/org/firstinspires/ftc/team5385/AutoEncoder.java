@@ -69,7 +69,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class AutoEncoder extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
+    HardwareBot        robot   = new HardwareBot();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
