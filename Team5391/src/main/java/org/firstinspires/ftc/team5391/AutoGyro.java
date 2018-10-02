@@ -96,7 +96,7 @@ public class AutoGyro extends LinearOpMode {
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF           = 0.02;     // Larger is more responsive, but also less stable
 
 
     @Override
@@ -140,7 +140,7 @@ public class AutoGyro extends LinearOpMode {
         robot.rightDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
-            telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().thirdAngle);
+            telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().firstAngle);
             telemetry.update();
         }
 
@@ -159,9 +159,10 @@ public class AutoGyro extends LinearOpMode {
       //  gyroHold( TURN_SPEED,   0.0, 1.0);    // Hold  0 Deg heading for a 1 second
         //gyroDrive(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
         gyroDrive( DRIVE_SPEED, 84, 0.0);
-        //gyroTurn(TURN_SPEED, 90);
+        gyroTurn(TURN_SPEED, 90);
         //gyroDrive(DRIVE_SPEED, 105, 90);
         //gyroTurn(TURN_SPEED, -90);
+
         //gyroHold(TURN_SPEED, 0, 2);
         //gyroDrive(DRIVE_SPEED, 84, 0.0);
        //gyroTurn(TURN_SPEED, 45);
@@ -198,7 +199,7 @@ public class AutoGyro extends LinearOpMode {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
-
+            angle = -angle;
             // Determine new target position, and pass to motor controller
             moveCounts = (int)(distance * COUNTS_PER_INCH);
             newLeftTarget = robot.leftDrive.getCurrentPosition() + moveCounts;
@@ -265,6 +266,8 @@ public class AutoGyro extends LinearOpMode {
             // Turn off RUN_TO_POSITION
             robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
@@ -282,7 +285,7 @@ public class AutoGyro extends LinearOpMode {
     public void gyroTurn (  double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
-        while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
+        while (opModeIsActive() && !onHeading(speed, -angle, P_TURN_COEFF)) {
             // Update telemetry & Allow time for other processes to run.
             telemetry.update();
         }
@@ -314,7 +317,7 @@ public class AutoGyro extends LinearOpMode {
         robot.leftDrive.setPower(0);
         robot.rightDrive.setPower(0);
         robot.leftDrive2.setPower(0);
-        robot.leftDrive2.setPower(0);
+        robot.rightDrive2.setPower(0);
     }
 
     /**
@@ -373,7 +376,7 @@ public class AutoGyro extends LinearOpMode {
         double robotError;
 
         // calculate error in -179 to +180 range  (
-        robotError = targetAngle - gyro.getAngularOrientation().thirdAngle;
+        robotError = targetAngle - gyro.getAngularOrientation().firstAngle;
         while (robotError > 180)  robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
