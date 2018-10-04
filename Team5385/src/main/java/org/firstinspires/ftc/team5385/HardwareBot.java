@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.team5385;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -81,8 +82,8 @@ public class HardwareBot
         leftDrive  = hwMap.get(DcMotor.class, "left_drive");
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
         //leftArm    = hwMap.get(DcMotor.class, "left_arm");
-        leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to REVERSE if using AndyMark motors
+        leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to FORWARD if using AndyMark motors
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to REVERSE if using AndyMark motors
 
         // Set all motors to zero power
         leftDrive.setPower(0);
