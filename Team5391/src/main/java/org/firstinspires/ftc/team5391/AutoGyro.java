@@ -158,11 +158,11 @@ public class AutoGyro extends LinearOpMode {
        // gyroTurn( TURN_SPEED,   0.0);         // Turn  CW  to   0 Degrees
       //  gyroHold( TURN_SPEED,   0.0, 1.0);    // Hold  0 Deg heading for a 1 second
         //gyroDrive(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
-        gyroDrive( DRIVE_SPEED, 84, 0.0);
-        gyroTurn(TURN_SPEED, 90);
-        //gyroDrive(DRIVE_SPEED, 105, 90);
-        //gyroTurn(TURN_SPEED, -90);
-
+        gyroDrive( DRIVE_SPEED, 16, 0.0);
+        gyroTurn(TURN_SPEED, -90);
+        gyroDrive(DRIVE_SPEED, 35, -90);
+        gyroTurn(TURN_SPEED, -150);
+        gyroDrive(DRIVE_SPEED, 55, -150);
         //gyroHold(TURN_SPEED, 0, 2);
         //gyroDrive(DRIVE_SPEED, 84, 0.0);
        //gyroTurn(TURN_SPEED, 45);
