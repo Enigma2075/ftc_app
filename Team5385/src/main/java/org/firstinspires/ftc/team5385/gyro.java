@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.team5385;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -36,6 +38,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
@@ -72,16 +75,16 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Pushbot: Auto Drive By Gyro", group="Pushbot")
-@Disabled
+@Autonomous(name="gyroMove", group="Pushbot")
+
 public class gyro extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareBot         robot   = new HardwareBot();   // Use a Pushbot's hardware
-    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
+    AdafruitBNO055IMU gyro    = null;                    // Additional Gyro device
 
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -104,7 +107,7 @@ public class gyro extends LinearOpMode {
          * The init() method of the hardware class does most of the work here
          */
         robot.init(hardwareMap);
-        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        gyro = hardwareMap.get(AdafruitBNO055IMU.class, "gyro");
 
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -114,10 +117,17 @@ public class gyro extends LinearOpMode {
         telemetry.addData(">", "Calibrating Gyro");    //
         telemetry.update();
 
-        gyro.calibrate();
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = false;
+        parameters.loggingTag          = "IMU";
+
+        gyro.initialize(parameters);
 
         // make sure the gyro is calibrated before continuing
-        while (!isStopRequested() && gyro.isCalibrating())  {
+        while (!isStopRequested() && gyro.isGyroCalibrated())  {
             sleep(50);
             idle();
         }
@@ -130,20 +140,20 @@ public class gyro extends LinearOpMode {
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
-            telemetry.addData(">", "Robot Heading = %d", gyro.getIntegratedZValue());
+            telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().thirdAngle);
             telemetry.update();
         }
 
-        gyro.resetZAxisIntegrator();
+
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
         //gyroDrive(DRIVE_SPEED, 48.0, 0.0);    // Drive FWD 48 inches
         gyroDrive(DRIVE_SPEED,72, 0.0);
-        gyroTurn(DRIVE_SPEED, -90);
-        gyroDrive(DRIVE_SPEED, 108, 0.0);
         gyroTurn(DRIVE_SPEED, 90);
+        gyroDrive(DRIVE_SPEED, 108, 90);
+        gyroTurn(DRIVE_SPEED, -90);
         gyroDrive(DRIVE_SPEED, 72, 0.0);
 
             // Drive REV 48 inches
@@ -177,7 +187,7 @@ public class gyro extends LinearOpMode {
         double  steer;
         double  leftSpeed;
         double  rightSpeed;
-
+        angle=-angle;
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
@@ -255,7 +265,7 @@ public class gyro extends LinearOpMode {
      *                   If a relative angle is required, add/subtract from current heading.
      */
     public void gyroTurn (  double speed, double angle) {
-
+        angle=-angle;
         // keep looping while we are still active, and not on heading.
         while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
             // Update telemetry & Allow time for other processes to run.
@@ -274,7 +284,7 @@ public class gyro extends LinearOpMode {
      * @param holdTime   Length of time (in seconds) to hold the specified heading.
      */
     public void gyroHold( double speed, double angle, double holdTime) {
-
+        angle=-angle;
         ElapsedTime holdTimer = new ElapsedTime();
 
         // keep looping while we have time remaining.
@@ -345,7 +355,7 @@ public class gyro extends LinearOpMode {
         double robotError;
 
         // calculate error in -179 to +180 range  (
-        robotError = targetAngle - gyro.getIntegratedZValue();
+        robotError = targetAngle - gyro.getAngularOrientation().firstAngle;
         while (robotError > 180)  robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
