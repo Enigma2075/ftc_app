@@ -27,10 +27,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.team5391;
+package org.firstinspires.ftc.team5385;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -49,20 +50,25 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwareDrive
+public class HardwareBot
 {
     /* Public OpMode members. */
-    private DcMotor  leftDrive   = null;
-    private DcMotor  rightDrive  = null;
-    private DcMotor leftDrive2 = null;
-    private DcMotor rightDrive2 = null;
+    public DcMotor  leftDrive   = null;
+    public DcMotor  rightDrive  = null;
+    //public DcMotor  leftArm     = null;
+    //public Servo    leftClaw    = null;
+    //public Servo    rightClaw   = null;
+
+   // public static final double MID_SERVO       =  0.5 ;
+    //public static final double ARM_UP_POWER    =  0.45 ;
+   // public static final double ARM_DOWN_POWER  = -0.45 ;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwareDrive(){
+    public HardwareBot(){
 
     }
 
@@ -72,101 +78,28 @@ public class HardwareDrive
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftDrive  = hwMap.get(DcMotor.class, "LeftDrive");
-        rightDrive = hwMap.get(DcMotor.class, "RightDrive");
-       leftDrive2 = hwMap.get (DcMotor.class, "LeftDrive2");
-       rightDrive2 = hwMap.get(DcMotor.class, "RightDrive2");
-
+        leftDrive  = hwMap.get(DcMotor.class, "left_drive");
+        rightDrive = hwMap.get(DcMotor.class, "right_drive");
+        //leftArm    = hwMap.get(DcMotor.class, "left_arm");
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        leftDrive2.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive2.setDirection(DcMotor.Direction.FORWARD);
 
-        setPower(0, 0);
-
+        // Set all motors to zero power
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        //leftArm.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftDrive2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
-  // Mode
-    public void setRightMode(DcMotor.RunMode mode) {
-        rightDrive.setMode(mode);
-        rightDrive2.setMode(mode);
-    }
+        //leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-    public void setLeftMode(DcMotor.RunMode mode){
-        leftDrive.setMode(mode);
-        leftDrive2.setMode(mode);
+        // Define and initialize ALL installed servos.
+       // leftClaw  = hwMap.get(Servo.class, "left_hand");
+        //rightClaw = hwMap.get(Servo.class, "right_hand");
+        //leftClaw.setPosition(MID_SERVO);
+        //rightClaw.setPosition(MID_SERVO);
     }
-
-    public void setMode(DcMotor.RunMode rightMode, DcMotor.RunMode leftMode){
-        setLeftMode(leftMode);
-        setRightMode(rightMode);
-    }
-
-    public void setMode(DcMotor.RunMode mode) {
-        setLeftMode(mode);
-        setRightMode(mode);
-    }
-  // Power
-    public void setRightPower(double power) {
-        rightDrive.setPower(power);
-        rightDrive2.setPower(power);
-    }
-
-    public void setLeftPower(double power) {
-        leftDrive.setPower(power);
-        leftDrive2.setPower(power);
-    }
-
-    public void setPower(double rightPower, double leftPower) {
-        setLeftPower(leftPower);
-        setRightPower(rightPower);
-    }
-
-    public void setPower(double power){
-        setRightPower(power);
-        setLeftPower(power);
-    }
-  // Target Position
-    public void setRightTargetPosition(int targetPosition) {
-        rightDrive.setTargetPosition(targetPosition);
-        rightDrive2.setTargetPosition(targetPosition);
-    }
-
-    public void setLeftTargetPosition(int targetPosition){
-        leftDrive.setTargetPosition(targetPosition);
-        leftDrive2.setTargetPosition(targetPosition);
-    }
-
-    public void setTargetPosition(int rightTargetPosition, int leftTargetPosition){
-        setLeftTargetPosition(leftTargetPosition);
-        setRightTargetPosition(rightTargetPosition);
-    }
-
-    public void setTargetPosition(int targetPosition) {
-        setLeftTargetPosition(targetPosition);
-        setRightTargetPosition(targetPosition);
-    }
-  // Current Position
-     public int getRightCurrentPosition(){
-        return rightDrive.getCurrentPosition();
-     }
-
-     public int getLeftCurrentPosition() {
-         return leftDrive.getCurrentPosition();
-     }
-  // Is Busy
-     public boolean isRightBusy(){
-        return rightDrive.isBusy();
-     }
-
-     public boolean isLeftBusy(){
-        return leftDrive.isBusy();
-     }
  }
 
