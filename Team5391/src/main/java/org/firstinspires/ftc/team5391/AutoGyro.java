@@ -32,19 +32,15 @@ package org.firstinspires.ftc.team5391;
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
- * It uses the common Pushbot hardware class to define the drive on the robot.
+ * It uses the common Pushbot hardware class to define the drive on the drivetrain.
  * The code is structured as a LinearOpMode
  *
  * The code REQUIRES that you DO have encoders on the wheels,
@@ -58,15 +54,15 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  *
  *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
  *
- *  In order to calibrate the Gyro correctly, the robot must remain stationary during calibration.
+ *  In order to calibrate the Gyro correctly, the drivetrain must remain stationary during calibration.
  *  This is performed when the INIT button is pressed on the Driver Station.
- *  This code assumes that the robot is stationary when the INIT button is pressed.
+ *  This code assumes that the drivetrain is stationary when the INIT button is pressed.
  *  If this is not the case, then the INIT should be performed again.
  *
  *  Note: in this example, all angles are referenced to the initial coordinate frame set during the
  *  the Gyro Calibration process, or whenever the program issues a resetZAxisIntegrator() call on the Gyro.
  *
- *  The angle of movement/rotation is assumed to be a standardized rotation around the robot Z axis,
+ *  The angle of movement/rotation is assumed to be a standardized rotation around the drivetrain Z axis,
  *  which means that a Positive rotation is Counter Clock Wise, looking down on the field.
  *  This is consistent with the FTC field coordinate conventions set out in the document:
  *  ftc_app\doc\tutorial\FTC_FieldCoordinateSystemDefinition.pdf
@@ -80,7 +76,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class AutoGyro extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareDrive         robot   = new HardwareDrive();   // Use a Pushbot's hardware
+    HardwareDrivetrain drivetrain = new HardwareDrivetrain();   // Use a Pushbot's hardware
     AdafruitBNO055IMU gyro = null;                    // Additional Gyro device
 
     static final double     COUNTS_PER_MOTOR_REV    = 537.6  ;    // eg: TETRIX Motor Encoder
@@ -90,7 +86,7 @@ public class AutoGyro extends LinearOpMode {
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
 
     // These constants define the desired driving/control characteristics
-    // The can/should be tweaked to suite the specific robot drive train.
+    // The can/should be tweaked to suite the specific drivetrain drive train.
     static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
     static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
 
@@ -106,11 +102,11 @@ public class AutoGyro extends LinearOpMode {
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
          */
-        robot.init(hardwareMap);
+        drivetrain.init(hardwareMap);
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
 
-        // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
-        robot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        // Ensure the drivetrain it stationary, then reset the encoders and calibrate the gyro.
+        drivetrain.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Send telemetry message to alert driver that we are calibrating;
         telemetry.addData(">", "Calibrating Gyro");    //
         telemetry.update();
@@ -131,7 +127,7 @@ public class AutoGyro extends LinearOpMode {
         telemetry.addData(">", "Robot Ready.");    //
         telemetry.update();
 
-        robot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
@@ -196,21 +192,33 @@ public class AutoGyro extends LinearOpMode {
             angle = -angle;
             // Determine new target position, and pass to motor controller
             moveCounts = (int)(distance * COUNTS_PER_INCH);
-            newLeftTarget = robot.getLeftCurrentPosition() + moveCounts;
-            newRightTarget = robot.getRightCurrentPosition() + moveCounts;
+            newLeftTarget = drivetrain.getLeftCurrentPosition() + moveCounts;
+            newRightTarget = drivetrain.getRightCurrentPosition() + moveCounts;
 
             // Set Target and Turn On RUN_TO_POSITION
+<<<<<<< HEAD
             robot.setTargetPosition(newRightTarget, newLeftTarget);
 
             robot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+=======
+            drivetrain.setTargetPosition(newRightTarget, newLeftTarget);
+            /*
+            drivetrain.leftDrive.setTargetPosition(newLeftTarget);
+            drivetrain.rightDrive.setTargetPosition(newRightTarget);
+            drivetrain.leftDrive2.setTargetPosition(newLeftTarget);
+            drivetrain.rightDrive2.setTargetPosition(newRightTarget);
+            */
+
+            drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+>>>>>>> 56eb616830289c576a41e9ba66a8a23afb7940a2
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            robot.setPower(speed, speed);
+            drivetrain.setPower(speed, speed);
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                   (robot.isLeftBusy() && robot.isRightBusy())) {
+                   (drivetrain.isLeftBusy() && drivetrain.isRightBusy())) {
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -231,22 +239,22 @@ public class AutoGyro extends LinearOpMode {
                     rightSpeed /= max;
                 }
 
-                robot.setPower(rightSpeed, leftSpeed);
+                drivetrain.setPower(rightSpeed, leftSpeed);
 
                 // Display drive status for the driver.
                 telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
                 telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
-                telemetry.addData("Actual",  "%7d:%7d",      robot.getLeftCurrentPosition(),
-                                                             robot.getRightCurrentPosition());
+                telemetry.addData("Actual",  "%7d:%7d",      drivetrain.getLeftCurrentPosition(),
+                                                             drivetrain.getRightCurrentPosition());
                 telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
                 telemetry.update();
             }
 
             // Stop all motion;
-            robot.setPower(0, 0);
+            drivetrain.setPower(0, 0);
 
             // Turn off RUN_TO_POSITION
-            robot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
     }
@@ -294,7 +302,7 @@ public class AutoGyro extends LinearOpMode {
         }
 
         // Stop all motion;
-        robot.setPower(0,0);
+        drivetrain.setPower(0,0);
 
     }
 
@@ -331,7 +339,7 @@ public class AutoGyro extends LinearOpMode {
         }
 
         // Send desired speeds to motors.
-        robot.setPower(rightSpeed, leftSpeed);
+        drivetrain.setPower(rightSpeed, leftSpeed);
 
         // Display it for the driver.
         telemetry.addData("Target", "%5.2f", angle);
@@ -342,10 +350,10 @@ public class AutoGyro extends LinearOpMode {
     }
 
     /**
-     * getError determines the error between the target angle and the robot's current heading
+     * getError determines the error between the target angle and the drivetrain's current heading
      * @param   targetAngle  Desired angle (relative to global reference established at last Gyro Reset).
-     * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
-     *          +ve error means the robot should turn LEFT (CCW) to reduce error.
+     * @return  error angle: Degrees in the range +/- 180. Centered on the drivetrain's frame of reference
+     *          +ve error means the drivetrain should turn LEFT (CCW) to reduce error.
      */
     public double getError(double targetAngle) {
 
@@ -360,7 +368,7 @@ public class AutoGyro extends LinearOpMode {
 
     /**
      * returns desired steering force.  +/- 1 range.  +ve = steer left
-     * @param error   Error angle in robot relative degrees
+     * @param error   Error angle in drivetrain relative degrees
      * @param PCoeff  Proportional Gain Coefficient
      * @return
      */

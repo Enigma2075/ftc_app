@@ -36,11 +36,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * This is NOT an opmode.
  *
- * This class can be used to define all the specific hardware for a single robot.
- * In this case that robot is a Pushbot.
+ * This class can be used to define all the specific hardware for a single drivetrain.
+ * In this case that drivetrain is a Pushbot.
  * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.
  *
- * This hardware class assumes the following device names have been configured on the robot:
+ * This hardware class assumes the following device names have been configured on the drivetrain:
  * Note:  All names are lower case and some have single spaces between words.
  *
  * Motor channel:  Left  drive motor:        "left_drive"
@@ -49,7 +49,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwareDrive
+public class HardwareDrivetrain
 {
     /* Public OpMode members. */
     private DcMotor  leftDrive   = null;
@@ -62,7 +62,7 @@ public class HardwareDrive
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwareDrive(){
+    public HardwareDrivetrain(){
 
     }
 

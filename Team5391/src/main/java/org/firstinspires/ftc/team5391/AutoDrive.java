@@ -30,16 +30,13 @@
 package org.firstinspires.ftc.team5391;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
- * It uses the common Pushbot hardware class to define the drive on the robot.
+ * It uses the common Pushbot hardware class to define the drive on the drivetrain.
  * The code is structured as a LinearOpMode
  *
  * The code REQUIRES that you DO have encoders on the wheels,
@@ -66,10 +63,12 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 @Autonomous(name="programe drive train", group="test")
 //@Disabled
+
+
 public class AutoDrive extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareDrive         robot   = new HardwareDrive();   // Use a Pushbot's hardware
+    HardwareDrivetrain robot   = new HardwareDrivetrain();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;    // eg: TETRIX Motor Encoder
@@ -89,7 +88,7 @@ public class AutoDrive extends LinearOpMode {
          */
         robot.init(hardwareMap);
 
-        // Send telemetry message to signify robot waiting;
+        // Send telemetry message to signify drivetrain waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
@@ -112,7 +111,7 @@ public class AutoDrive extends LinearOpMode {
         encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
-        //robot.leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
+        //drivetrain.leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
         sleep(1000);     // pause for servos to move
 
         telemetry.addData("Path", "Complete");
@@ -152,9 +151,9 @@ public class AutoDrive extends LinearOpMode {
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // its target position, the motion will stop.  This is "safer" in the event that the drivetrain will
             // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // However, if you require that BOTH motors have finished their moves before the drivetrain continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                    (runtime.seconds() < timeoutS) &&
