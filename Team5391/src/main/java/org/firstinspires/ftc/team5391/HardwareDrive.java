@@ -30,9 +30,7 @@
 package org.firstinspires.ftc.team5391;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -54,17 +52,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class HardwareDrive
 {
     /* Public OpMode members. */
-    public DcMotor  leftDrive   = null;
-    public DcMotor  rightDrive  = null;
-    public DcMotor leftDrive2 = null;
-   public DcMotor rightDrive2 = null;
-    //public DcMotor  leftArm     = null;
-   // public Servo    leftClaw    = null;
-   // public Servo    rightClaw   = null;
-
-   // public static final double MID_SERVO       =  0.5 ;
-   // public static final double ARM_UP_POWER    =  0.45 ;
-    //public static final double ARM_DOWN_POWER  = -0.45 ;
+    private DcMotor  leftDrive   = null;
+    private DcMotor  rightDrive  = null;
+    private DcMotor leftDrive2 = null;
+    private DcMotor rightDrive2 = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -85,17 +76,14 @@ public class HardwareDrive
         rightDrive = hwMap.get(DcMotor.class, "RightDrive");
        leftDrive2 = hwMap.get (DcMotor.class, "LeftDrive2");
        rightDrive2 = hwMap.get(DcMotor.class, "RightDrive2");
-        //leftArm    = hwMap.get(DcMotor.class, "left_arm");
+
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         leftDrive2.setDirection(DcMotor.Direction.REVERSE);
         rightDrive2.setDirection(DcMotor.Direction.FORWARD);
-        // Set all motors to zero power
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        leftDrive2.setPower(0);
-        rightDrive2.setPower(0);
-        //leftArm.setPower(0);
+
+        setPower(0, 0);
+
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -103,13 +91,82 @@ public class HardwareDrive
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftDrive2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        // Define and initialize ALL installed servos.
-        //leftClaw  = hwMap.get(Servo.class, "left_hand");
-        //rightClaw = hwMap.get(Servo.class, "right_hand");
-        //leftClaw.setPosition(MID_SERVO);
-        //rightClaw.setPosition(MID_SERVO);
     }
+  // Mode
+    public void setRightMode(DcMotor.RunMode mode) {
+        rightDrive.setMode(mode);
+        rightDrive2.setMode(mode);
+    }
+
+    public void setLeftMode(DcMotor.RunMode mode){
+        leftDrive.setMode(mode);
+        leftDrive2.setMode(mode);
+    }
+
+    public void setMode(DcMotor.RunMode rightMode, DcMotor.RunMode leftMode){
+        setLeftMode(leftMode);
+        setRightMode(rightMode);
+    }
+
+    public void setMode(DcMotor.RunMode mode) {
+        setLeftMode(mode);
+        setRightMode(mode);
+    }
+  // Power
+    public void setRightPower(double power) {
+        rightDrive.setPower(power);
+        rightDrive2.setPower(power);
+    }
+
+    public void setLeftPower(double power) {
+        leftDrive.setPower(power);
+        leftDrive2.setPower(power);
+    }
+
+    public void setPower(double rightPower, double leftPower) {
+        setLeftPower(leftPower);
+        setRightPower(rightPower);
+    }
+
+    public void setPower(double power){
+        setRightPower(power);
+        setLeftPower(power);
+    }
+  // Target Position
+    public void setRightTargetPosition(int targetPosition) {
+        rightDrive.setTargetPosition(targetPosition);
+        rightDrive2.setTargetPosition(targetPosition);
+    }
+
+    public void setLeftTargetPosition(int targetPosition){
+        leftDrive.setTargetPosition(targetPosition);
+        leftDrive2.setTargetPosition(targetPosition);
+    }
+
+    public void setTargetPosition(int rightTargetPosition, int leftTargetPosition){
+        setLeftTargetPosition(leftTargetPosition);
+        setRightTargetPosition(rightTargetPosition);
+    }
+
+    public void setTargetPosition(int targetPosition) {
+        setLeftTargetPosition(targetPosition);
+        setRightTargetPosition(targetPosition);
+    }
+  // Current Position
+     public int getRightCurrentPosition(){
+        return rightDrive.getCurrentPosition();
+     }
+
+     public int getLeftCurrentPosition() {
+         return leftDrive.getCurrentPosition();
+     }
+  // Is Busy
+     public boolean isRightBusy(){
+        return rightDrive.isBusy();
+     }
+
+     public boolean isLeftBusy(){
+        return leftDrive.isBusy();
+     }
  }
 
