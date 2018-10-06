@@ -95,7 +95,7 @@ public class AutoGyro extends LinearOpMode {
     static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
+    static final double     P_TURN_COEFF            = 0.02;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.02;     // Larger is more responsive, but also less stable
 
 
@@ -160,10 +160,10 @@ public class AutoGyro extends LinearOpMode {
         //gyroDrive(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
         gyroDrive( DRIVE_SPEED, 16, 0.0);
         gyroTurn(TURN_SPEED, -90);
-        gyroDrive(DRIVE_SPEED, 35, -90);
-        gyroTurn(TURN_SPEED, -150);
-        gyroDrive(DRIVE_SPEED, 55, -150);
-        //gyroHold(TURN_SPEED, 0, 2);
+        gyroDrive(DRIVE_SPEED, 53, -90);
+        gyroTurn(TURN_SPEED, -135);
+        gyroDrive(DRIVE_SPEED, 40, -135);
+        gyroDrive(DRIVE_SPEED, 64, -135);
         //gyroDrive(DRIVE_SPEED, 84, 0.0);
        //gyroTurn(TURN_SPEED, 45);
        //gyroDrive(DRIVE_SPEED, 72, 45);
