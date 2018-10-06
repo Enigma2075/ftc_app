@@ -158,8 +158,7 @@ public class AutoGyro extends LinearOpMode {
         gyroDrive(DRIVE_SPEED, 53, -90);
         gyroTurn(TURN_SPEED, -135);
         gyroDrive(DRIVE_SPEED, 40, -135);
-        gyroDrive(DRIVE_SPEED, 64, -135);
-        //gyroDrive(DRIVE_SPEED, 84, 0.0);
+        gyroDrive(DRIVE_SPEED, -80, -140);
        //gyroTurn(TURN_SPEED, 45);
        //gyroDrive(DRIVE_SPEED, 72, 45);
         telemetry.addData("Path", "Complete");
@@ -202,14 +201,8 @@ public class AutoGyro extends LinearOpMode {
 
             // Set Target and Turn On RUN_TO_POSITION
             robot.setTargetPosition(newRightTarget, newLeftTarget);
-            /*
-            robot.leftDrive.setTargetPosition(newLeftTarget);
-            robot.rightDrive.setTargetPosition(newRightTarget);
-            robot.leftDrive2.setTargetPosition(newLeftTarget);
-            robot.rightDrive2.setTargetPosition(newRightTarget);
-            */
 
-            robot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
