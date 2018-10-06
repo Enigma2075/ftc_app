@@ -19,9 +19,9 @@ public class BaseAutonomous extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific drivetrain drive train.
     static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
-    static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
+    static final double     TURN_SPEED              = 0.3;     // Nominal half speed for better accuracy.
 
-    static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
+    static final double     HEADING_THRESHOLD       = .25 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.02;     // Larger is more responsive, but also less stable
 
@@ -90,6 +90,12 @@ public class BaseAutonomous extends LinearOpMode {
     public void gyroDrive ( double speed,
                             double distance,
                             double angle) {
+        gyroDrive(speed, distance, angle, null);
+    }
+
+    public void gyroDrive ( double speed,
+                            double distance,
+                            double angle, Runnable method) {
 
         int     newLeftTarget;
         int     newRightTarget;
@@ -110,14 +116,8 @@ public class BaseAutonomous extends LinearOpMode {
 
             // Set Target and Turn On RUN_TO_POSITION
             drivetrain.setTargetPosition(newRightTarget, newLeftTarget);
-            /*
-            drivetrain.leftDrive.setTargetPosition(newLeftTarget);
-            drivetrain.rightDrive.setTargetPosition(newRightTarget);
-            drivetrain.leftDrive2.setTargetPosition(newLeftTarget);
-            drivetrain.rightDrive2.setTargetPosition(newRightTarget);
-            */
 
-            drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drivetrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
@@ -126,6 +126,10 @@ public class BaseAutonomous extends LinearOpMode {
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
                     (drivetrain.isLeftBusy() && drivetrain.isRightBusy())) {
+
+                if(method != null) {
+                    method.run();
+                }
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);

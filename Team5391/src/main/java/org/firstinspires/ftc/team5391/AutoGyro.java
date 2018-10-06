@@ -32,6 +32,7 @@ package org.firstinspires.ftc.team5391;
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -39,6 +40,8 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
@@ -76,12 +79,33 @@ import com.qualcomm.robotcore.util.Range;
 @Autonomous(name="program gyro", group="learn gyro")
 //@Disabled
 public class AutoGyro extends BaseAutonomous {
+
+    double minDistance = 100;
+
+    public class TestDistance implements Runnable {
+        @Override
+        public void run() {
+            double distance = sensorRange.getDistance(DistanceUnit.MM);
+            if(distance<minDistance) {
+                minDistance = distance;
+            }
+
+            telemetry.addData("deviceName", sensorRange.getDeviceName());
+            telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
+            //telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
+            //telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
+            //telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
+
+            telemetry.addData("minDistance", String.format("%.01f mm", minDistance));
+        }
+    }
+
     private DistanceSensor sensorRange;
     private Servo servo;
     private Servo servo1;
-    @Override
-    public void runOpMode() {
 
+   @Override
+    public void runOpMode() {
         /*
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
@@ -90,8 +114,12 @@ public class AutoGyro extends BaseAutonomous {
         servo = hardwareMap.get(Servo.class, "range_servo");
         servo1 = hardwareMap.get(Servo.class, "range_servo2");
 
+        // you can also cast this to a Rev2mDistanceSensor if you want to use added
+        // methods associated with the Rev2mDistanceSensor class.
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
+
         servo.setPosition(1);
-        servo1.setPosition(.45);
+        servo1.setPosition(0);
 
         drivetrain.init(hardwareMap);
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
@@ -126,14 +154,73 @@ public class AutoGyro extends BaseAutonomous {
             telemetry.update();
         }
 
+        //Pull away from lander
         gyroDrive( DRIVE_SPEED, 16, 0.0);
+
+       servo1.setPosition(.445);
+
+       //Turn parallel to the block and balls
         gyroTurn(TURN_SPEED, -90);
-        gyroDrive(DRIVE_SPEED, 53, -90);
-        gyroTurn(TURN_SPEED, -135);
-        gyroDrive(DRIVE_SPEED, 40, -135);
-        gyroDrive(DRIVE_SPEED, -80, -140);
-        //gyroTurn(TURN_SPEED, 45);
-        //gyroDrive(DRIVE_SPEED, 72, 45);
+
+        //Sense the if we are on a block
+        gyroDrive(DRIVE_SPEED / 4, 3, -90, new TestDistance());
+
+       gyroDrive(DRIVE_SPEED / 4, -6, -90, new TestDistance());
+
+       if(minDistance < 45 && minDistance > 29) {
+            servo1.setPosition(0);
+        }
+
+       gyroDrive(DRIVE_SPEED, -10, -90);
+
+        minDistance = 100;
+
+       gyroDrive(DRIVE_SPEED / 4, -10, -90, new TestDistance());
+
+       if(minDistance < 45 && minDistance > 25) {
+           servo1.setPosition(0);
+       }
+
+       gyroDrive(DRIVE_SPEED, 35, -90);
+
+       minDistance = 100;
+
+       gyroDrive(DRIVE_SPEED / 4, 10, -90, new TestDistance());
+
+       if(minDistance < 45 && minDistance > 25) {
+           servo1.setPosition(0);
+       }
+
+       while(opModeIsActive()) {
+            telemetry.addData("deviceName", sensorRange.getDeviceName());
+            telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
+            //telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
+            //telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
+            //telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
+
+            // Rev2mDistanceSensor specific methods.
+            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+
+           telemetry.addData("minDistance", String.format("%.01f mm", minDistance));
+
+           telemetry.update();
+        }
+
+//        this.sleep(1000);
+//
+//        gyroDrive (DRIVE_SPEED/4, -30, -90);
+//
+//        this.sleep(2000);
+//        gyroDrive(DRIVE_SPEED/4, 53, -90);
+//
+//        servo1.setPosition(0);
+//
+//        gyroDrive(DRIVE_SPEED, 30, -90);
+//
+//        gyroTurn(TURN_SPEED, -135);
+//        gyroDrive(DRIVE_SPEED, 40, -135);
+//        gyroDrive(DRIVE_SPEED, -80, -140);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
