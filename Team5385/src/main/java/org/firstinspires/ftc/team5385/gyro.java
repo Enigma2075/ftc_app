@@ -91,12 +91,12 @@ public class gyro extends LinearOpMode {
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
-    static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
+    static final double     DRIVE_SPEED             = 1;     // Nominal speed for better accuracy.
+    static final double     TURN_SPEED              = 0.7;     // Nominal half speed for better accuracy.
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
+    static final double     P_TURN_COEFF            = 0.03;     // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF           = 0.05;     // Larger is more responsive, but also less stable
 
 
     @Override
@@ -150,11 +150,14 @@ public class gyro extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
         //gyroDrive(DRIVE_SPEED, 48.0, 0.0);    // Drive FWD 48 inches
-        gyroDrive(DRIVE_SPEED,72, 0.0);
-        gyroTurn(DRIVE_SPEED, 90);
-        gyroDrive(DRIVE_SPEED, 108, 90);
-        gyroTurn(DRIVE_SPEED, -90);
-        gyroDrive(DRIVE_SPEED, 72, 0.0);
+        gyroDrive(DRIVE_SPEED,16.5, 0.0);
+        gyroTurn(TURN_SPEED, -90);
+        gyroDrive(DRIVE_SPEED, 43, -90);
+        gyroTurn(TURN_SPEED, -125);
+        gyroDrive(DRIVE_SPEED, 30, -125);
+        gyroTurn(TURN_SPEED, -135);
+        gyroDrive(DRIVE_SPEED, -68, -135);
+
 
             // Drive REV 48 inches
 
