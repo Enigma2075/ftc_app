@@ -196,21 +196,9 @@ public class AutoGyro extends LinearOpMode {
             newRightTarget = drivetrain.getRightCurrentPosition() + moveCounts;
 
             // Set Target and Turn On RUN_TO_POSITION
-<<<<<<< HEAD
-            robot.setTargetPosition(newRightTarget, newLeftTarget);
-
-            robot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-=======
             drivetrain.setTargetPosition(newRightTarget, newLeftTarget);
-            /*
-            drivetrain.leftDrive.setTargetPosition(newLeftTarget);
-            drivetrain.rightDrive.setTargetPosition(newRightTarget);
-            drivetrain.leftDrive2.setTargetPosition(newLeftTarget);
-            drivetrain.rightDrive2.setTargetPosition(newRightTarget);
-            */
 
-            drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
->>>>>>> 56eb616830289c576a41e9ba66a8a23afb7940a2
+            drivetrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
