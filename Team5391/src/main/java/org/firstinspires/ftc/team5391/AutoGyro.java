@@ -35,6 +35,8 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -94,6 +96,9 @@ public class AutoGyro extends LinearOpMode {
     static final double     P_TURN_COEFF            = 0.02;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.02;     // Larger is more responsive, but also less stable
 
+    private DistanceSensor sensorRange;
+    private Servo servo;
+    private Servo servo1;
 
     @Override
     public void runOpMode() {
@@ -102,6 +107,13 @@ public class AutoGyro extends LinearOpMode {
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
          */
+        sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
+        servo = hardwareMap.get(Servo.class, "range_servo");
+        servo1 = hardwareMap.get(Servo.class, "range_servo2");
+
+        servo.setPosition(1);
+        servo1.setPosition(.45);
+
         drivetrain.init(hardwareMap);
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
 
@@ -151,10 +163,10 @@ public class AutoGyro extends LinearOpMode {
         //gyroDrive(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
         gyroDrive( DRIVE_SPEED, 16, 0.0);
         gyroTurn(TURN_SPEED, -90);
-        gyroDrive(DRIVE_SPEED, 53, -90);
-        gyroTurn(TURN_SPEED, -135);
-        gyroDrive(DRIVE_SPEED, 40, -135);
-        gyroDrive(DRIVE_SPEED, -80, -140);
+        //gyroDrive(DRIVE_SPEED, 53, -90);
+        //gyroTurn(TURN_SPEED, -135);
+        //gyroDrive(DRIVE_SPEED, 40, -135);
+        //gyroDrive(DRIVE_SPEED, -80, -140);
        //gyroTurn(TURN_SPEED, 45);
        //gyroDrive(DRIVE_SPEED, 72, 45);
         telemetry.addData("Path", "Complete");
