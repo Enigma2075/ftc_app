@@ -163,11 +163,11 @@ public class AutoGyro extends BaseAutonomous {
         gyroTurn(TURN_SPEED, -90);
 
         //Sense the if we are on a block
-        gyroDrive(DRIVE_SPEED / 4, 3, -90, new TestDistance());
+        gyroDrive(DRIVE_SPEED / 3, 3, -90, new TestDistance());
 
-       gyroDrive(DRIVE_SPEED / 4, -6, -90, new TestDistance());
+       gyroDrive(DRIVE_SPEED / 3, -6, -90, new TestDistance());
 
-       if(minDistance < 45 && minDistance > 29) {
+       if(minDistance < 55 && minDistance > 29) {
             servo1.setPosition(0);
         }
 
@@ -175,9 +175,9 @@ public class AutoGyro extends BaseAutonomous {
 
         minDistance = 100;
 
-       gyroDrive(DRIVE_SPEED / 4, -10, -90, new TestDistance());
+       gyroDrive(DRIVE_SPEED / 3, -10, -90, new TestDistance());
 
-       if(minDistance < 45 && minDistance > 25) {
+       if(minDistance < 55 && minDistance > 29) {
            servo1.setPosition(0);
        }
 
@@ -185,11 +185,26 @@ public class AutoGyro extends BaseAutonomous {
 
        minDistance = 100;
 
-       gyroDrive(DRIVE_SPEED / 4, 10, -90, new TestDistance());
+       gyroDrive(DRIVE_SPEED / 3, 10, -90, new TestDistance());
 
-       if(minDistance < 45 && minDistance > 25) {
+       if(minDistance < 55 && minDistance > 29) {
            servo1.setPosition(0);
        }
+
+       gyroDrive(DRIVE_SPEED, 33, -90);
+       servo1.setPosition(0);
+       gyroTurn(TURN_SPEED, -135);
+       gyroDrive(DRIVE_SPEED, 34, -135);
+        gyroTurn(TURN_SPEED, -180);
+        gyroDrive(DRIVE_SPEED, 25, -180);
+       servo.setPosition(.4);
+       sleep(500);
+        gyroTurn(TURN_SPEED, -80);
+       servo.setPosition(1);
+       gyroDrive(DRIVE_SPEED, 10, -80);
+
+
+
 
        while(opModeIsActive()) {
             telemetry.addData("deviceName", sensorRange.getDeviceName());
@@ -206,6 +221,9 @@ public class AutoGyro extends BaseAutonomous {
 
            telemetry.update();
         }
+
+
+
 
 //        this.sleep(1000);
 //
