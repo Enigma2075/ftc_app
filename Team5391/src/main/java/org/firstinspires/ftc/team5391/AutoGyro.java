@@ -34,12 +34,9 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -83,6 +80,8 @@ public class AutoGyro extends BaseAutonomous {
     double minDistance = 100;
 
     public class TestDistance implements Runnable {
+        double minDistance = 500;
+
         @Override
         public void run() {
             double distance = sensorRange.getDistance(DistanceUnit.MM);
@@ -92,17 +91,13 @@ public class AutoGyro extends BaseAutonomous {
 
             telemetry.addData("deviceName", sensorRange.getDeviceName());
             telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
-            //telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
-            //telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
-            //telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
-
             telemetry.addData("minDistance", String.format("%.01f mm", minDistance));
         }
     }
 
     private DistanceSensor sensorRange;
-    private Servo servo;
-    private Servo servo1;
+    private Servo leftKnocker;
+    private Servo rightKnocker;
 
    @Override
     public void runOpMode() {
@@ -111,15 +106,15 @@ public class AutoGyro extends BaseAutonomous {
          * The init() method of the hardware class does most of the work here
          */
         sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
-        servo = hardwareMap.get(Servo.class, "range_servo");
-        servo1 = hardwareMap.get(Servo.class, "range_servo2");
+        leftKnocker = hardwareMap.get(Servo.class, "range_servo");
+        rightKnocker = hardwareMap.get(Servo.class, "range_servo2");
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
 
-        servo.setPosition(1);
-        servo1.setPosition(0);
+        leftKnocker.setPosition(1);
+        rightKnocker.setPosition(0);
 
         drivetrain.init(hardwareMap);
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
@@ -157,7 +152,7 @@ public class AutoGyro extends BaseAutonomous {
         //Pull away from lander
         gyroDrive( DRIVE_SPEED, 16, 0.0);
 
-       servo1.setPosition(.445);
+       rightKnocker.setPosition(.445);
 
        //Turn parallel to the block and balls
         gyroTurn(TURN_SPEED, -90);
@@ -168,7 +163,7 @@ public class AutoGyro extends BaseAutonomous {
        gyroDrive(DRIVE_SPEED / 4, -6, -90, new TestDistance());
 
        if(minDistance < 45 && minDistance > 29) {
-            servo1.setPosition(0);
+            rightKnocker.setPosition(0);
         }
 
        gyroDrive(DRIVE_SPEED, -10, -90);
@@ -178,7 +173,7 @@ public class AutoGyro extends BaseAutonomous {
        gyroDrive(DRIVE_SPEED / 4, -10, -90, new TestDistance());
 
        if(minDistance < 45 && minDistance > 25) {
-           servo1.setPosition(0);
+           rightKnocker.setPosition(0);
        }
 
        gyroDrive(DRIVE_SPEED, 35, -90);
@@ -188,7 +183,7 @@ public class AutoGyro extends BaseAutonomous {
        gyroDrive(DRIVE_SPEED / 4, 10, -90, new TestDistance());
 
        if(minDistance < 45 && minDistance > 25) {
-           servo1.setPosition(0);
+           rightKnocker.setPosition(0);
        }
 
        while(opModeIsActive()) {
@@ -214,7 +209,7 @@ public class AutoGyro extends BaseAutonomous {
 //        this.sleep(2000);
 //        gyroDrive(DRIVE_SPEED/4, 53, -90);
 //
-//        servo1.setPosition(0);
+//        rightKnocker.setPosition(0);
 //
 //        gyroDrive(DRIVE_SPEED, 30, -90);
 //
