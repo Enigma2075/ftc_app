@@ -29,193 +29,148 @@
 
 package org.firstinspires.ftc.team5391;
 
-import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the drivetrain.
  * The code is structured as a LinearOpMode
- *
+ * <p>
  * The code REQUIRES that you DO have encoders on the wheels,
- *   otherwise you would use: PushbotAutoDriveByTime;
- *
- *  This code ALSO requires that you have a Modern Robotics I2C gyro with the name "gyro"
- *   otherwise you would use: PushbotAutoDriveByEncoder;
- *
- *  This code requires that the drive Motors have been configured such that a positive
- *  power command moves them forward, and causes the encoders to count UP.
- *
- *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
- *
- *  In order to calibrate the Gyro correctly, the drivetrain must remain stationary during calibration.
- *  This is performed when the INIT button is pressed on the Driver Station.
- *  This code assumes that the drivetrain is stationary when the INIT button is pressed.
- *  If this is not the case, then the INIT should be performed again.
- *
- *  Note: in this example, all angles are referenced to the initial coordinate frame set during the
- *  the Gyro Calibration process, or whenever the program issues a resetZAxisIntegrator() call on the Gyro.
- *
- *  The angle of movement/rotation is assumed to be a standardized rotation around the drivetrain Z axis,
- *  which means that a Positive rotation is Counter Clock Wise, looking down on the field.
- *  This is consistent with the FTC field coordinate conventions set out in the document:
- *  ftc_app\doc\tutorial\FTC_FieldCoordinateSystemDefinition.pdf
- *
+ * otherwise you would use: PushbotAutoDriveByTime;
+ * <p>
+ * This code ALSO requires that you have a Modern Robotics I2C gyro with the name "gyro"
+ * otherwise you would use: PushbotAutoDriveByEncoder;
+ * <p>
+ * This code requires that the drive Motors have been configured such that a positive
+ * power command moves them forward, and causes the encoders to count UP.
+ * <p>
+ * This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
+ * <p>
+ * In order to calibrate the Gyro correctly, the drivetrain must remain stationary during calibration.
+ * This is performed when the INIT button is pressed on the Driver Station.
+ * This code assumes that the drivetrain is stationary when the INIT button is pressed.
+ * If this is not the case, then the INIT should be performed again.
+ * <p>
+ * Note: in this example, all angles are referenced to the initial coordinate frame set during the
+ * the Gyro Calibration process, or whenever the program issues a resetZAxisIntegrator() call on the Gyro.
+ * <p>
+ * The angle of movement/rotation is assumed to be a standardized rotation around the drivetrain Z axis,
+ * which means that a Positive rotation is Counter Clock Wise, looking down on the field.
+ * This is consistent with the FTC field coordinate conventions set out in the document:
+ * ftc_app\doc\tutorial\FTC_FieldCoordinateSystemDefinition.pdf
+ * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="program gyro", group="learn gyro")
+@Autonomous(name = "program gyro", group = "learn gyro")
 //@Disabled
 public class AutoGyro extends BaseAutonomous {
 
-    double minDistance = 100;
 
-    public class TestDistance implements Runnable {
-        double minDistance = 500;
-
-        @Override
-        public void run() {
-            double distance = sensorRange.getDistance(DistanceUnit.MM);
-            if(distance<minDistance) {
-                minDistance = distance;
-            }
-
-            telemetry.addData("deviceName", sensorRange.getDeviceName());
-            telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
-            telemetry.addData("minDistance", String.format("%.01f mm", minDistance));
-        }
-    }
-
-    private DistanceSensor sensorRange;
-    private Servo leftKnocker;
-    private Servo rightKnocker;
-
-   @Override
+    @Override
     public void runOpMode() {
-        /*
-         * Initialize the standard drive system variables.
-         * The init() method of the hardware class does most of the work here
-         */
-        sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
-        leftKnocker = hardwareMap.get(Servo.class, "range_servo");
-        rightKnocker = hardwareMap.get(Servo.class, "range_servo2");
-
-        // you can also cast this to a Rev2mDistanceSensor if you want to use added
-        // methods associated with the Rev2mDistanceSensor class.
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
-
-        leftKnocker.setPosition(1);
-        rightKnocker.setPosition(0);
-
-        drivetrain.init(hardwareMap);
-        gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
-
-        // Ensure the drivetrain it stationary, then reset the encoders and calibrate the gyro.
-        drivetrain.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        // Send telemetry message to alert driver that we are calibrating;
-        telemetry.addData(">", "Calibrating Gyro");    //
-        telemetry.update();
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = false;
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        gyro.initialize(parameters);
-
-        // make sure the gyro is calibrated before continuing
-        while (!isStopRequested() && gyro.isGyroCalibrated())  {
-            sleep(50);
-            idle();
-        }
-
-        telemetry.addData(">", "Robot Ready.");    //
-        telemetry.update();
-
-        drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
-        while (!isStarted()) {
-            telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().firstAngle);
-            telemetry.update();
-        }
+        super.runOpMode();
 
         //Pull away from lander
-        gyroDrive( DRIVE_SPEED, 16, 0.0);
+        gyroDrive(16, 0.0);
 
-       rightKnocker.setPosition(.445);
+        rightKnockerCheck();
 
-       //Turn parallel to the block and balls
-        gyroTurn(TURN_SPEED, -90);
+        //Turn parallel to the block and balls
+        gyroTurn(-90);
+
+        boolean rightBlock = false, leftBlock = false, centerBlock = false;
+
+        boolean leftBall = false, centerBall = false;
 
         //Sense the if we are on a block
-        gyroDrive(DRIVE_SPEED / 4, 3, -90, new TestDistance());
+        gyroDrive(-3, -90);
+        CheckForBlock check = new CheckForBlock();
+        gyroDrive(DRIVE_SPEED / 4, 6, -90, check);
 
-       gyroDrive(DRIVE_SPEED / 4, -6, -90, new TestDistance());
+        if (check.foundBlock()) {
+            centerBlock = true;
+            rightKnockerKnock();
+            gyroDrive(-6, -90);
+            rightKnockerUp();
+            gyroDrive(56, -90);
+        } else {
+            centerBall = check.foundBall();
+            gyroDrive(10, -90);
 
-       if(minDistance < 45 && minDistance > 29) {
-            rightKnocker.setPosition(0);
+            check = new CheckForBlock();
+            gyroDrive(DRIVE_SPEED / 4, 6, -90, new CheckForBlock());
+
+            if (check.foundBlock()) {
+                leftBlock = true;
+                rightKnockerKnock();
+                gyroDrive(-6, -90);
+                rightKnockerUp();
+                gyroDrive(46, -90);
+            } else {
+                leftBall = check.foundBall();
+                gyroDrive(-35, -90);
+
+                if (leftBall && centerBall) {
+                    rightBlock = true;
+                    rightKnockerKnock();
+                    gyroDrive(-6, -90);
+                    rightKnockerUp();
+                    gyroDrive(87, -90);
+                } else {
+                    check = new CheckForBlock();
+                    gyroDrive(DRIVE_SPEED / 4, -6, -90, new CheckForBlock());
+
+                    if (check.foundBlock()) {
+                        rightBlock = true;
+                        rightKnockerKnock();
+                        gyroDrive(6, -90);
+                        rightKnockerUp();
+                        gyroDrive(81, -90);
+                    }
+                    else {
+                        rightKnockerUp();
+                        gyroDrive(87, -90);
+                    }
+                }
+            }
         }
 
-       gyroDrive(DRIVE_SPEED, -10, -90);
+        // At this point we should be right next to the wall in the same spot regardless.
+        gyroTurn(-135);
 
-        minDistance = 100;
+        if(rightBlock) {
+            leftKnockerKnock();
 
-       gyroDrive(DRIVE_SPEED / 4, -10, -90, new TestDistance());
-
-       if(minDistance < 45 && minDistance > 25) {
-           rightKnocker.setPosition(0);
-       }
-
-       gyroDrive(DRIVE_SPEED, 35, -90);
-
-       minDistance = 100;
-
-       gyroDrive(DRIVE_SPEED / 4, 10, -90, new TestDistance());
-
-       if(minDistance < 45 && minDistance > 25) {
-           rightKnocker.setPosition(0);
-       }
-
-       while(opModeIsActive()) {
-            telemetry.addData("deviceName", sensorRange.getDeviceName());
-            telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
-            //telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
-            //telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
-            //telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
-
-            // Rev2mDistanceSensor specific methods.
-            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
-
-           telemetry.addData("minDistance", String.format("%.01f mm", minDistance));
-
-           telemetry.update();
+            gyroDrive(40, -135);
+            gyroDrive(-80, -135);
         }
-
-//        this.sleep(1000);
-//
-//        gyroDrive (DRIVE_SPEED/4, -30, -90);
-//
-//        this.sleep(2000);
-//        gyroDrive(DRIVE_SPEED/4, 53, -90);
-//
-//        rightKnocker.setPosition(0);
-//
-//        gyroDrive(DRIVE_SPEED, 30, -90);
-//
-//        gyroTurn(TURN_SPEED, -135);
-//        gyroDrive(DRIVE_SPEED, 40, -135);
-//        gyroDrive(DRIVE_SPEED, -80, -140);
+        else if(centerBlock) {
+            gyroDrive(34, -135);
+            gyroTurn(-180);
+            gyroDrive(10, -180);
+            leftKnockerKnock();
+            //sleep(500);
+            gyroTurn(-80);
+            leftKnockerUp();
+            gyroDrive(10, -80);
+        }
+        else if(leftBlock) {
+            gyroDrive(34, -135);
+            gyroTurn(-180);
+            gyroDrive(25, -180);
+            leftKnockerKnock();
+            //sleep(500);
+            gyroTurn(-80);
+            leftKnockerUp();
+            gyroDrive(10, -80);
+        }
+        else {
+            gyroDrive(40, -135);
+            gyroDrive(-80, -135);
+        }
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
