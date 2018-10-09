@@ -106,6 +106,8 @@ public class HardwareBot {
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-    public void setTarget(double leftAndRightTarget)
+    public void setTarget(double leftAndRightTarget){
+
+    }
         //shorter version of the thingy 
 }
