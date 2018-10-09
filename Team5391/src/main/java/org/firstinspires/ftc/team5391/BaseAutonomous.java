@@ -45,7 +45,7 @@ public class BaseAutonomous extends LinearOpMode {
         double minDistance = 500;
 
         public boolean foundBlock() {
-            return minDistance < 55 && !foundBall();
+            return minDistance < 76 && !foundBall();
         }
 
         public boolean foundBall() {
@@ -100,7 +100,7 @@ public class BaseAutonomous extends LinearOpMode {
     }
 
     protected void leftKnockerUp() {
-        rightKnocker.setPosition(LEFT_KNOCKER_UP);
+        leftKnocker.setPosition(LEFT_KNOCKER_UP);
     }
 
     protected void rightKnockerCheck() {

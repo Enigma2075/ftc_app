@@ -85,30 +85,33 @@ public class AutoGyro extends BaseAutonomous {
 
         boolean leftBall = false, centerBall = false;
 
-        //Sense the if we are on a block
+        // check if middle is a block
         gyroDrive(-3, -90);
         CheckForBlock check = new CheckForBlock();
         gyroDrive(DRIVE_SPEED / 4, 6, -90, check);
 
         if (check.foundBlock()) {
+            // The middle is a block
             centerBlock = true;
             rightKnockerKnock();
             gyroDrive(-6, -90);
             rightKnockerUp();
-            gyroDrive(56, -90);
+            gyroDrive(57, -90);
         } else {
+            // Check if middle is ball
             centerBall = check.foundBall();
-            gyroDrive(10, -90);
 
+            // checks if the left is block
+            gyroDrive(12, -90);
             check = new CheckForBlock();
-            gyroDrive(DRIVE_SPEED / 4, 6, -90, new CheckForBlock());
-
+            gyroDrive(DRIVE_SPEED / 4, 6, -90, check);
             if (check.foundBlock()) {
+                // The left is a block
                 leftBlock = true;
                 rightKnockerKnock();
                 gyroDrive(-6, -90);
                 rightKnockerUp();
-                gyroDrive(46, -90);
+                gyroDrive(40, -90);
             } else {
                 leftBall = check.foundBall();
                 gyroDrive(-35, -90);
@@ -118,21 +121,21 @@ public class AutoGyro extends BaseAutonomous {
                     rightKnockerKnock();
                     gyroDrive(-6, -90);
                     rightKnockerUp();
-                    gyroDrive(87, -90);
+                    gyroDrive(80, -90);
                 } else {
                     check = new CheckForBlock();
-                    gyroDrive(DRIVE_SPEED / 4, -6, -90, new CheckForBlock());
+                    gyroDrive(DRIVE_SPEED / 4, -6, -90, check);
 
                     if (check.foundBlock()) {
                         rightBlock = true;
                         rightKnockerKnock();
                         gyroDrive(6, -90);
                         rightKnockerUp();
-                        gyroDrive(81, -90);
+                        gyroDrive(74, -90);
                     }
                     else {
                         rightKnockerUp();
-                        gyroDrive(87, -90);
+                        gyroDrive(80, -90);
                     }
                 }
             }
@@ -143,29 +146,33 @@ public class AutoGyro extends BaseAutonomous {
 
         if(rightBlock) {
             leftKnockerKnock();
-
-            gyroDrive(40, -135);
-            gyroDrive(-80, -135);
+            sleep(100);
+            gyroDrive(43, -135);
+            leftKnockerUp();
+            gyroDrive(-83, -135);
         }
         else if(centerBlock) {
             gyroDrive(34, -135);
             gyroTurn(-180);
-            gyroDrive(10, -180);
+            gyroDrive(9, -180);
             leftKnockerKnock();
-            //sleep(500);
-            gyroTurn(-80);
+            sleep(100);
+            gyroTurn(-100);
             leftKnockerUp();
-            gyroDrive(10, -80);
+            gyroDrive(10, -100);
         }
         else if(leftBlock) {
             gyroDrive(34, -135);
             gyroTurn(-180);
             gyroDrive(25, -180);
             leftKnockerKnock();
-            //sleep(500);
+            sleep(100);
             gyroTurn(-80);
             leftKnockerUp();
             gyroDrive(10, -80);
+
+            gyroTurn(-45);
+            gyroDrive(-80, -45);
         }
         else {
             gyroDrive(40, -135);
