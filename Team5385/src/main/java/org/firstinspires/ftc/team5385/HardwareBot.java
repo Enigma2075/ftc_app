@@ -102,10 +102,17 @@ public class HardwareBot {
     }
 
 
-    public void setModeEncoder() {
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    public void setModeEncoder(DcMotor.RunMode oblivian) {
+        leftDrive.setMode(oblivian);
+        rightDrive.setMode(oblivian);
     }
-    public void setTarget(double leftAndRightTarget)
-        //shorter version of the thingy 
+    public void setTarget(int left, int right){
+        leftDrive.setTargetPosition(left);
+        rightDrive.setTargetPosition(right);
+    }
+    public void setPower(double Lspeed, double Rspeed){
+        leftDrive.setPower(Lspeed);
+        rightDrive.setPower(Rspeed);
+    }
+        //shorter version of the thingy
 }
