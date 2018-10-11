@@ -9,7 +9,7 @@ public class Teleop extends OpMode {
 
     HardwareDrivetrain drivetrain = null;
     CheesyDrive cheesyDrive = null;
-    
+
     @Override
     public void init() {
         drivetrain = new HardwareDrivetrain();

@@ -115,7 +115,7 @@ public class AutoGyro extends BaseAutonomous {
             } else {
                 leftBall = check.foundBall();
                 gyroDrive(-35, -90);
-
+                //  If ball, continue
                 if (leftBall && centerBall) {
                     rightBlock = true;
                     rightKnockerKnock();
@@ -125,7 +125,7 @@ public class AutoGyro extends BaseAutonomous {
                 } else {
                     check = new CheckForBlock();
                     gyroDrive(DRIVE_SPEED / 4, -6, -90, check);
-
+                    // Check right mineral
                     if (check.foundBlock()) {
                         rightBlock = true;
                         rightKnockerKnock();
@@ -133,6 +133,7 @@ public class AutoGyro extends BaseAutonomous {
                         rightKnockerUp();
                         gyroDrive(74, -90);
                     }
+                    // If above aren't ball, hit right mineral
                     else {
                         rightKnockerUp();
                         gyroDrive(80, -90);
@@ -151,6 +152,7 @@ public class AutoGyro extends BaseAutonomous {
             leftKnockerUp();
             gyroDrive(-83, -135);
         }
+        // Hit the corresponding mineral
         else if(centerBlock) {
             gyroDrive(34, -135);
             gyroTurn(-180);
