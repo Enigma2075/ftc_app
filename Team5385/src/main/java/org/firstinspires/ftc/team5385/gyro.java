@@ -134,7 +134,8 @@ public class gyro extends LinearOpMode {
         telemetry.addData(">", "Robot Ready.");    //
         telemetry.update();
 
-               robot.SetModeEncoder();
+               robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+               robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
             telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().thirdAngle);
