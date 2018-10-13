@@ -23,7 +23,7 @@ public class Teleop extends OpMode {
 
     @Override
     public void loop() {
-        DriveSignal powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y*-1, gamepad1.right_stick_x, false);
+        DriveSignal powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y*-1, gamepad1.right_stick_x, gamepad1.left_stick_y==0);
         drivetrain.setPower(powers.rightMotor, powers.leftMotor);
     }
 }
