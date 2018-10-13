@@ -22,8 +22,8 @@ public class Teleop extends BaseAutonomous {
         while (opModeIsActive()) {
             DriveSignal powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y * -1, gamepad1.right_stick_x, false);
             drivetrain.setPower(powers.rightMotor, powers.leftMotor);
-            lift.setPower(powers.liftMotor, powers.liftMotor2);
-            telemetry.addData("liftPosition: ",lift.getCurrentPosition() );
+            lift.setPower(gamepad2.right_stick_y);
+            telemetry.addData("liftPosition: ",lift.getRightCurrentPosition() );
             telemetry.update();
             }
     }
