@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name="CheesyDrive", group="TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="CheesyDrive", group="TeleOp")
 
-public class Tele_Op extends OpMode {
+public class TeleOp extends OpMode {
 
     HardwareDrivetrain robot = null;
     CheesyDrive cheesyDrive = null;
