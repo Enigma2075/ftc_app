@@ -88,11 +88,11 @@ public class gyro extends BigAutoBase {
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
          */
-        robot.init(hardwareMap);
+        drivetrain.init(hardwareMap);
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "gyro");
 
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
-        robot.setModeEncoder(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        drivetrain.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Send telemetry message to alert driver that we are calibrating;
         telemetry.addData(">", "Calibrating Gyro");    //
@@ -116,7 +116,8 @@ public class gyro extends BigAutoBase {
         telemetry.addData(">", "Robot Ready.");    //
         telemetry.update();
 
-               robot.setModeEncoder(DcMotor.RunMode.RUN_USING_ENCODER);
+        drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
             telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().thirdAngle);

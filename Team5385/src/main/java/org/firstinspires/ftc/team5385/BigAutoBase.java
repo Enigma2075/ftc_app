@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 
 public class BigAutoBase  extends LinearOpMode {
 
-    HardwareBot robot = new HardwareBot();   // Use a Pushbot's hardware
+    HardwareDrivetrain drivetrain = new HardwareDrivetrain();   // Use a Pushbot's hardware
     AdafruitBNO055IMU gyro = null;                    // Additional Gyro device
 
     static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
@@ -50,21 +50,21 @@ public class BigAutoBase  extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             moveCounts = (int) (distance * COUNTS_PER_INCH);
-            newLeftTarget = robot.leftDrive.getCurrentPosition() + moveCounts;
-            newRightTarget = robot.rightDrive.getCurrentPosition() + moveCounts;
+            newLeftTarget = drivetrain.getCurrentLeftPosition() + moveCounts;
+            newRightTarget = drivetrain.getCurrentRightPosition() + moveCounts;
 
             // Set Target and Turn On RUN_TO_POSITION
-            robot.setTarget(newLeftTarget, newRightTarget);
-            robot.setModeEncoder(DcMotor.RunMode.RUN_TO_POSITION);
+            drivetrain.setTarget(newLeftTarget, newRightTarget);
+            drivetrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            robot.setPower(speed, speed);
+            drivetrain.setPower(speed, speed);
 
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                    (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+                    (drivetrain.isLeftBusy() && drivetrain.isRightBusy())) {
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -84,22 +84,22 @@ public class BigAutoBase  extends LinearOpMode {
                     rightSpeed /= max;
                 }
 
-                robot.setPower(leftSpeed, rightSpeed);
+                drivetrain.setPower(leftSpeed, rightSpeed);
 
                 // Display drive status for the driver.
                 telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
                 telemetry.addData("Target", "%7d:%7d", newLeftTarget, newRightTarget);
-                telemetry.addData("Actual", "%7d:%7d", robot.leftDrive.getCurrentPosition(),
-                        robot.rightDrive.getCurrentPosition());
+                telemetry.addData("Actual", "%7d:%7d", drivetrain.getCurrentLeftPosition(),
+                        drivetrain.getCurrentRightPosition());
                 telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
                 telemetry.update();
             }
 
             // Stop all motion;
-            robot.setPower(0, 0);
+            drivetrain.setPower(0, 0);
 
             // Turn off RUN_TO_POSITION
-            robot.setModeEncoder(DcMotor.RunMode.RUN_USING_ENCODER);
+            drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
@@ -130,7 +130,7 @@ public class BigAutoBase  extends LinearOpMode {
         }
 
         // Stop all motion;
-        robot.setPower(0, 0);
+        drivetrain.setPower(0, 0);
     }
 
     public void gyroTurn(double speed, double angle) {
@@ -164,7 +164,7 @@ public class BigAutoBase  extends LinearOpMode {
         }
 
         // Send desired speeds to motors.
-        robot.setPower(leftSpeed, rightSpeed);
+        drivetrain.setPower(leftSpeed, rightSpeed);
 
         // Display it for the driver.
         telemetry.addData("Target", "%5.2f", angle);
