@@ -51,10 +51,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwareBot {
+public class HardwareDrivetrain {
     /* Public OpMode members. */
-    public DcMotor leftDrive = null;
-    public DcMotor rightDrive = null;
+    private DcMotor leftDrive = null;
+    private DcMotor rightDrive = null;
     //public DcMotor  leftArm     = null;
     //public Servo    leftClaw    = null;
     //public Servo    rightClaw   = null;
@@ -64,11 +64,12 @@ public class HardwareBot {
     // public static final double ARM_DOWN_POWER  = -0.45 ;
 
     /* local OpMode members. */
-    HardwareMap hwMap = null;
+    private HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
 
+
     /* Constructor */
-    public HardwareBot() {
+    public HardwareDrivetrain() {
 
     }
 
@@ -103,17 +104,39 @@ public class HardwareBot {
     }
 
 
-    public void setModeEncoder(DcMotor.RunMode oblivian) {
-        leftDrive.setMode(oblivian);
-        rightDrive.setMode(oblivian);
+    public void setMode(DcMotor.RunMode mode) {
+        leftDrive.setMode(mode);
+        rightDrive.setMode(mode);
     }
-    public void setTarget(int left, int right){
-        leftDrive.setTargetPosition(left);
-        rightDrive.setTargetPosition(right);
+    public void setTarget(int leftTarget, int rightTarget){
+        leftDrive.setTargetPosition(leftTarget);
+        rightDrive.setTargetPosition(rightTarget);
+
     }
-    public void setPower(double Lspeed, double Rspeed){
-        leftDrive.setPower(Lspeed);
-        rightDrive.setPower(Rspeed);
+    public void setPower(double leftPower, double rightPower){
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
     }
-        //shorter version of the thingy
+
+    public int getCurrentRightPosition(){
+        return rightDrive.getCurrentPosition();
+    }
+
+    public int getCurrentLeftPosition(){
+        return leftDrive.getCurrentPosition();
+    }
+
+    public void setTargetPosition(int rightTragetPosition,int leftTargetPosition){
+        leftDrive.setTargetPosition(leftTargetPosition);
+        rightDrive.setTargetPosition(rightTragetPosition);
+    }
+
+    public boolean isLeftBusy(){
+        return leftDrive.isBusy();
+    }
+
+    public boolean isRightBusy(){
+        return rightDrive.isBusy();
+    }
+
 }
