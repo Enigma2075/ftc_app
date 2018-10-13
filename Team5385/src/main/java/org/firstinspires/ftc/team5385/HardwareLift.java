@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team5385;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class HardwareLift {    /* Public OpMode members. */
@@ -26,7 +27,9 @@ public class HardwareLift {    /* Public OpMode members. */
         motor.setPower(0);
 
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
+
 
 
     public void setMode(DcMotor.RunMode mode) {
