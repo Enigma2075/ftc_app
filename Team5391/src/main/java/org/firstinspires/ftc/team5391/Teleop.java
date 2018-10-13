@@ -11,6 +11,7 @@ public class Teleop extends BaseAutonomous {
 
     HardwareDrivetrain drivetrain = null;
     CheesyDrive cheesyDrive = null;
+    HardwareLift lift = null;
 
     @Override
     public void runOpMode() {
@@ -21,17 +22,9 @@ public class Teleop extends BaseAutonomous {
         while (opModeIsActive()) {
             DriveSignal powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y * -1, gamepad1.right_stick_x, false);
             drivetrain.setPower(powers.rightMotor, powers.leftMotor);
-        }
-    }
-<<<<<<< HEAD
-
-
-    @Override
-    public void loop() {
-        DriveSignal powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y*-1, gamepad1.right_stick_x, gamepad1.left_stick_y==0);
-        drivetrain.setPower(powers.rightMotor, powers.leftMotor);
+            lift.setPower(powers.liftMotor, powers.liftMotor2);
+            telemetry.addData("liftPosition: ",lift.getCurrentPosition() );
+            telemetry.update();
+            }
     }
 }
-=======
-}
->>>>>>> 08a2029bfe29ce6c4d9e929d47790613bd3b2fbf
