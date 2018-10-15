@@ -21,6 +21,12 @@ public class HardwareLift {
         liftMotor = hwMap.get(DcMotor.class, "LeftMotor");
         liftMotor2 = hwMap.get(DcMotor.class, "Leftmotor2");
 
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        liftMotor.setPower(0);
+        liftMotor2.setPower(0);
+
 
     }
 
@@ -59,33 +65,16 @@ public class HardwareLift {
         setLeftPower(power);
     }
 
-    public void setRightTargetPosition(int targetPosition) {
+    public void setBothTargetPosition(int targetPosition) {
         liftMotor.setTargetPosition(targetPosition);
         liftMotor2.setTargetPosition(targetPosition);
     }
 
-    public void setLeftTargetPosition(int targetPosition) {
-        liftMotor.setTargetPosition(targetPosition);
-        liftMotor2.setTargetPosition(targetPosition);
+
+    public int getBothCurrentPosition() {
+        return liftMotor2.getCurrentPosition();
     }
 
-    public void setTargetPosition(int rightTargetPosition, int leftTargetPosition) {
-        setLeftTargetPosition(leftTargetPosition);
-        setRightTargetPosition(rightTargetPosition);
-    }
-
-    public void setTargetPosition(int targetPosition) {
-        setLeftTargetPosition(targetPosition);
-        setRightTargetPosition(targetPosition);
-    }
-
-    public int getRightCurrentPosition() { return liftMotor2.getCurrentPosition();}
-
-    public int getLeftCurrentPosition() { return liftMotor.getCurrentPosition();}
-
-    public boolean isRightBusy() { return liftMotor.isBusy();}
-
-    public boolean isLeftBusy() { return liftMotor2.isBusy();}
 }
 
 

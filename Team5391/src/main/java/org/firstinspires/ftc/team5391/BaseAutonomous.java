@@ -39,7 +39,11 @@ public class BaseAutonomous extends LinearOpMode {
     static final double LEFT_KNOCKER_UP = 1;     // Larger is more responsive, but also less stable
     static final double RIGHT_KNOCKER_CHECK = .445;     // Larger is more responsive, but also less stable
     static final double RIGHT_KNOCKER_KNOCK = 0.6;     // Larger is more responsive, but also less stable
-    static final double LEFT_KNOCKER_KNOCK = 0.4;     // Larger is more responsive, but also less stable
+    static final double LEFT_KNOCKER_KNOCK = 0.4;
+
+    static final double LIFT_BOTH_UP = 1.19;
+    static final double LIFT_BOTH_DOWN = -1.19;
+
 
     public class CheckForBlock implements Runnable {
         double minDistance = 500;
