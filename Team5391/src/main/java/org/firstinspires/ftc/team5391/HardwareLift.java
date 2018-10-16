@@ -9,7 +9,7 @@ public class HardwareLift {
     private DcMotor liftMotor2 = null;
 
     HardwareMap hwMap = null;
-    private ElapsedTime peried = new ElapsedTime();
+    private ElapsedTime period = new ElapsedTime();
 
     public HardwareLift() {
 
@@ -19,7 +19,7 @@ public class HardwareLift {
         hwMap = ahwMap;
 
         liftMotor = hwMap.get(DcMotor.class, "LeftMotor");
-        liftMotor2 = hwMap.get(DcMotor.class, "Leftmotor2");
+        liftMotor2 = hwMap.get(DcMotor.class, "LeftMotor2");
 
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
