@@ -30,39 +30,14 @@ public class HardwareLift {
 
     }
 
-    public void setRightMode(DcMotor.RunMode mode) {
+    public void setMode(DcMotor.RunMode mode) {
         liftMotor.setMode(mode);
         liftMotor2.setMode(mode);
-    }
-
-    public void setLeftMode(DcMotor.RunMode mode) {
-        liftMotor.setMode(mode);
-        liftMotor2.setMode(mode);
-    }
-
-    public void setMode(DcMotor.RunMode rightMode, DcMotor.RunMode leftMode) {
-        setRightMode(rightMode);
-        setLeftMode(leftMode);
-    }
-
-    public void setRightPower(double power) {
-        liftMotor.setPower(power);
-        liftMotor2.setPower(power);
-    }
-
-    public void setLeftPower(double power) {
-        liftMotor.setPower(power);
-        liftMotor2.setPower(power);
-    }
-
-    public void setPower(double rightPower, double leftPower) {
-        setLeftPower(leftPower);
-        setRightPower(rightPower);
     }
 
     public void setPower(double power) {
-        setRightPower(power);
-        setLeftPower(power);
+        liftMotor.setPower(power);
+        liftMotor2.setPower(power);
     }
 
     public void setBothTargetPosition(int targetPosition) {
