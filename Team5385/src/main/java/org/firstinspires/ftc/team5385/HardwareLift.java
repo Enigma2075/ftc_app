@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class HardwareLift {    /* Public OpMode members. */
-    private static final double MAX_POT=3.3*(9300.0/9400.0);
-    private static final double MIN_POT=3.3*(300.0/9400.0);
+    private static final double MAX_POT = 3.3 * (9300.0/9400.0);
+    private static final double MIN_POT = 3.3 * (300.0/9400.0);
 
     private DcMotor motor;
     private AnalogInput pot;
