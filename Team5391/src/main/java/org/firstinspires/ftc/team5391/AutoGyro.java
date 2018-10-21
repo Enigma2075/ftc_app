@@ -135,7 +135,7 @@ public class AutoGyro extends BaseAutonomous {
                     }
                     // If above aren't ball, hit right mineral
                     else {
-                        rightKnockerUp();
+                        //rightKnockerUp();
                         gyroDrive(80, -90);
                     }
                 }
@@ -146,10 +146,10 @@ public class AutoGyro extends BaseAutonomous {
         gyroTurn(-135);
 
         if(rightBlock) {
-            leftKnockerKnock();
+            //leftKnockerKnock();
             sleep(100);
             gyroDrive(43, -135);
-            leftKnockerUp();
+            //leftKnockerUp();
             gyroDrive(-83, -135);
         }
         // Hit the corresponding mineral
@@ -157,20 +157,20 @@ public class AutoGyro extends BaseAutonomous {
             gyroDrive(34, -135);
             gyroTurn(-180);
             gyroDrive(9, -180);
-            leftKnockerKnock();
+            //leftKnockerKnock();
             sleep(100);
             gyroTurn(-100);
-            leftKnockerUp();
+            //leftKnockerUp();
             gyroDrive(10, -100);
         }
         else if(leftBlock) {
             gyroDrive(34, -135);
             gyroTurn(-180);
             gyroDrive(25, -180);
-            leftKnockerKnock();
+            //leftKnockerKnock();
             sleep(100);
             gyroTurn(-80);
-            leftKnockerUp();
+            //leftKnockerUp();
             gyroDrive(10, -80);
 
             gyroTurn(-45);
