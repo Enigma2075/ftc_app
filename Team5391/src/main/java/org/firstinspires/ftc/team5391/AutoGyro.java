@@ -80,7 +80,7 @@ public class AutoGyro extends BaseAutonomous {
 
         //Turn parallel to the block and balls
         gyroTurn(-90);
-
+/*
         boolean rightBlock = false, leftBlock = false, centerBlock = false;
 
         boolean leftBall = false, centerBall = false;
@@ -134,6 +134,8 @@ public class AutoGyro extends BaseAutonomous {
                         gyroDrive(74, -90);
                     }
                     // If above aren't ball, hit right mineral
+  */
+                    /*
                     else {
                         //rightKnockerUp();
                         gyroDrive(80, -90);
@@ -180,8 +182,8 @@ public class AutoGyro extends BaseAutonomous {
             gyroDrive(40, -135);
             gyroDrive(-80, -135);
         }
-
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-    }
-}
+*/
+                    telemetry.addData("Path", "Complete");
+                    telemetry.update();
+                }
+            }
