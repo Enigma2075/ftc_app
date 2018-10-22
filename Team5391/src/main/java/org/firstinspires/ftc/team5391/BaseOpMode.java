@@ -22,12 +22,6 @@ public class BaseOpMode extends LinearOpMode {
     private Servo leftKnocker;
     private Servo rightKnocker;
 
-    static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION = 30.0/22.0;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
-
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific drivetrain drive train.
     static final double DRIVE_SPEED = .75;     // Nominal speed for better accuracy.
@@ -37,10 +31,10 @@ public class BaseOpMode extends LinearOpMode {
     static final double P_TURN_COEFF = 0.065;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 0.02;     // Larger is more responsive, but also less stable
 
-    static final double RIGHT_KNOCKER_UP = 0;      // As tight as we can make it with an integer gyro
-    static final double LEFT_KNOCKER_UP = 1;     // Larger is more responsive, but also less stable
-    static final double RIGHT_KNOCKER_CHECK = .445;     // Larger is more responsive, but also less stable
-    static final double RIGHT_KNOCKER_KNOCK = 0.6;     // Larger is more responsive, but also less stable
+    static final double RIGHT_KNOCKER_UP = 0;
+    static final double LEFT_KNOCKER_UP = 1;
+    static final double RIGHT_KNOCKER_CHECK = .445;
+    static final double RIGHT_KNOCKER_KNOCK = 0.6;
     static final double LEFT_KNOCKER_KNOCK = 0.4;
 
     static final double LIFT_BOTH_UP = 1.19;
@@ -201,14 +195,12 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void gyroTurn(double speed, double angle) {
-
         // keep looping while we are still active, and not on heading.
         while (opModeIsActive() && !onHeading(speed, -angle, P_TURN_COEFF)) {
             // Update telemetry & Allow time for other processes to run.
             telemetry.update();
         }
     }
-
 
     protected void gyroDrive(double distance,
                              double angle) {
@@ -238,7 +230,7 @@ public class BaseOpMode extends LinearOpMode {
         if (opModeIsActive()) {
             angle = -angle;
             // Determine new target position, and pass to motor controller
-            moveCounts = (int) (distance * COUNTS_PER_INCH);
+            moveCounts = (int) (distance * drivetrain.COUNTS_PER_INCH);
             newLeftTarget = drivetrain.getLeftCurrentPosition() + moveCounts;
             newRightTarget = drivetrain.getRightCurrentPosition() + moveCounts;
 
