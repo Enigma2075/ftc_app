@@ -64,14 +64,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "program gyro", group = "learn gyro")
+@Autonomous(name = "Double Auto", group = "Main")
 //@Disabled
-public class AutoGyro extends BaseAutonomous {
-
-
+public class AutoGyro extends BaseOpMode {
     @Override
     public void runOpMode() {
         super.runOpMode();
+
+        moveLift(7.25);
 
         //Pull away from lander
         gyroDrive(16, 0.0);
@@ -86,7 +86,6 @@ public class AutoGyro extends BaseAutonomous {
         boolean leftBall = false, centerBall = false;
 
         // check if middle is a block
-        gyroDrive(-3, -90);
         CheckForBlock check = new CheckForBlock();
         gyroDrive(DRIVE_SPEED / 4, 6, -90, check);
 
@@ -96,7 +95,7 @@ public class AutoGyro extends BaseAutonomous {
             rightKnockerKnock();
             gyroDrive(-6, -90);
             rightKnockerUp();
-            gyroDrive(57, -90);
+            gyroDrive(48, -90);
         } else {
             // Check if middle is ball
             centerBall = check.foundBall();
@@ -111,7 +110,7 @@ public class AutoGyro extends BaseAutonomous {
                 rightKnockerKnock();
                 gyroDrive(-6, -90);
                 rightKnockerUp();
-                gyroDrive(40, -90);
+                gyroDrive(31, -90);
             } else {
                 leftBall = check.foundBall();
                 gyroDrive(-35, -90);
@@ -121,7 +120,7 @@ public class AutoGyro extends BaseAutonomous {
                     rightKnockerKnock();
                     gyroDrive(-6, -90);
                     rightKnockerUp();
-                    gyroDrive(80, -90);
+                    gyroDrive(71, -90);
                 } else {
                     check = new CheckForBlock();
                     gyroDrive(DRIVE_SPEED / 4, -6, -90, check);
@@ -131,14 +130,14 @@ public class AutoGyro extends BaseAutonomous {
                         rightKnockerKnock();
                         gyroDrive(6, -90);
                         rightKnockerUp();
-                        gyroDrive(74, -90);
+                        gyroDrive(60, -90);
                     }
                     // If above aren't ball, hit right mineral
   */
                     /*
                     else {
                         //rightKnockerUp();
-                        gyroDrive(80, -90);
+                        gyroDrive(71, -90);
                     }
                 }
             }
