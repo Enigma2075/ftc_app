@@ -12,24 +12,26 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-public class BaseAutonomous extends LinearOpMode {
+public class BaseOpMode extends LinearOpMode {
 
-    private HardwareDrivetrain drivetrain = new HardwareDrivetrain();   // Use a Pushbot's hardware
+    private HardwareDrivetrain drivetrain = new HardwareDrivetrain();
+    private HardwareLift lift = new HardwareLift();
+
     private AdafruitBNO055IMU gyro = null;                    // Additional Gyro device
     private DistanceSensor sensorRange;
     private Servo leftKnocker;
     private Servo rightKnocker;
 
     static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION = 26+(18.0/99.0);     // This is < 1.0 if geared UP
+    static final double DRIVE_GEAR_REDUCTION = 30.0/22.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific drivetrain drive train.
-    static final double DRIVE_SPEED = 0.66;     // Nominal speed for better accuracy.
-    static final double TURN_SPEED = 0.5;     // Nominal half speed for better accuracy.
+    static final double DRIVE_SPEED = .75;     // Nominal speed for better accuracy.
+    static final double TURN_SPEED = 0.8;     // Nominal half speed for better accuracy.
 
     static final double HEADING_THRESHOLD = .15;      // As tight as we can make it with an integer gyro
     static final double P_TURN_COEFF = 0.065;     // Larger is more responsive, but also less stable
@@ -88,7 +90,9 @@ public class BaseAutonomous extends LinearOpMode {
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
          */
+        lift.init(hardwareMap);
         drivetrain.init(hardwareMap);
+
         initGyro();
 
 
@@ -289,6 +293,19 @@ public class BaseAutonomous extends LinearOpMode {
 
             // Turn off RUN_TO_POSITION
             drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    protected void moveLift(double height) {
+        moveLift(height, 1);
+    }
+
+    protected void moveLift(double height, double power) {
+        lift.setTargetPosition(height);
+
+        while (opModeIsActive() && lift.isBusy())
+        {
+            lift.setPower(power);
         }
     }
 }
