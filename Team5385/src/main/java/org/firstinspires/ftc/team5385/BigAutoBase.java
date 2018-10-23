@@ -21,12 +21,12 @@ public class BigAutoBase  extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
     static final double DRIVE_SPEED = 1;     // Nominal speed for better accuracy.
-    static final double TURN_SPEED = 0.7;     // Nominal half speed for better accuracy.
+    static final double TURN_SPEED = 0.7;     // Nominal half speed for better accuracy
 
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
     static final double P_TURN_COEFF = 0.03;     // Larger is more responsive, but also less stable
-    static final double P_DRIVE_COEFF = 0.05;     // Larger is more responsive, but also less stable
-
+    static final double P_MOVE_LIFT_COEFF = 0.2;     // Larger is more responsive, but also less stable
+    static final double P_DRIVE_COEFF = 0.05;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -174,4 +174,19 @@ public class BigAutoBase  extends LinearOpMode {
 
         return onTarget;
     }
+
+
+
+    protected void moveLift(int target) {
+
+       while(Math.abs(lift.getError(target)) < .1){
+           double power = getError(target) * P_MOVE_LIFT_COEFF;
+           lift.setPower(power);
+           telemetry.addData("Error", lift.getError(target));
+           telemetry.update();
+       }
+       lift.setPower(0);
+
+    }
+
 }

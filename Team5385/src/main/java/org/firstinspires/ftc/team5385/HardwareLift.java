@@ -55,5 +55,7 @@ public class HardwareLift {    /* Public OpMode members. */
     public double getError(double target){
         return getCurrentPosition()-target;
 
+
     }
+
 }
