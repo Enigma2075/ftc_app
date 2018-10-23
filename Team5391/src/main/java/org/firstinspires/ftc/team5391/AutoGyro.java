@@ -74,7 +74,7 @@ public class AutoGyro extends BaseOpMode {
         moveLift(7.25);
 
         //Pull away from lander
-        gyroDrive(16, 0.0);
+        gyroDrive(15, 0.0);
 
         rightKnockerCheck();
 
