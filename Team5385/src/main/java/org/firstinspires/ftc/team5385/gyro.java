@@ -90,12 +90,15 @@ public class gyro extends BigAutoBase {
          */
         drivetrain.init(hardwareMap);
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "gyro");
-
+        lift.init(hardwareMap);
+        moveLift(0.25);
+        moveLift(4.5);
+        moveLift(0.25);
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
         drivetrain.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Send telemetry message to alert driver that we are calibrating;
-        telemetry.addData(">", "Calibrating Gyro");    //
+        /*telemetry.addData(">", "Calibrating Gyro");    //
         telemetry.update();
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -142,7 +145,7 @@ public class gyro extends BigAutoBase {
             // Drive REV 48 inches
 
         telemetry.addData("Path", "Complete");
-        telemetry.update();
+        telemetry.update();*/
     }
 
 }

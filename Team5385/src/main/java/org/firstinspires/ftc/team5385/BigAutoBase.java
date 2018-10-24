@@ -177,7 +177,7 @@ public class BigAutoBase  extends LinearOpMode {
 
 
 
-    protected void moveLift(int target) {
+    protected void moveLift(double target) {
 
        while(Math.abs(lift.getError(target)) < .1){
            double power = getError(target) * P_MOVE_LIFT_COEFF;
