@@ -71,11 +71,12 @@ public class AutoGyro extends BaseOpMode {
     public void runOpMode() {
         super.runOpMode();
 
+        // are landing
         moveLift(7.25);
 
         //Pull away from lander
         gyroDrive(15, 0.0);
-
+        moveLift(3);
         rightKnockerCheck();
 
         //Turn parallel to the block and balls
