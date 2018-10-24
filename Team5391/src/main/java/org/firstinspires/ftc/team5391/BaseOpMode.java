@@ -18,7 +18,9 @@ public class BaseOpMode extends LinearOpMode {
     private HardwareLift lift = new HardwareLift();
 
     private AdafruitBNO055IMU gyro = null;                    // Additional Gyro device
-    private DistanceSensor sensorRange;
+    private DistanceSensor sensorRange1;
+    private DistanceSensor sensorRange2;
+    private DistanceSensor sensorRange3;
     private Servo leftKnocker;
     private Servo rightKnocker;
 
@@ -34,6 +36,7 @@ public class BaseOpMode extends LinearOpMode {
     static final double RIGHT_KNOCKER_UP = 0;
     static final double LEFT_KNOCKER_UP = 1;
     static final double RIGHT_KNOCKER_CHECK = .445;
+    // need to update in future
     static final double RIGHT_KNOCKER_KNOCK = 0.6;
     static final double LEFT_KNOCKER_KNOCK = 0.4;
 
@@ -54,20 +57,30 @@ public class BaseOpMode extends LinearOpMode {
 
         @Override
         public void run() {
-            double distance = sensorRange.getDistance(DistanceUnit.MM);
-            if (distance < minDistance) {
-                minDistance = distance;
+            double distance1 = sensorRange1.getDistance(DistanceUnit.MM);
+            double distance2 = sensorRange2.getDistance(DistanceUnit.MM);
+            double distance3 = sensorRange3.getDistance(DistanceUnit.MM);
+            if (distance1 < minDistance) {
+                minDistance = distance1;
+            }
+            if (distance2 < minDistance) {
+                minDistance = distance2;
+            }
+            if (distance3 < minDistance) {
+                minDistance = distance3;
             }
 
-            telemetry.addData("deviceName", sensorRange.getDeviceName());
-            telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
+            telemetry.addData("deviceName", sensorRange1.getDeviceName());
+            telemetry.addData("range", String.format("%.01f mm", sensorRange1.getDistance(DistanceUnit.MM)));
             telemetry.addData("minDistance", String.format("%.01f mm", minDistance));
         }
     }
 
     @Override
     public void runOpMode() {
-        sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
+        sensorRange1 = hardwareMap.get(DistanceSensor.class, "sensor_range1");
+        sensorRange2 = hardwareMap.get(DistanceSensor.class, "sensor_range2");
+        sensorRange3 = hardwareMap.get(DistanceSensor.class, "sensor_range3");
         leftKnocker = hardwareMap.get(Servo.class, "range_servo");
         rightKnocker = hardwareMap.get(Servo.class, "range_servo2");
 
