@@ -33,8 +33,8 @@ public class BaseOpMode extends LinearOpMode {
     static final double P_TURN_COEFF = 0.065;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 0.02;     // Larger is more responsive, but also less stable
 
-    static final double RIGHT_KNOCKER_UP = 0;
-    static final double LEFT_KNOCKER_UP = 1;
+    static final double RIGHT_KNOCKER_UP = 1;
+    static final double LEFT_KNOCKER_UP = 0;
     static final double RIGHT_KNOCKER_CHECK = .445;
     // need to update in future
     static final double RIGHT_KNOCKER_KNOCK = 0.6;
