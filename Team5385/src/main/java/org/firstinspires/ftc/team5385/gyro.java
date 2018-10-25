@@ -91,9 +91,12 @@ public class gyro extends BigAutoBase {
         drivetrain.init(hardwareMap);
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "gyro");
         lift.init(hardwareMap);
+
+        waitForStart();
+
         moveLift(0.25);
-        moveLift(4.5);
-        moveLift(0.25);
+        //moveLift(3.0);
+        //moveLift(0.25);
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
         drivetrain.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 

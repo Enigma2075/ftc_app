@@ -26,7 +26,7 @@ public class BigAutoBase  extends LinearOpMode {
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
     static final double P_TURN_COEFF = 0.03;     // Larger is more responsive, but also less stable
     static final double P_MOVE_LIFT_COEFF = 0.2;     // Larger is more responsive, but also less stable
-    static final double P_DRIVE_COEFF = 0.05;
+    static final double P_DRIVE_COEFF = 1.0/3.0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -178,8 +178,7 @@ public class BigAutoBase  extends LinearOpMode {
 
 
     protected void moveLift(double target) {
-
-       while(Math.abs(lift.getError(target)) < .1){
+       while(Math.abs(lift.getError(target)) > .01){
            double power = getError(target) * P_MOVE_LIFT_COEFF;
            lift.setPower(power);
            telemetry.addData("Error", lift.getError(target));
