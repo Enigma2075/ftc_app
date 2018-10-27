@@ -3,8 +3,15 @@ package org.firstinspires.ftc.team5385;
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoController;
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import java.util.List;
 
 public class BigAutoBase  extends LinearOpMode {
 
@@ -25,13 +32,15 @@ public class BigAutoBase  extends LinearOpMode {
 
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
     static final double P_TURN_COEFF = 0.03;     // Larger is more responsive, but also less stable
-    static final double P_MOVE_LIFT_COEFF = 0.2;     // Larger is more responsive, but also less stable
+    static final double P_MOVE_LIFT_COEFF = 0.5;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 1.0/3.0;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
 
     }
+
+
 
     public void gyroDrive(double speed,
                           double distance,
@@ -178,13 +187,15 @@ public class BigAutoBase  extends LinearOpMode {
 
 
     protected void moveLift(double target) {
-       while(Math.abs(lift.getError(target)) > .01){
-           double power = getError(target) * P_MOVE_LIFT_COEFF;
-           lift.setPower(power);
-           telemetry.addData("Error", lift.getError(target));
-           telemetry.update();
-       }
-       lift.setPower(0);
+        while (Math.abs(lift.getError(target)) > .01) {
+            double power = lift.getError(target) * P_MOVE_LIFT_COEFF;
+            lift.setPower(power);
+            telemetry.addData("servoPower", 0.5 * power + 0.5);
+            telemetry.addData("Power", power);
+            telemetry.addData("Error", lift.getError(target));
+            telemetry.update();
+        }
+        lift.setPower(0);
 
     }
 

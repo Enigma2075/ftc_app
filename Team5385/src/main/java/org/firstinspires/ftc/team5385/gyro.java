@@ -83,6 +83,7 @@ public class gyro extends BigAutoBase {
 
     @Override
     public void runOpMode() {
+        super.runOpMode();
 
         /*
          * Initialize the standard drive system variables.
@@ -92,9 +93,13 @@ public class gyro extends BigAutoBase {
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "gyro");
         lift.init(hardwareMap);
 
-        waitForStart();
 
-        moveLift(0.25);
+        waitForStart();
+        lift.setPower(1);
+        while(opModeIsActive()){
+          //  lift.setPower(1);
+        }
+        //moveLift(0.25);
         //moveLift(3.0);
         //moveLift(0.25);
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.

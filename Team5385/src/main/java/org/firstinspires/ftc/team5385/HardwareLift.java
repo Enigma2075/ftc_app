@@ -4,7 +4,15 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PWMOutputController;
+import com.qualcomm.robotcore.hardware.PWMOutputControllerEx;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoController;
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.hardware.configuration.ExpansionHubMotorControllerPositionParams;
+import java.util.List;
 
 public class HardwareLift {    /* Public OpMode members. */
     private static final double MAX_POT = 3.3 * (9300.0/9400.0);
@@ -28,13 +36,29 @@ public class HardwareLift {    /* Public OpMode members. */
         pot = hwMap.get(AnalogInput.class, "lift_pot");
         motor = hwMap.get(Servo.class, "lift");
 
+        ServoImplEx spark = (ServoImplEx) motor;
+
+        spark.setPwmRange(new PwmControl.PwmRange(500, 2500));
+
+        List<ServoController> controllers = hardwareMap.getAll(ServoController.class);
+
+        for( ServoController i : controllers )
+        {
+            PWMOutputController iEx = (PWMOutputController) i;
+            //iEx.setServoPwmRange(1, new PwmControl.PwmRange(500, 2500));
+            iEx.
+        }
+
+
+
         motor.setPosition(0.5);
 
         motor.setDirection(Servo.Direction.REVERSE);
     }
 
     public void setPower(double liftMotorPower) {
-       double position = 0.5 + .5 * liftMotorPower;
+       //double position = 0.5 + .5 * liftMotorPower;
+       motor.setPosition(liftMotorPower);//position);
 
     }
 
