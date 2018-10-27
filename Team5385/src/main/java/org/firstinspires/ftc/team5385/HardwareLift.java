@@ -26,7 +26,6 @@ public class HardwareLift {    /* Public OpMode members. */
 
     /* Constructor */
     public HardwareLift() {
-
     }
 
     public void init(HardwareMap ahwMap) {
@@ -39,17 +38,6 @@ public class HardwareLift {    /* Public OpMode members. */
         ServoImplEx spark = (ServoImplEx) motor;
 
         spark.setPwmRange(new PwmControl.PwmRange(500, 2500));
-
-        List<ServoController> controllers = hardwareMap.getAll(ServoController.class);
-
-        for( ServoController i : controllers )
-        {
-            PWMOutputController iEx = (PWMOutputController) i;
-            //iEx.setServoPwmRange(1, new PwmControl.PwmRange(500, 2500));
-            iEx.
-        }
-
-
 
         motor.setPosition(0.5);
 

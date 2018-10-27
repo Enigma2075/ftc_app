@@ -17,7 +17,9 @@ public class BigAutoBase  extends LinearOpMode {
 
     HardwareDrivetrain drivetrain = new HardwareDrivetrain();   // Use a Pushbot's hardware
     HardwareLift lift = new HardwareLift();
-    AdafruitBNO055IMU gyro = null;                    // Additional Gyro device
+    HardwareColorSensor colorSystem = new HardwareColorSensor();
+    AdafruitBNO055IMU gyro = null;// Additional Gyro device
+
 
     static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = .75;     // This is < 1.0 if geared UP
