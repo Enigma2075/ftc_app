@@ -7,7 +7,9 @@ import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -29,16 +31,16 @@ public class BaseOpMode extends LinearOpMode {
     static final double DRIVE_SPEED = .75;     // Nominal speed for better accuracy.
     static final double TURN_SPEED = 0.8;     // Nominal half speed for better accuracy.
 
-    static final double HEADING_THRESHOLD = .15;      // As tight as we can make it with an integer gyro
+    static final double HEADING_THRESHOLD = .09;      // As tight as we can make it with an integer gyro
     static final double P_TURN_COEFF = 0.065;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 0.02;     // Larger is more responsive, but also less stable
 
-    static final double RIGHT_KNOCKER_UP = 1;
-    static final double LEFT_KNOCKER_UP = 0;
-    static final double RIGHT_KNOCKER_CHECK = .445;
+    static final double RIGHT_KNOCKER_UP = 0;
+    static final double LEFT_KNOCKER_UP = 1;
+    static final double RIGHT_KNOCKER_CHECK = .71;
     // need to update in future
-    static final double RIGHT_KNOCKER_KNOCK = 0.6;
-    static final double LEFT_KNOCKER_KNOCK = 0.4;
+    static final double RIGHT_KNOCKER_KNOCK = 1;
+    static final double LEFT_KNOCKER_KNOCK = 0;
 
     static final double LIFT_BOTH_UP = 1.19;
     static final double LIFT_BOTH_DOWN = -1.19;
@@ -81,10 +83,14 @@ public class BaseOpMode extends LinearOpMode {
         sensorRange1 = hardwareMap.get(DistanceSensor.class, "sensor_range1");
         sensorRange2 = hardwareMap.get(DistanceSensor.class, "sensor_range2");
         sensorRange3 = hardwareMap.get(DistanceSensor.class, "sensor_range3");
-        leftKnocker = hardwareMap.get(Servo.class, "range_servo");
-        rightKnocker = hardwareMap.get(Servo.class, "range_servo2");
+        rightKnocker = hardwareMap.get(Servo.class, "range_servo");
+        leftKnocker = hardwareMap.get(Servo.class, "range_servo2");
 
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
+
+        ((ServoImplEx)leftKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
+        ((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
+
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
@@ -103,11 +109,6 @@ public class BaseOpMode extends LinearOpMode {
         initGyro();
 
 
-        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
-        while (!isStarted()) {
-            telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().firstAngle);
-            telemetry.update();
-        }
     }
 
     protected void rightKnockerUp() {
@@ -301,16 +302,24 @@ public class BaseOpMode extends LinearOpMode {
         }
     }
 
-    protected void moveLift(double height) {
-        moveLift(height, 1);
+    protected void moveLift(double height, boolean returnImmediate) {
+        moveLift(height, 1, returnImmediate);
     }
 
-    protected void moveLift(double height, double power) {
+    protected void moveLift(double height) {
+        moveLift(height, 1, false);
+    }
+
+    protected void moveLift(double height, double power, boolean returnImmediate) {
         lift.setTargetPosition(height);
 
         while (opModeIsActive() && lift.isBusy())
         {
             lift.setPower(power);
+
+            if(returnImmediate) {
+                return;
+            }
         }
     }
 }

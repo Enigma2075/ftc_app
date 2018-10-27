@@ -71,17 +71,23 @@ public class AutoGyro extends BaseOpMode {
     public void runOpMode() {
         super.runOpMode();
 
+        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
+        while (!isStarted()) {
+            telemetry.addData(">", "Robot Heading = %f", 99.9);
+            telemetry.update();
+        }
+
         // are landing
         moveLift(8.1);
 
         //Pull away from lander
-        //gyroDrive(15, 0.0);
-        //moveLift(4);
-        //rightKnockerCheck();
+        gyroDrive(14, 0.0);
+        moveLift(.5, true);
+        rightKnockerCheck();
 
         //Turn parallel to the block and balls
-        //gyroTurn(-90);
-/*      //enything up needs to be unslashed
+        gyroTurn(-90);
+        //enything up needs to be unslashed
         boolean rightBlock = false, leftBlock = false, centerBlock = false;
 
         boolean leftBall = false, centerBall = false;
@@ -90,6 +96,7 @@ public class AutoGyro extends BaseOpMode {
         CheckForBlock check = new CheckForBlock();
         gyroDrive(DRIVE_SPEED / 4, 6, -90, check);
 
+        sleep(15000);
         if (check.foundBlock()) {
             // The middle is a block
             centerBlock = true;
@@ -97,7 +104,7 @@ public class AutoGyro extends BaseOpMode {
             gyroDrive(-6, -90);
             rightKnockerUp();
             gyroDrive(48, -90);
-        } else {
+        } /*else {
             // Check if middle is ball
             centerBall = check.foundBall();
 
