@@ -23,21 +23,22 @@ public class BaseOpMode extends LinearOpMode {
     private DistanceSensor sensorRange1;
     private DistanceSensor sensorRange2;
     private DistanceSensor sensorRange3;
+    private DistanceSensor sensorRange4;
     private Servo leftKnocker;
     private Servo rightKnocker;
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific drivetrain drive train.
-    static final double DRIVE_SPEED = .75;     // Nominal speed for better accuracy.
-    static final double TURN_SPEED = 0.8;     // Nominal half speed for better accuracy.
+    static final double DRIVE_SPEED = .95;     // Nominal speed for better accuracy.
+    static final double TURN_SPEED = 0.6;     // Nominal half speed for better accuracy.
 
-    static final double HEADING_THRESHOLD = .09;      // As tight as we can make it with an integer gyro
-    static final double P_TURN_COEFF = 0.065;     // Larger is more responsive, but also less stable
-    static final double P_DRIVE_COEFF = 0.02;     // Larger is more responsive, but also less stable
+    static final double HEADING_THRESHOLD = .085;      // As tight as we can make it with an integer gyro
+    static final double P_TURN_COEFF = 0.1;     // Larger is more responsive, but also less stable
+    static final double P_DRIVE_COEFF = 0.035;     // Larger is more responsive, but also less stable
 
     static final double RIGHT_KNOCKER_UP = 0;
     static final double LEFT_KNOCKER_UP = 1;
-    static final double RIGHT_KNOCKER_CHECK = .71;
+    static final double RIGHT_KNOCKER_CHECK = .715;
     // need to update in future
     static final double RIGHT_KNOCKER_KNOCK = 1;
     static final double LEFT_KNOCKER_KNOCK = 0;
@@ -62,6 +63,7 @@ public class BaseOpMode extends LinearOpMode {
             double distance1 = sensorRange1.getDistance(DistanceUnit.MM);
             double distance2 = sensorRange2.getDistance(DistanceUnit.MM);
             double distance3 = sensorRange3.getDistance(DistanceUnit.MM);
+            double distance4 = sensorRange4.getDistance(DistanceUnit.MM);
             if (distance1 < minDistance) {
                 minDistance = distance1;
             }
@@ -70,6 +72,9 @@ public class BaseOpMode extends LinearOpMode {
             }
             if (distance3 < minDistance) {
                 minDistance = distance3;
+            }
+            if (distance4 < minDistance) {
+                minDistance = distance4;
             }
 
             telemetry.addData("deviceName", sensorRange1.getDeviceName());
@@ -83,6 +88,7 @@ public class BaseOpMode extends LinearOpMode {
         sensorRange1 = hardwareMap.get(DistanceSensor.class, "sensor_range1");
         sensorRange2 = hardwareMap.get(DistanceSensor.class, "sensor_range2");
         sensorRange3 = hardwareMap.get(DistanceSensor.class, "sensor_range3");
+        sensorRange4 = hardwareMap.get(DistanceSensor.class, "sensor_range4");
         rightKnocker = hardwareMap.get(Servo.class, "range_servo");
         leftKnocker = hardwareMap.get(Servo.class, "range_servo2");
 
@@ -108,7 +114,11 @@ public class BaseOpMode extends LinearOpMode {
 
         initGyro();
 
-
+        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
+        while (!isStarted()) {
+            telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().firstAngle);
+            telemetry.update();
+        }
     }
 
     protected void rightKnockerUp() {
@@ -209,11 +219,22 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void gyroTurn(double speed, double angle) {
+        drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // keep looping while we are still active, and not on heading.
-        while (opModeIsActive() && !onHeading(speed, -angle, P_TURN_COEFF)) {
+        int onHeadingCount = 0;
+        while (opModeIsActive() && onHeadingCount < 1) {
+            if(onHeading(speed, -angle, P_TURN_COEFF)) {
+                onHeadingCount++;
+            }
+            else {
+                onHeadingCount = 0;
+            }
+
             // Update telemetry & Allow time for other processes to run.
             telemetry.update();
         }
+
+        drivetrain.setPower(0);
     }
 
     protected void gyroDrive(double distance,
@@ -258,8 +279,16 @@ public class BaseOpMode extends LinearOpMode {
             drivetrain.setPower(speed, speed);
 
             // keep looping while we are still active, and BOTH motors are running.
+            int notBusyCount = 0;
             while (opModeIsActive() &&
-                    (drivetrain.isLeftBusy() && drivetrain.isRightBusy())) {
+                    notBusyCount < 1) {
+
+                if(!drivetrain.isLeftBusy() && !drivetrain.isRightBusy()) {
+                    notBusyCount++;
+                }
+                else {
+                    notBusyCount = 0;
+                }
 
                 if (method != null) {
                     method.run();
@@ -295,10 +324,10 @@ public class BaseOpMode extends LinearOpMode {
             }
 
             // Stop all motion;
-            drivetrain.setPower(0, 0);
+            //drivetrain.setPower(0, 0);
 
             // Turn off RUN_TO_POSITION
-            drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
@@ -321,5 +350,9 @@ public class BaseOpMode extends LinearOpMode {
                 return;
             }
         }
+    }
+
+    protected void movePower(double power) {
+        drivetrain.setPower(power);
     }
 }

@@ -30,6 +30,9 @@ public class HardwareLift {
         liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         setPower(0);
