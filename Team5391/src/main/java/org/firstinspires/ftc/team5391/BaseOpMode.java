@@ -30,15 +30,16 @@ public class BaseOpMode extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific drivetrain drive train.
     static final double DRIVE_SPEED = .95;     // Nominal speed for better accuracy.
-    static final double TURN_SPEED = 0.6;     // Nominal half speed for better accuracy.
+    static final double TURN_SPEED = 0.4;     // Nominal half speed for better accuracy.
+    static final double TURN_SPEED_MIN = .1;
 
-    static final double HEADING_THRESHOLD = .085;      // As tight as we can make it with an integer gyro
-    static final double P_TURN_COEFF = 0.1;     // Larger is more responsive, but also less stable
+    static final double HEADING_THRESHOLD = .096;      // As tight as we can make it with an integer gyro
+    static final double P_TURN_COEFF = 0.095;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 0.035;     // Larger is more responsive, but also less stable
 
     static final double RIGHT_KNOCKER_UP = 0;
     static final double LEFT_KNOCKER_UP = 1;
-    static final double RIGHT_KNOCKER_CHECK = .715;
+    static final double RIGHT_KNOCKER_CHECK = .705;
     // need to update in future
     static final double RIGHT_KNOCKER_KNOCK = 1;
     static final double LEFT_KNOCKER_KNOCK = 0;
@@ -51,7 +52,7 @@ public class BaseOpMode extends LinearOpMode {
         double minDistance = 500;
 
         public boolean foundBlock() {
-            return minDistance < 76 && !foundBall();
+            return minDistance < 70 && !foundBall();
         }
 
         public boolean foundBall() {
@@ -185,6 +186,9 @@ public class BaseOpMode extends LinearOpMode {
         } else {
             steer = getSteer(error, PCoeff);
             rightSpeed = speed * steer;
+            if(Math.abs(rightSpeed) < TURN_SPEED_MIN) {
+                rightSpeed = TURN_SPEED_MIN * Math.signum(rightSpeed);
+            }
             leftSpeed = -rightSpeed;
         }
 
@@ -222,7 +226,7 @@ public class BaseOpMode extends LinearOpMode {
         drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // keep looping while we are still active, and not on heading.
         int onHeadingCount = 0;
-        while (opModeIsActive() && onHeadingCount < 1) {
+        while (opModeIsActive() && onHeadingCount < 2) {
             if(onHeading(speed, -angle, P_TURN_COEFF)) {
                 onHeadingCount++;
             }

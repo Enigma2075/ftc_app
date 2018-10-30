@@ -90,7 +90,7 @@ public class AutoGyro extends BaseOpMode {
 
         // check if middle is a block
         CheckForBlock check = new CheckForBlock();
-        gyroDrive(DRIVE_SPEED * .25, 5, -90, check);
+        gyroDrive(DRIVE_SPEED * .2, 5, -90, check);
 
         if (check.foundBlock()) {
             // The middle is a block
@@ -109,7 +109,7 @@ public class AutoGyro extends BaseOpMode {
             // checks if the left is block
             gyroDrive(9.75, -90);
             check = new CheckForBlock();
-            gyroDrive(DRIVE_SPEED * .25, 5, -90, check);
+            gyroDrive(DRIVE_SPEED * .2, 6, -90, check);
             if (check.foundBlock()) {
                 // The left is a block
                 leftBlock = true;
@@ -117,7 +117,7 @@ public class AutoGyro extends BaseOpMode {
                 sleep(100);
                 gyroDrive(-6, -90);
                 rightKnockerUp();
-                gyroDrive(31.5, -90);
+                gyroDrive(30.5, -90);
             }
             else {
                 leftBall = check.foundBall();
@@ -133,7 +133,7 @@ public class AutoGyro extends BaseOpMode {
                     gyroDrive(57.5, -90);
                 } else {
                     check = new CheckForBlock();
-                    gyroDrive(DRIVE_SPEED * .25, -5, -90, check);
+                    gyroDrive(DRIVE_SPEED * .2, -5, -90, check);
                     // Check right mineral
                     if (check.foundBlock()) {
                         rightBlock = true;
@@ -156,38 +156,38 @@ public class AutoGyro extends BaseOpMode {
         gyroTurn(-130);
 
         if(rightBlock) {
-            //leftKnockerKnock();
+            leftKnockerKnock();
             sleep(100);
-            gyroDrive(43, -130);
-            //leftKnockerUp();
+            gyroDrive(43, -125);
+            leftKnockerUp();
         }
         // Hit the corresponding mineral
         else if(centerBlock) {
-            gyroDrive(34, -130);
+            gyroDrive(22, -125);
             gyroTurn(-180);
-            gyroDrive(12, -180);
-            //leftKnockerKnock();
+            gyroDrive(21, -180);
+            leftKnockerKnock();
             sleep(100);
             gyroDrive(-6, -180);
-            //leftKnockerUp();
-            gyroDrive(-8, -180);
+            leftKnockerUp();
+            gyroDrive(-15, -180);
             gyroTurn(-130);
-            gyroDrive(9, -130);
+            gyroDrive(16, -130);
         }
         else if(leftBlock) {
-            gyroDrive(34, -135);
+            gyroDrive(22, -125);
             gyroTurn(-180);
-            gyroDrive(12, -180);
-            //leftKnockerKnock();
+            gyroDrive(21, -180);
+            leftKnockerKnock();
             sleep(100);
-            gyroDrive(6, -180);
-            //leftKnockerUp();
-            gyroDrive(-18, -180);
+            gyroDrive(14, -180);
+            leftKnockerUp();
+            gyroDrive(-33, -180);
             gyroTurn(-130);
-            gyroDrive(9, -130);
+            gyroDrive(16, -130);
         }
         else {
-            gyroDrive(43, -130);
+            gyroDrive(43, -125);
         }
 
         gyroDrive(-80, -140);

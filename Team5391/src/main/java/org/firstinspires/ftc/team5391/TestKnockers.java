@@ -64,14 +64,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "test Dsinance", group = "Test")
+@Autonomous(name = "TestKnockers", group = "Test")
 //@Disabled
-public class TestDistance extends BaseOpMode {
+public class TestKnockers extends BaseOpMode {
     @Override
     public void runOpMode() {
         super.runOpMode();
 
         rightKnockerCheck();
+        leftKnockerKnock();
 
         CheckForBlock check = new CheckForBlock();
 
