@@ -41,12 +41,12 @@ public class HardwareLift {    /* Public OpMode members. */
 
         motor.setPosition(0.5);
 
-        motor.setDirection(Servo.Direction.REVERSE);
+        motor.setDirection(Servo.Direction.FORWARD);
     }
 
     public void setPower(double liftMotorPower) {
-       //double position = 0.5 + .5 * liftMotorPower;
-       motor.setPosition(liftMotorPower);//position);
+       double position = 0.5 + .5 * liftMotorPower;
+       motor.setPosition(position);//position);
 
     }
 
@@ -56,8 +56,6 @@ public class HardwareLift {    /* Public OpMode members. */
 
     public double getError(double target){
         return getCurrentPosition()-target;
-
-
     }
 
 }

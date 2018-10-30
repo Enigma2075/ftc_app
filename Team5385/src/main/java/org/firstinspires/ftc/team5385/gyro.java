@@ -95,11 +95,8 @@ public class gyro extends BigAutoBase {
 
 
         waitForStart();
-        lift.setPower(1);
-        while(opModeIsActive()){
-          //  lift.setPower(1);
-        }
-        //moveLift(0.25);
+
+        moveLift(0.2);
         //moveLift(3.0);
         //moveLift(0.25);
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.

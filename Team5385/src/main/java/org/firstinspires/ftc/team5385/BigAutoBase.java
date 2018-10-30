@@ -33,8 +33,8 @@ public class BigAutoBase  extends LinearOpMode {
     static final double TURN_SPEED = 0.7;     // Nominal half speed for better accuracy
 
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
-    static final double P_TURN_COEFF = 0.03;     // Larger is more responsive, but also less stable
-    static final double P_MOVE_LIFT_COEFF = 0.5;     // Larger is more responsive, but also less stable
+    static final double P_TURN_COEFF = 0.04;     // Larger is more responsive, but also less stable
+    static final double P_MOVE_LIFT_COEFF = 1.5;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 1.0/3.0;
 
     @Override
@@ -189,11 +189,12 @@ public class BigAutoBase  extends LinearOpMode {
 
 
     protected void moveLift(double target) {
-        while (Math.abs(lift.getError(target)) > .01) {
+        while (Math.abs(lift.getError(target)) > .03 && opModeIsActive()) {
             double power = lift.getError(target) * P_MOVE_LIFT_COEFF;
             lift.setPower(power);
             telemetry.addData("servoPower", 0.5 * power + 0.5);
             telemetry.addData("Power", power);
+            telemetry.addData("Voltage", lift.getCurrentPosition());
             telemetry.addData("Error", lift.getError(target));
             telemetry.update();
         }
