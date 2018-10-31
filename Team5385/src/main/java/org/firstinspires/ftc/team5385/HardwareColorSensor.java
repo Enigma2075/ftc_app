@@ -28,6 +28,10 @@ public class HardwareColorSensor {
     public void setPosition(double pos){
         servo.setPosition(pos);
     }
+    public double getPosition(){
+        return servo.getPosition();
+    }
+
 
     public double getColor(){
        return sensor.blue();

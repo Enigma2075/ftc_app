@@ -39,12 +39,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
+import com.sun.tools.javac.comp.Check;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 @Autonomous(name="autoBlocks", group="Pushbot")
 
-public class gyro extends BigAutoBase {
+public class AutoHitBlocks extends BigAutoBase {
 
     /* Declare OpMode members. */
 
@@ -55,9 +56,29 @@ public class gyro extends BigAutoBase {
         drivetrain.init(hardwareMap);
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "gyro");
         lift.init(hardwareMap);
-
+        colorSystem.init(hardwareMap);
 
         waitForStart();
+        while(opModeIsActive()){
+
+            if(gamepad1.left_bumper){
+                colorSystem.setPosition(colorSystem.getPosition()+.001);
+            }
+            else if(gamepad1.right_bumper){
+                colorSystem.setPosition(colorSystem.getPosition()-.001);
+            }
+            telemetry.addData("servoPos:", colorSystem.getPosition());
+            telemetry.addData("Sensor Blue Value", colorSystem.getColor());
+            telemetry.update();
+            //.327 right side
+            //.4
+
+            //.5 left
+            //.59
+            sleep(10);
+        }
+        //CheckSensorAt(0.5);
+        //sleep(2000);
     }
 
 }

@@ -44,9 +44,7 @@ public class BigAutoBase  extends LinearOpMode {
 
 
 
-    public void gyroDrive(double speed,
-                          double distance,
-                          double angle) {
+    public void gyroDrive(double speed, double distance, double angle) {
 
         int newLeftTarget;
         int newRightTarget;
@@ -186,8 +184,6 @@ public class BigAutoBase  extends LinearOpMode {
         return onTarget;
     }
 
-
-
     protected void moveLift(double target) {
         while (Math.abs(lift.getError(target)) > .03 && opModeIsActive()) {
             double power = lift.getError(target) * P_MOVE_LIFT_COEFF;
@@ -202,4 +198,14 @@ public class BigAutoBase  extends LinearOpMode {
 
     }
 
+    public double CheckSensorAt(double startPosition){
+        double highestSensorValue= 0;
+        for(double i = startPosition; i< startPosition +.1; i+=.005){
+            colorSystem.setPosition(i);
+            sleep(175);
+            if(colorSystem.getColor()>highestSensorValue) highestSensorValue = colorSystem.getColor();
+        }
+        return highestSensorValue;
+
+    }
 }
