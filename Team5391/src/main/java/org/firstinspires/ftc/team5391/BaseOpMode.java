@@ -56,7 +56,7 @@ public class BaseOpMode extends LinearOpMode {
         }
 
         public boolean foundBall() {
-            return minDistance < 25;
+            return minDistance < 30;
         }
 
         @Override

@@ -100,8 +100,8 @@ public class AutoGyro extends BaseOpMode {
             gyroDrive(-5, -90);
             rightKnockerUp();
 
-            gyroDrive(45, -90);
-        }
+            gyroDrive(46, -90);
+        }   // dont need to change the line ubove this slash
         else {
             // Check if middle is ball
             centerBall = check.foundBall();
@@ -117,8 +117,8 @@ public class AutoGyro extends BaseOpMode {
                 sleep(100);
                 gyroDrive(-6, -90);
                 rightKnockerUp();
-                gyroDrive(30.5, -90);
-            }
+                gyroDrive(31, -90);
+            }    //dont need to change the line ubove this slash
             else {
                 leftBall = check.foundBall();
                 gyroDrive(-27, -90);
@@ -130,8 +130,8 @@ public class AutoGyro extends BaseOpMode {
                     sleep(100);
                     gyroDrive(-5, -90);
                     rightKnockerUp();
-                    gyroDrive(57.5, -90);
-                } else {
+                    gyroDrive(58, -90);
+                } else { //dont need to change the line ubove this slash
                     check = new CheckForBlock();
                     gyroDrive(DRIVE_SPEED * .2, -5, -90, check);
                     // Check right mineral
@@ -141,19 +141,19 @@ public class AutoGyro extends BaseOpMode {
                         sleep(100);
                         gyroDrive(5, -90);
                         rightKnockerUp();
-                        gyroDrive(57.5, -90);
-                    }
+                        gyroDrive(58, -90);
+                    } //dont need to change the line ubove this slash
                     // If above aren't ball, hit right mineral
                     else {
                         //rightKnockerUp();
-                        gyroDrive(57.5, -90);
-                    }
+                        gyroDrive(58, -90);
+                    } //dont need to change the line ubove this slash
                 }
             }
         }
 
         // At this point we should be right next to the wall in the same spot regardless.
-        gyroTurn(-130);
+        gyroTurn(-125);
 
         if(rightBlock) {
             leftKnockerKnock();
