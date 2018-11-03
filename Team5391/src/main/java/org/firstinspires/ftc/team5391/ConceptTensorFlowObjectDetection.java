@@ -70,7 +70,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-    private static final String VUFORIA_KEY = " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+    private static final String VUFORIA_KEY = "AQE+7zb/////AAAAGQqx0M5sy03JsiJK+SG+VnwOX4cvlY1rkLl8lxGEZ+3//+0T8MsL9XnDDn4KxiHJkgEOtzj9vrDgNYiVJ0OZCXWA9tJUyKt2QRlkhCb7KTWhxsYK4Od6XUfHqCaiwZfyONwMDhTKSMbaY6Sgy0P7yMhTFEFSW3SZPg5rgSDdP/2Tb2wqc7RZ2DaJt6fG+yA6Lq1nkFJmkINc/Ge7GHEvWtPGwHoQS2FWRiRonSY4gLyu79H9ThF50KRidwN9TzAUMXSnGs3Gb4nMaemz4LQNrLfB/bVhOWjLqgfxcktyTZ6X1gv8OBGtK+8lbBXDOBewdtJxLWEQV4p7GLb9Ott+A+VDtD+LJbmkjcLv/YC1m4y0";
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -86,6 +86,11 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+        while(!isStarted()) {
+            telemetry.addData(">", "Press Play to start tracking");
+            telemetry.update();
+        }
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -99,7 +104,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking");
         telemetry.update();
-        waitForStart();
+
 
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
@@ -172,8 +177,16 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        telemetry.addData(">", "appContext");
+        telemetry.update();
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        telemetry.addData(">", "Parameters");
+        telemetry.update();
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        telemetry.addData(">", "createTFObject");
+        telemetry.update();
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+        telemetry.addData(">", "loadModel");
+        telemetry.update();
     }
 }
