@@ -18,6 +18,7 @@ public class BaseOpMode extends LinearOpMode {
 
     private HardwareDrivetrain drivetrain = new HardwareDrivetrain();
     private HardwareLift lift = new HardwareLift();
+    private HardwareIntake intake = new HardwareIntake();
 
     private AdafruitBNO055IMU gyro = null;                    // Additional Gyro device
     private DistanceSensor sensorRange1;
@@ -358,5 +359,11 @@ public class BaseOpMode extends LinearOpMode {
 
     protected void movePower(double power) {
         drivetrain.setPower(power);
+    }
+
+    public void collectInCrater(){
+        //intake.exstened(3);
+        //intake.foldDown();
+        //intake.runSuckin();
     }
 }
