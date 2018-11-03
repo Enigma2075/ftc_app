@@ -92,14 +92,43 @@ public class gyro extends BigAutoBase {
         drivetrain.init(hardwareMap);
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "gyro");
         lift.init(hardwareMap);
+        colorSystem.init(hardwareMap);
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
+        gyro.initialize(parameters);
 
         waitForStart();
 
         moveLift(0.2);
-        //moveLift(3.0);
-        //moveLift(0.25);
-        // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
+        double blue = checkSensorAt(.327);
+        telemetry.addData("blueLight", blue);
+        telemetry.update();
+        if(blue <= 2){
+            gyroDrive(.9, 20, 0);
+        }
+        else{
+            blue = checkSensorAt(.5);
+            if(blue <= 2){
+                leftBlock();
+            }
+            else{
+                gyroDrive(.9, 3, 0);
+                gyroTurn(.9, 35);
+                gyroDrive(.9, 17, 35);
+            }
+        }
+
+        moveLift(3.0);
+
+        while(opModeIsActive()){
+
+        }
         drivetrain.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Send telemetry message to alert driver that we are calibrating;
@@ -151,6 +180,27 @@ public class gyro extends BigAutoBase {
 
         telemetry.addData("Path", "Complete");
         telemetry.update();*/
+    }
+
+    public void rightBlock(){
+
+    }
+    public void leftBlock(){
+        gyroDrive(.9, 3, 0);
+        gyroTurn(.9, -35);
+        gyroDrive(.9, 17, -35);
+        gyroTurn(.9,-90);
+        gyroDrive(.9, 21.5, -90);
+        gyroTurn(.9, -130, TurnType.RIGHT_ONLY);
+        gyroDrive(.9, 19, -130);
+        gyroTurn(.9, -205, TurnType.RIGHT_ONLY);
+        gyroDrive(.9, 15, -205);
+        gyroDrive(.9, -17, -205);
+        gyroTurn(.9, -135, TurnType.RIGHT_ONLY);
+        gyroDrive(.9, -75, -135);
+    }
+    public void middleBlock(){
+
     }
 
 }

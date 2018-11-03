@@ -33,9 +33,9 @@ public class BigAutoBase  extends LinearOpMode {
     static final double TURN_SPEED = 0.7;     // Nominal half speed for better accuracy
 
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
-    static final double P_TURN_COEFF = 0.04;     // Larger is more responsive, but also less stable
-    static final double P_MOVE_LIFT_COEFF = 1.5;     // Larger is more responsive, but also less stable
-    static final double P_DRIVE_COEFF = 1.0/3.0;
+    static final double P_TURN_COEFF = 0.02;     // Larger is more responsive, but also less stable
+    static final double P_MOVE_LIFT_COEFF = 6;     // Larger is more responsive, but also less stable
+    static final double P_DRIVE_COEFF = 1.0/20.0;
 
     @Override
     public void runOpMode() {
@@ -71,10 +71,10 @@ public class BigAutoBase  extends LinearOpMode {
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
             drivetrain.setPower(speed, speed);
 
-
+            int notBusyCount = 0;
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                    (drivetrain.isLeftBusy() && drivetrain.isRightBusy())) {
+                    notBusyCount < 2) {
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -103,6 +103,13 @@ public class BigAutoBase  extends LinearOpMode {
                         drivetrain.getCurrentRightPosition());
                 telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
                 telemetry.update();
+
+                if(drivetrain.isLeftBusy() && drivetrain.isRightBusy()) {
+                    notBusyCount = 0;
+                }
+                else {
+                    notBusyCount++;
+                }
             }
 
             // Stop all motion;
@@ -110,6 +117,7 @@ public class BigAutoBase  extends LinearOpMode {
 
             // Turn off RUN_TO_POSITION
             drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         }
     }
 
@@ -135,7 +143,7 @@ public class BigAutoBase  extends LinearOpMode {
         holdTimer.reset();
         while (opModeIsActive() && (holdTimer.time() < holdTime)) {
             // Update telemetry & Allow time for other processes to run.
-            onHeading(speed, angle, P_TURN_COEFF);
+            onHeading(speed, angle, P_TURN_COEFF, TurnType.BOTH);
             telemetry.update();
         }
 
@@ -143,16 +151,32 @@ public class BigAutoBase  extends LinearOpMode {
         drivetrain.setPower(0, 0);
     }
 
+    public enum TurnType {BOTH, RIGHT_ONLY, LEFT_ONLY}
+
     public void gyroTurn(double speed, double angle) {
+        gyroTurn(speed, angle, TurnType.BOTH);
+    }
+
+    public void gyroTurn(double speed, double angle, TurnType turnType) {
         angle = -angle;
         // keep looping while we are still active, and not on heading.
-        while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
+
+        int onHeadingCount = 0;
+        while (opModeIsActive() && onHeadingCount < 2) {
+
+            if(!onHeading(speed, angle, P_TURN_COEFF, turnType)) {
+               onHeadingCount = 0;
+            }
+            else {
+                onHeadingCount++;
+            }
+
             // Update telemetry & Allow time for other processes to run.
             telemetry.update();
         }
     }
 
-    boolean onHeading(double speed, double angle, double PCoeff) {
+    boolean onHeading(double speed, double angle, double PCoeff, TurnType turnType) {
         double error;
         double steer;
         boolean onTarget = false;
@@ -169,8 +193,20 @@ public class BigAutoBase  extends LinearOpMode {
             onTarget = true;
         } else {
             steer = getSteer(error, PCoeff);
-            rightSpeed = speed * steer;
-            leftSpeed = -rightSpeed;
+
+            if(turnType == TurnType.BOTH || turnType == TurnType.RIGHT_ONLY) {
+                rightSpeed = speed * steer;
+            }
+            else {
+                rightSpeed = 0;
+            }
+
+            if(turnType == TurnType.BOTH || turnType == TurnType.LEFT_ONLY) {
+                leftSpeed = -speed * steer;
+            }
+            else {
+                leftSpeed = 0;
+            }
         }
 
         // Send desired speeds to motors.
@@ -185,7 +221,7 @@ public class BigAutoBase  extends LinearOpMode {
     }
 
     protected void moveLift(double target) {
-        while (Math.abs(lift.getError(target)) > .03 && opModeIsActive()) {
+        while (Math.abs(lift.getError(target)) > .04 && opModeIsActive()) {
             double power = lift.getError(target) * P_MOVE_LIFT_COEFF;
             lift.setPower(power);
             telemetry.addData("servoPower", 0.5 * power + 0.5);
@@ -198,7 +234,7 @@ public class BigAutoBase  extends LinearOpMode {
 
     }
 
-    public double CheckSensorAt(double startPosition){
+    public double checkSensorAt(double startPosition){
         double highestSensorValue= 0;
         for(double i = startPosition; i< startPosition +.1; i+=.005){
             colorSystem.setPosition(i);
