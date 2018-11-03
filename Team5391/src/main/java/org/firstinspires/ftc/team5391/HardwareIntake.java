@@ -39,7 +39,7 @@ public class HardwareIntake {
         setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         setExtensionPower(0);
-        setintakeMotorPower(0);
+        //setintakeMotorPower(0);
     }
     public void setExtensionMode(DcMotor.RunMode mode) {
         extensionMotor.setMode(mode);
