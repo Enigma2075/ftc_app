@@ -36,9 +36,10 @@ public class HardwareIntake {
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         setIntakeMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         setExtensionPower(0);
-        //setintakeMotorPower(0);
+        setintakeMotorPower(0);
     }
     public void setExtensionMode(DcMotor.RunMode mode) {
         extensionMotor.setMode(mode);
