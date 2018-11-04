@@ -110,7 +110,7 @@ public class gyro extends BigAutoBase {
         telemetry.addData("blueLight", blue);
         telemetry.update();
         if(blue <= 2){
-            gyroDrive(.9, 20, 0);
+                middleBlock();
         }
         else{
             blue = checkSensorAt(.5);
@@ -192,15 +192,18 @@ public class gyro extends BigAutoBase {
         gyroTurn(.9,-90);
         gyroDrive(.9, 21.5, -90);
         gyroTurn(.9, -130, TurnType.RIGHT_ONLY);
-        gyroDrive(.9, 19, -130);
-        gyroTurn(.9, -205, TurnType.RIGHT_ONLY);
-        gyroDrive(.9, 15, -205);
-        gyroDrive(.9, -17, -205);
+        gyroDrive(.9, 27, -130);
+        gyroTurn(.9, -215, TurnType.RIGHT_ONLY);
+        gyroDrive(.9, 15, -215);
+        gyroDrive(.9, -19, -215);
         gyroTurn(.9, -135, TurnType.RIGHT_ONLY);
-        gyroDrive(.9, -75, -135);
+        gyroDrive(.9, -67, -130);
     }
     public void middleBlock(){
-
+        gyroDrive(.9, 18, 0);
+        gyroDrive(.9,-10,0);
+        gyroTurn(.9, -72);
+        gyroDrive(.9, 35, -72);
     }
 
 }

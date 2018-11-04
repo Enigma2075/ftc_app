@@ -224,7 +224,7 @@ public class BigAutoBase  extends LinearOpMode {
         while (Math.abs(lift.getError(target)) > .04 && opModeIsActive()) {
             double power = lift.getError(target) * P_MOVE_LIFT_COEFF;
             lift.setPower(power);
-            telemetry.addData("servoPower", 0.5 * power + 0.5);
+            telemetry.addData("servoPower", lift.getPosition());
             telemetry.addData("Power", power);
             telemetry.addData("Voltage", lift.getCurrentPosition());
             telemetry.addData("Error", lift.getError(target));

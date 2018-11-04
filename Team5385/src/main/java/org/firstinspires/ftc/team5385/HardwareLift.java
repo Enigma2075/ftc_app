@@ -46,6 +46,12 @@ public class HardwareLift {    /* Public OpMode members. */
 
     public void setPower(double liftMotorPower) {
        double position = 0.5 + .5 * liftMotorPower;
+       if (position > 1){
+           position = 1;
+       }
+       else if (position < 0){
+           position = 0;
+       }
        motor.setPosition(position);//position);
 
     }
@@ -56,6 +62,9 @@ public class HardwareLift {    /* Public OpMode members. */
 
     public double getError(double target){
         return getCurrentPosition()-target;
+    }
+    public double getPosition(){
+        return motor.getPosition();
     }
 
 }
