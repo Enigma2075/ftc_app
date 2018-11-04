@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team5391;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class HardwareIntake {
     static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
@@ -15,6 +16,9 @@ public class HardwareIntake {
 
     private DcMotor extensionMotor = null;
     private DcMotor intakeMotor = null;
+
+    private Servo rightPivot = null;
+    private Servo leftPivot = null;
 
     private HardwareMap hwMap = null;
 
@@ -30,11 +34,15 @@ public class HardwareIntake {
 
         extensionMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        intakeMotor = hwMap.get(DcMotor.class, "extensionMotor");
+        intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
 
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        rightPivot= hwMap.get(Servo.class, "rightPivot");
+
+        leftPivot= hwMap.get(Servo.class, "leftPivot");
 
         setIntakeMode(DcMotor.RunMode.RUN_TO_POSITION);
         setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -59,6 +67,17 @@ public class HardwareIntake {
     public void setintakePower(double power) {
         extensionMotor.setPower(power);
     }
+
+    public void extend(double distance) {
+        setExtensionPosition(distance);
+        setExtensionPower(1);
+    }
+
+    public void suckinIntake() {
+        setIntakeMode();
+        setintakePower(1);
+    }
+
 
     public void setExtensionPosition(double targetExtension) {
         if (targetExtension > MAX_EXTENSION) {
