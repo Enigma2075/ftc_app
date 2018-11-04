@@ -382,6 +382,14 @@ public class BaseOpMode extends LinearOpMode {
         drivetrain.setPower(power);
     }
 
+    protected void extendIntake(double power) {
+        intake.extend(power);
+    }
+
+    protected void suckIntake() {
+        intake.suckinIntake();
+    }
+
     public void collectInCrater(){
         intake.extend(3);
         //intake.foldDown();
