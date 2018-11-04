@@ -47,7 +47,7 @@ public class BaseOpMode extends LinearOpMode {
 
     static final double LIFT_BOTH_UP = 1.19;
     static final double LIFT_BOTH_DOWN = -1.19;
-
+    static final double P_PIVOT_COEFF=.5;
 
     public class CheckForBlock implements Runnable {
         double minDistance = 500;
@@ -396,4 +396,23 @@ public class BaseOpMode extends LinearOpMode {
         intake.suckinIntake();
     }
 
+    public void PivetintakeUP(){
+
+    }
+
+    public void PivetintakeDOWN(){
+    }
+
+    public void Pivetintake(double  position){
+        while (Math.abs(getPotError(position))>0.1 && opModeIsActive()){
+            double power =getPotError(position)*P_PIVOT_COEFF;
+            if(power>1)power=1;
+            else if(power<-1)power=-1;
+            intake.setpivet(power);
+        }
+    }
+
+    public double getPotError(double target) {
+       return intake.potPosision()- target;
+    }
 }

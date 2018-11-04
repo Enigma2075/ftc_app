@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.team5391;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import java.util.ResourceBundle;
 
 public class HardwareIntake {
     static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
@@ -16,6 +19,7 @@ public class HardwareIntake {
 
     private DcMotor extensionMotor = null;
     private DcMotor intakeMotor = null;
+    private AnalogInput sensor =null;
 
     private Servo rightPivot = null;
     private Servo leftPivot = null;
@@ -43,6 +47,8 @@ public class HardwareIntake {
         rightPivot= hwMap.get(Servo.class, "rightPivot");
 
         leftPivot= hwMap.get(Servo.class, "leftPivot");
+
+        sensor = hwMap.get(AnalogInput.class,"sensor");
 
         setIntakeMode(DcMotor.RunMode.RUN_TO_POSITION);
         setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -76,6 +82,16 @@ public class HardwareIntake {
     public void suckinIntake() {
         setIntakeMode(DcMotor.RunMode.RUN_USING_ENCODER);
         setintakePower(1);
+    }
+
+    public double potPosision(){
+        return sensor.getVoltage();
+    }
+
+    public void setpivet(double power){
+        double PWR= .5+ .5*power;
+        leftPivot.setPosition(PWR);
+        rightPivot.setPosition(PWR);
     }
 
 
