@@ -33,12 +33,16 @@ public class Teleop extends BaseOpMode {
                 moveLift(7);
             }
 
-            if (gamepad2.b) {
+            else if (gamepad2.b) {
                 collectInCrater();
             }
 
-            if (Math.abs(gamepad2.right_stick_y) > .25 ){
-                setPower.
+            else if (Math.abs(gamepad2.right_stick_y) > .25 ) {
+                extendIntake(-gamepad2.right_stick_y);
+            }
+
+             else if (gamepad2.right_bumper) {
+                suckIntake();
             }
 
 
