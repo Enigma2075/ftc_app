@@ -39,7 +39,7 @@ public class Teleop extends BaseOpMode {
 
 
             //exstends out with operator triger/RT
-
+  
 
 
             telemetry.addData("liftPosition: ",lift.getCurrentHeight());

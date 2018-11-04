@@ -74,7 +74,7 @@ public class HardwareIntake {
     }
 
     public void suckinIntake() {
-        setIntakeMode();
+        setIntakeMode(DcMotor.RunMode.RUN_USING_ENCODER);
         setintakePower(1);
     }
 
