@@ -378,6 +378,7 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void movePower(double power) {
+
         drivetrain.setPower(power);
     }
 

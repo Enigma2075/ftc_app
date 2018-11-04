@@ -64,9 +64,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "Double Auto", group = "Main")
+@Autonomous(name = "Single Auto", group = "Main")
 //@Disabled
-public class AutoGyro extends BaseOpMode {
+public class SingleAuto extends BaseOpMode {
+    protected boolean rightBlock = false;
+    protected boolean leftBlock = false;
+    protected boolean centerBlock = false;
+    protected boolean leftBall = false;
+    protected boolean centerBall = false;
+
+    protected boolean moveToCrater = true;
+
     @Override
     public void runOpMode() {
         super.runOpMode();
@@ -84,9 +92,6 @@ public class AutoGyro extends BaseOpMode {
         //Turn parallel to the block and balls
         gyroTurn(-90);
         //enything up needs to be unslashed
-        boolean rightBlock = false, leftBlock = false, centerBlock = false;
-
-        boolean leftBall = false, centerBall = false;
 
         // check if middle is a block
         CheckForBlock check = new CheckForBlock();
@@ -155,34 +160,13 @@ public class AutoGyro extends BaseOpMode {
         // At this point we should be right next to the wall in the same spot regardless.
         gyroTurn(-145, TurnType.RIGHT_ONLY);
 
-        if(rightBlock) {
-            gyroDrive(4, -150);
-            gyroTurn(-100);
-            gyroDrive(24, -100);
-            gyroTurn(-100);
-        }
-        // Hit the corresponding mineral
-        else if(centerBlock) {
-            gyroDrive(19, -140);
-            gyroTurn(-230);
-            gyroDrive(17, -230);
-            gyroDrive(-17, -230);
-            gyroTurn(-130);
-        }
-        else if(leftBlock) {
-            gyroDrive(19, -140);
-            gyroTurn(-210);
-            gyroDrive(27, -210);
-            gyroDrive(-27, -210);
-            gyroTurn(-130);
-        }
-        else {
+        if(moveToCrater) {
             gyroDrive(43, -130);
-        }
 
-        gyroDrive(-63, -140);
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
+            gyroDrive(-63, -140);
+            telemetry.addData("Path", "Complete");
+            telemetry.update();
+        }
     }
 }
 

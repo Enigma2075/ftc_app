@@ -67,7 +67,7 @@ public class HardwareIntake {
 
         int targetPosition = (int) (targetExtension * COUNTS_PER_INCH);
         extensionMotor.setTargetPosition(targetPosition);
-    }
+     }
 
 
     public double getCurrentExtension() {
