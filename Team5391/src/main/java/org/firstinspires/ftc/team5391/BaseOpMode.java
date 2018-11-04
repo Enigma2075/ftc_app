@@ -18,6 +18,7 @@ public class BaseOpMode extends LinearOpMode {
 
     private HardwareDrivetrain drivetrain = new HardwareDrivetrain();
     private HardwareLift lift = new HardwareLift();
+    private HardwareIntake intake = new HardwareIntake();
 
     private AdafruitBNO055IMU gyro = null;                    // Additional Gyro device
     private DistanceSensor sensorRange1;
@@ -39,9 +40,9 @@ public class BaseOpMode extends LinearOpMode {
 
     static final double RIGHT_KNOCKER_UP = 0;
     static final double LEFT_KNOCKER_UP = 1;
-    static final double RIGHT_KNOCKER_CHECK = .48;
+    static final double RIGHT_KNOCKER_CHECK = .475;
     // need to update in future
-    static final double RIGHT_KNOCKER_KNOCK = .55;
+    static final double RIGHT_KNOCKER_KNOCK = .6;
     static final double LEFT_KNOCKER_KNOCK = 0;
 
     static final double LIFT_BOTH_UP = 1.19;
@@ -52,11 +53,11 @@ public class BaseOpMode extends LinearOpMode {
         double minDistance = 500;
 
         public boolean foundBlock() {
-            return minDistance < 70 && !foundBall();
+            return minDistance < 70 && minDistance > 20 && !foundBall();
         }
 
         public boolean foundBall() {
-            return minDistance < 30;
+            return minDistance < 15 && minDistance > 8;
         }
 
         @Override
@@ -96,7 +97,7 @@ public class BaseOpMode extends LinearOpMode {
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
 
         ((ServoImplEx)leftKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
-        ((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
+        //((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
 
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
@@ -378,5 +379,11 @@ public class BaseOpMode extends LinearOpMode {
 
     protected void movePower(double power) {
         drivetrain.setPower(power);
+    }
+
+    public void collectInCrater(){
+        //intake.exstened(3);
+        //intake.foldDown();
+        //intake.runSuckin();
     }
 }
