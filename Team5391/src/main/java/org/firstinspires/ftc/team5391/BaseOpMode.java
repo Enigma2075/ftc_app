@@ -362,8 +362,9 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     public void collectInCrater(){
-        //intake.exstened(3);
+        intake.extend(3);
         //intake.foldDown();
-        //intake.runSuckin();
+        intake.suckinIntake();
     }
+
 }
