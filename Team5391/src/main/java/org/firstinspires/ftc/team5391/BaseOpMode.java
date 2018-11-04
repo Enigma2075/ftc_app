@@ -40,9 +40,9 @@ public class BaseOpMode extends LinearOpMode {
 
     static final double RIGHT_KNOCKER_UP = 0;
     static final double LEFT_KNOCKER_UP = 1;
-    static final double RIGHT_KNOCKER_CHECK = .705;
+    static final double RIGHT_KNOCKER_CHECK = .475;
     // need to update in future
-    static final double RIGHT_KNOCKER_KNOCK = 1;
+    static final double RIGHT_KNOCKER_KNOCK = .6;
     static final double LEFT_KNOCKER_KNOCK = 0;
 
     static final double LIFT_BOTH_UP = 1.19;
@@ -53,11 +53,11 @@ public class BaseOpMode extends LinearOpMode {
         double minDistance = 500;
 
         public boolean foundBlock() {
-            return minDistance < 70 && !foundBall();
+            return minDistance < 70 && minDistance > 20 && !foundBall();
         }
 
         public boolean foundBall() {
-            return minDistance < 30;
+            return minDistance < 15 && minDistance > 8;
         }
 
         @Override
@@ -97,7 +97,7 @@ public class BaseOpMode extends LinearOpMode {
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
 
         ((ServoImplEx)leftKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
-        ((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
+        //((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
 
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
@@ -169,7 +169,7 @@ public class BaseOpMode extends LinearOpMode {
         drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    protected boolean onHeading(double speed, double angle, double PCoeff) {
+    protected boolean onHeading(double speed, double angle, double PCoeff, TurnType turnType) {
         double error;
         double steer;
         boolean onTarget = false;
@@ -186,11 +186,25 @@ public class BaseOpMode extends LinearOpMode {
             onTarget = true;
         } else {
             steer = getSteer(error, PCoeff);
-            rightSpeed = speed * steer;
-            if(Math.abs(rightSpeed) < TURN_SPEED_MIN) {
-                rightSpeed = TURN_SPEED_MIN * Math.signum(rightSpeed);
+            if(turnType == TurnType.BOTH || turnType == TurnType.RIGHT_ONLY) {
+                rightSpeed = speed * steer;
+                if (Math.abs(rightSpeed) < TURN_SPEED_MIN) {
+                    rightSpeed = TURN_SPEED_MIN * Math.signum(rightSpeed);
+                }
             }
-            leftSpeed = -rightSpeed;
+            else {
+                rightSpeed = 0;
+            }
+
+            if(turnType == TurnType.BOTH || turnType == TurnType.LEFT_ONLY) {
+                leftSpeed = -speed * steer;
+                if (Math.abs(leftSpeed) < TURN_SPEED_MIN) {
+                    leftSpeed = TURN_SPEED_MIN * Math.signum(leftSpeed);
+                }
+            }
+            else {
+                leftSpeed = 0;
+            }
         }
 
         // Send desired speeds to motors.
@@ -219,16 +233,22 @@ public class BaseOpMode extends LinearOpMode {
         return Range.clip(error * PCoeff, -1, 1);
     }
 
+    public enum TurnType {BOTH, RIGHT_ONLY, LEFT_ONLY}
+
     protected void gyroTurn(double angle) {
-        gyroTurn(TURN_SPEED, angle);
+        gyroTurn(TURN_SPEED, angle, TurnType.BOTH);
     }
 
-    protected void gyroTurn(double speed, double angle) {
+    protected void gyroTurn(double angle, TurnType turnType) {
+        gyroTurn(TURN_SPEED, angle, turnType);
+    }
+
+    protected void gyroTurn(double speed, double angle, TurnType turnType) {
         drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // keep looping while we are still active, and not on heading.
         int onHeadingCount = 0;
         while (opModeIsActive() && onHeadingCount < 2) {
-            if(onHeading(speed, -angle, P_TURN_COEFF)) {
+            if(onHeading(speed, -angle, P_TURN_COEFF, turnType)) {
                 onHeadingCount++;
             }
             else {

@@ -49,6 +49,7 @@ public class HardwareIntake {
 
         setExtensionPower(0);
         setintakePower(0);
+
     }
 
     public void setExtensionMode(DcMotor.RunMode mode) {
