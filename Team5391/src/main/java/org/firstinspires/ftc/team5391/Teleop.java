@@ -34,7 +34,7 @@ public class Teleop extends BaseOpMode {
             }
 
             if (gamepad2.b) {
-                //collectInCrater();
+                collectInCrater();
             }
 
 
