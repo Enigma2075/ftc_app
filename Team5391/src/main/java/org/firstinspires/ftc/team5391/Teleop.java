@@ -37,6 +37,10 @@ public class Teleop extends BaseOpMode {
                 collectInCrater();
             }
 
+            if (Math.abs(gamepad2.right_stick_y) > .25 ){
+                setPower.
+            }
+
 
             //exstends out with operator triger/RT
   
