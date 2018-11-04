@@ -87,10 +87,6 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        while(!isStarted()) {
-            telemetry.addData(">", "Press Play to start tracking");
-            telemetry.update();
-        }
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -104,7 +100,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking");
         telemetry.update();
-
+        waitForStart();
 
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
@@ -164,9 +160,10 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = CameraDirection.BACK;
-
+        
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
 
         // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
     }
@@ -177,16 +174,8 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        telemetry.addData(">", "appContext");
-        telemetry.update();
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        telemetry.addData(">", "Parameters");
-        telemetry.update();
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        telemetry.addData(">", "createTFObject");
-        telemetry.update();
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
-        telemetry.addData(">", "loadModel");
-        telemetry.update();
     }
 }
