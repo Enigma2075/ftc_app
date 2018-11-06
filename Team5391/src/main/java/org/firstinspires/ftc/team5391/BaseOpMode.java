@@ -39,15 +39,13 @@ public class BaseOpMode extends LinearOpMode {
     static final double P_DRIVE_COEFF = 0.035;     // Larger is more responsive, but also less stable
 
     static final double RIGHT_KNOCKER_UP = 0;
-    static final double LEFT_KNOCKER_UP = 1;
     static final double RIGHT_KNOCKER_CHECK = .475;
     // need to update in future
     static final double RIGHT_KNOCKER_KNOCK = .6;
-    static final double LEFT_KNOCKER_KNOCK = 0;
 
-    static final double LIFT_BOTH_UP = 1.19;
-    static final double LIFT_BOTH_DOWN = -1.19;
     static final double P_PIVOT_COEFF=.5;
+
+    protected boolean isAuto = true;
 
     public class CheckForBlock implements Runnable {
         double minDistance = 500;
@@ -87,24 +85,24 @@ public class BaseOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        sensorRange1 = hardwareMap.get(DistanceSensor.class, "sensor_range1");
-        sensorRange2 = hardwareMap.get(DistanceSensor.class, "sensor_range2");
-        sensorRange3 = hardwareMap.get(DistanceSensor.class, "sensor_range3");
-        sensorRange4 = hardwareMap.get(DistanceSensor.class, "sensor_range4");
+        if(isAuto) {
+            sensorRange1 = hardwareMap.get(DistanceSensor.class, "sensor_range1");
+            sensorRange2 = hardwareMap.get(DistanceSensor.class, "sensor_range2");
+            sensorRange3 = hardwareMap.get(DistanceSensor.class, "sensor_range3");
+            sensorRange4 = hardwareMap.get(DistanceSensor.class, "sensor_range4");
+            gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
+
+            ((ServoImplEx) leftKnocker).setPwmRange(new PwmControl.PwmRange(500, 2500));
+            //((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
+
+
+            // you can also cast this to a Rev2mDistanceSensor if you want to use added
+            // methods associated with the Rev2mDistanceSensor class.
+            //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
+        }
+
         rightKnocker = hardwareMap.get(Servo.class, "range_servo");
-        leftKnocker = hardwareMap.get(Servo.class, "range_servo2");
 
-        gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
-
-        ((ServoImplEx)leftKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
-        //((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
-
-
-        // you can also cast this to a Rev2mDistanceSensor if you want to use added
-        // methods associated with the Rev2mDistanceSensor class.
-        //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
-
-        leftKnockerUp();
         rightKnockerUp();
 
         /*
@@ -113,13 +111,15 @@ public class BaseOpMode extends LinearOpMode {
          */
         lift.init(hardwareMap);
         drivetrain.init(hardwareMap);
+        intake.init(hardwareMap);
 
-        initGyro();
-
-        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
-        while (!isStarted()) {
-            telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().firstAngle);
-            telemetry.update();
+        if(isAuto) {
+            initGyro();
+            // Wait for the game to start (Display Gyro value), and reset gyro before we move..
+            while (!isStarted()) {
+                telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().firstAngle);
+                telemetry.update();
+            }
         }
     }
 
@@ -127,16 +127,8 @@ public class BaseOpMode extends LinearOpMode {
         rightKnocker.setPosition(RIGHT_KNOCKER_UP);
     }
 
-    protected void leftKnockerUp() {
-        leftKnocker.setPosition(LEFT_KNOCKER_UP);
-    }
-
     protected void rightKnockerCheck() {
         rightKnocker.setPosition(RIGHT_KNOCKER_CHECK);
-    }
-
-    protected void leftKnockerKnock() {
-        leftKnocker.setPosition(LEFT_KNOCKER_KNOCK);
     }
 
     protected void rightKnockerKnock() {
@@ -273,6 +265,10 @@ public class BaseOpMode extends LinearOpMode {
         gyroDrive(speed, distance, angle, null);
     }
 
+    protected void drive(DriveSignal signal) {
+        drivetrain.setPower(signal.rightMotor, signal.leftMotor);
+    }
+
     protected void gyroDrive(double speed,
                              double distance,
                              double angle, Runnable method) {
@@ -396,11 +392,11 @@ public class BaseOpMode extends LinearOpMode {
         intake.suckinIntake();
     }
 
-    public void PivetintakeUP(){
+    public void pivotIntakeUp(){
 
     }
 
-    public void PivetintakeDOWN(){
+    public void pivotIntakeDown(){
     }
 
     public void Pivetintake(double  position){
@@ -414,5 +410,21 @@ public class BaseOpMode extends LinearOpMode {
 
     public double getPotError(double target) {
        return intake.potPosision()- target;
+    }
+
+    public void sendTelemetry() {
+        telemetry.addData("Lift Height:", "%5.1f", lift.getCurrentHeight());
+
+    }
+
+    public boolean isInCrater() {
+        return true;
+    }
+
+    public void moveIntake(double power) {
+        if(intake.getExtensionMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+            intake.setExtensionMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        intake.setExtensionPower(power);
     }
 }

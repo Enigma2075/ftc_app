@@ -24,8 +24,8 @@ public class HardwareLift {
     public void init(HardwareMap hwMap) {
         this.hwMap = hwMap;
 
-        liftMotor = hwMap.get(DcMotor.class, "LiftMotor");
-        liftMotor2 = hwMap.get(DcMotor.class, "LiftMotor2");
+        liftMotor = this.hwMap.get(DcMotor.class, "LiftMotor");
+        liftMotor2 = this.hwMap.get(DcMotor.class, "LiftMotor2");
 
         liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotor2.setDirection(DcMotorSimple.Direction.FORWARD);

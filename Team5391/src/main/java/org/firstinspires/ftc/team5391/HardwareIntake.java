@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team5391;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -21,8 +22,8 @@ public class HardwareIntake {
     private DcMotor intakeMotor = null;
     private AnalogInput sensor =null;
 
-    private Servo rightPivot = null;
-    private Servo leftPivot = null;
+    private CRServo rightPivot = null;
+    private CRServo leftPivot = null;
 
     private HardwareMap hwMap = null;
 
@@ -33,21 +34,15 @@ public class HardwareIntake {
         this.hwMap = hwMap;
 
         extensionMotor = hwMap.get(DcMotor.class, "extensionMotor");
-
         extensionMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
         extensionMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
-
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        rightPivot= hwMap.get(Servo.class, "rightPivot");
-
-        leftPivot= hwMap.get(Servo.class, "leftPivot");
-
+        rightPivot= hwMap.get(CRServo.class, "rightPivot");
+        leftPivot= hwMap.get(CRServo.class, "leftPivot");
         sensor = hwMap.get(AnalogInput.class,"sensor");
 
         setIntakeMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -55,7 +50,6 @@ public class HardwareIntake {
 
         setExtensionPower(0);
         setintakePower(0);
-
     }
 
     public void setExtensionMode(DcMotor.RunMode mode) {
@@ -90,8 +84,8 @@ public class HardwareIntake {
 
     public void setpivet(double power){
         double PWR= .5+ .5*power;
-        leftPivot.setPosition(PWR);
-        rightPivot.setPosition(PWR);
+        leftPivot.setPower(PWR);
+        rightPivot.setPower(PWR);
     }
 
 
@@ -102,11 +96,15 @@ public class HardwareIntake {
 
         int targetPosition = (int) (targetExtension * COUNTS_PER_INCH);
         extensionMotor.setTargetPosition(targetPosition);
-     }
+    }
 
 
     public double getCurrentExtension() {
         return (double) extensionMotor.getCurrentPosition() * COUNTS_PER_INCH;
+    }
+
+    public DcMotor.RunMode getExtensionMode() {
+        return extensionMotor.getMode();
     }
 
     public boolean isBusy() {

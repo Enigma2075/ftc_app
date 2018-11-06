@@ -72,8 +72,7 @@ public class TestKnockers extends BaseOpMode {
         super.runOpMode();
 
         rightKnockerCheck();
-        leftKnockerKnock();
-
+        
         CheckForBlock check = new CheckForBlock();
 
         while(opModeIsActive()) {
