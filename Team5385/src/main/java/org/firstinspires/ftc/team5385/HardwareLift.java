@@ -52,8 +52,7 @@ public class HardwareLift {    /* Public OpMode members. */
        else if (position < 0){
            position = 0;
        }
-       motor.setPosition(position);//position);
-
+       motor.setPosition(position);
     }
 
     public double getCurrentPosition(){
