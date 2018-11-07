@@ -64,44 +64,49 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "Double Auto", group = "Main")
+@Autonomous(name = "Single Auto", group = "Main")
 //@Disabled
-public class AutoGyro extends BaseOpMode {
+public class SingleAuto extends BaseOpMode {
+    protected boolean rightBlock = false;
+    protected boolean leftBlock = false;
+    protected boolean centerBlock = false;
+    protected boolean leftBall = false;
+    protected boolean centerBall = false;
+
+    protected boolean moveToCrater = true;
+
     @Override
     public void runOpMode() {
         super.runOpMode();
 
         // are landing
         movePower(.013);
-        moveLift(8.1);
+        moveLift(8);
         movePower(0);
 
         //Pull away from lander
-        gyroDrive(13.5, 0.0);
+        gyroDrive(13.25, 0.0);
         moveLift(.5, true);
         rightKnockerCheck();
 
         //Turn parallel to the block and balls
         gyroTurn(-90);
         //enything up needs to be unslashed
-        boolean rightBlock = false, leftBlock = false, centerBlock = false;
-
-        boolean leftBall = false, centerBall = false;
 
         // check if middle is a block
         CheckForBlock check = new CheckForBlock();
-        gyroDrive(DRIVE_SPEED * .2, 5, -90, check);
+        gyroDrive(DRIVE_SPEED * .2, 6, -90, check);
 
         if (check.foundBlock()) {
             // The middle is a block
             centerBlock = true;
             rightKnockerKnock();
             sleep(100);
-            gyroDrive(-5, -90);
+            gyroDrive(-6, -90);
             rightKnockerUp();
 
             gyroDrive(46, -90);
-        }   // dont need to change the line ubove this slash
+        }   // dont need to change the line above this slash
         else {
             // Check if middle is ball
             centerBall = check.foundBall();
@@ -128,20 +133,20 @@ public class AutoGyro extends BaseOpMode {
                     rightBlock = true;
                     rightKnockerKnock();
                     sleep(100);
-                    gyroDrive(-5, -90);
+                    gyroDrive(-6, -90);
                     rightKnockerUp();
-                    gyroDrive(58, -90);
+                    gyroDrive(47, -90);
                 } else { //dont need to change the line ubove this slash
                     check = new CheckForBlock();
-                    gyroDrive(DRIVE_SPEED * .2, -5, -90, check);
+                    gyroDrive(DRIVE_SPEED * .2, -6, -90, check);
                     // Check right mineral
                     if (check.foundBlock()) {
                         rightBlock = true;
                         rightKnockerKnock();
                         sleep(100);
-                        gyroDrive(5, -90);
+                        gyroDrive(6, -90);
                         rightKnockerUp();
-                        gyroDrive(58, -90);
+                        gyroDrive(47, -90);
                     } //dont need to change the line ubove this slash
                     // If above aren't ball, hit right mineral
                     else {
@@ -153,45 +158,15 @@ public class AutoGyro extends BaseOpMode {
         }
 
         // At this point we should be right next to the wall in the same spot regardless.
-        gyroTurn(-125);
+        gyroTurn(-145, TurnType.RIGHT_ONLY);
 
-        if(rightBlock) {
-            leftKnockerKnock();
-            sleep(100);
-            gyroDrive(43, -125);
-            leftKnockerUp();
-        }
-        // Hit the corresponding mineral
-        else if(centerBlock) {
-            gyroDrive(22, -125);
-            gyroTurn(-180);
-            gyroDrive(21, -180);
-            leftKnockerKnock();
-            sleep(100);
-            gyroDrive(-6, -180);
-            leftKnockerUp();
-            gyroDrive(-15, -180);
-            gyroTurn(-130);
-            gyroDrive(16, -130);
-        }
-        else if(leftBlock) {
-            gyroDrive(22, -125);
-            gyroTurn(-180);
-            gyroDrive(21, -180);
-            leftKnockerKnock();
-            sleep(100);
-            gyroDrive(14, -180);
-            leftKnockerUp();
-            gyroDrive(-33, -180);
-            gyroTurn(-130);
-            gyroDrive(16, -130);
-        }
-        else {
-            gyroDrive(43, -125);
-        }
+        if(moveToCrater) {
+            gyroDrive(43, -130);
 
-        gyroDrive(-80, -140);
-                    telemetry.addData("Path", "Complete");
-                    telemetry.update();
-                }
-            }
+            gyroDrive(-63, -140);
+            telemetry.addData("Path", "Complete");
+            telemetry.update();
+        }
+    }
+}
+
