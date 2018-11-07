@@ -57,26 +57,19 @@ public class AutoHitBlocks extends BigAutoBase {
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "gyro");
         lift.init(hardwareMap);
         colorSystem.init(hardwareMap);
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        gyro.initialize(parameters);
 
         waitForStart();
-        while(opModeIsActive()){
 
-            if(gamepad1.left_bumper){
-                colorSystem.setPosition(colorSystem.getPosition()+.001);
-            }
-            else if(gamepad1.right_bumper){
-                colorSystem.setPosition(colorSystem.getPosition()-.001);
-            }
-            telemetry.addData("servoPos:", colorSystem.getPosition());
-            telemetry.addData("Sensor Blue Value", colorSystem.getColor());
-            telemetry.update();
-            //.327 right side
-            //.4
-
-            //.5 left
-            //.59
-            sleep(10);
-        }
+        moveLift(3.1);
         //CheckSensorAt(0.5);
         //sleep(2000);
     }

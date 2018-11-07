@@ -4,13 +4,14 @@ import android.hardware.Sensor;
 
 import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class HardwareColorSensor {
 
     private Servo servo;
-    private AdafruitI2cColorSensor sensor;
+    private ColorSensor sensor;
 
     HardwareMap hwMap = null;
 
@@ -22,7 +23,8 @@ public class HardwareColorSensor {
         this.hwMap = hwMap;
 
         servo = hwMap.get(Servo.class, "colorServo");
-        sensor = hwMap.get(AdafruitI2cColorSensor.class, "colorSenso");
+        sensor = hwMap.get(ColorSensor.class, "colorSensor");
+        sensor.resetDeviceConfigurationForOpMode();
     }
 
     public void setPosition(double pos){
