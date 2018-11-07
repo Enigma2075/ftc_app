@@ -364,7 +364,7 @@ public class BaseOpMode extends LinearOpMode {
         if(intake.getCurrentExtension() < 6) {
             setIntakeExtension(6);
         }
-        
+
         lift.setTargetPosition(height);
 
         while (opModeIsActive() && lift.isBusy())
