@@ -28,7 +28,7 @@ public class Teleop extends BaseOpMode {
                 moveLift(.5);
             }
             else if(gamepad2.x) {
-                moveLift(7);
+                moveLift(7.25);
             }
 
             if (gamepad2.b && !isInCrater()) {
@@ -36,6 +36,9 @@ public class Teleop extends BaseOpMode {
             }
             else if (gamepad2.b && Math.abs(gamepad2.right_stick_y) > .25 ) {
                 moveIntake(-gamepad2.right_stick_y);
+            }
+            else {
+                moveIntake(0);
             }
 
             sendTelemetry();

@@ -11,8 +11,8 @@ import java.util.ResourceBundle;
 
 public class HardwareIntake {
     static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION = 30.0 / 22.0;     // This is < 1.0 if geared UP
-    static final double SPOOL_CIRCUMFERENCE_INCHES = 1.27;     // For figuring circumference
+    static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+    static final double SPOOL_CIRCUMFERENCE_INCHES = 4.71;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (SPOOL_CIRCUMFERENCE_INCHES);
 
@@ -47,6 +47,7 @@ public class HardwareIntake {
 
         setIntakeMode(DcMotor.RunMode.RUN_TO_POSITION);
         setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extensionMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         setExtensionPower(0);
         setintakePower(0);

@@ -19,6 +19,9 @@ public class HardwareLift {
 
     private HardwareMap hwMap = null;
 
+    private int initialCounts = 0;
+    private int initialCounts2 = 0;
+
     public HardwareLift() { }
 
     public void init(HardwareMap hwMap) {
@@ -34,6 +37,9 @@ public class HardwareLift {
         liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        initialCounts = liftMotor.getCurrentPosition();
+        initialCounts2 = liftMotor2.getCurrentPosition();
 
         setPower(0);
     }
@@ -54,13 +60,13 @@ public class HardwareLift {
         }
 
         int targetPosition = (int)(targetHeight * COUNTS_PER_INCH);
-        liftMotor.setTargetPosition(targetPosition);
-        liftMotor2.setTargetPosition(targetPosition);
+        liftMotor.setTargetPosition(initialCounts + targetPosition);
+        liftMotor2.setTargetPosition(initialCounts2 + targetPosition);
     }
 
 
     public double getCurrentHeight() {
-        return (double)liftMotor.getCurrentPosition() * COUNTS_PER_INCH;
+        return ((double)liftMotor.getCurrentPosition() * COUNTS_PER_INCH) - initialCounts;
     }
 
     public boolean isBusy() {

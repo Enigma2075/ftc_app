@@ -361,6 +361,10 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void moveLift(double height, double power, boolean returnImmediate) {
+        if(intake.getCurrentExtension() < 6) {
+            setIntakeExtension(6);
+        }
+        
         lift.setTargetPosition(height);
 
         while (opModeIsActive() && lift.isBusy())
@@ -387,7 +391,7 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     public void collectInCrater(){
-        intake.extend(3);
+        intake.extend(6);
         //intake.foldDown();
         intake.suckinIntake();
     }
@@ -414,14 +418,36 @@ public class BaseOpMode extends LinearOpMode {
 
     public void sendTelemetry() {
         telemetry.addData("Lift Height:", "%5.1f", lift.getCurrentHeight());
-
+        telemetry.addData("Extension:", "%5.1f", intake.getCurrentExtension());
     }
 
     public boolean isInCrater() {
+
         return true;
     }
 
+    public void setIntakeExtension(double extension) {
+        double target = extension;
+        if(extension > 30) {
+           target = 30;
+        }
+        if(extension < 2) {
+            target = 2;
+        }
+
+        if(intake.getExtensionMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+            intake.setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
+            intake.setExtensionPosition(target);
+            intake.setExtensionPower(1);
+        }
+    }
+
     public void moveIntake(double power) {
+        if(intake.getCurrentExtension() > 30 || intake.getCurrentExtension() < 2) {
+            setIntakeExtension(intake.getCurrentExtension());
+            return;
+        }
+
         if(intake.getExtensionMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
             intake.setExtensionMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
