@@ -64,23 +64,43 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "TestKnockers", group = "Test")
+@Autonomous(name = "Double Auto", group = "Main")
 //@Disabled
-public class TestKnockers extends BaseOpMode {
+public class DoubleAuto extends SingleAuto {
     @Override
     public void runOpMode() {
+        moveToCrater = false;
+
         super.runOpMode();
 
-        rightKnockerCheck();
-        
-        CheckForBlock check = new CheckForBlock();
-
-        while(opModeIsActive()) {
-            check.run();
-            telemetry.update();
+        if(rightBlock) {
+            gyroDrive(4, -150);
+            gyroTurn(-100);
+            gyroDrive(24, -100);
+            gyroTurn(-100);
+        }
+        // Hit the corresponding mineral
+        else if(centerBlock) {
+            gyroDrive(19, -140);
+            gyroTurn(-230);
+            gyroDrive(17, -230);
+            gyroDrive(-17, -230);
+            gyroTurn(-130);
+        }
+        else if(leftBlock) {
+            gyroDrive(19, -140);
+            gyroTurn(-210);
+            gyroDrive(27, -210);
+            gyroDrive(-27, -210);
+            gyroTurn(-130);
+        }
+        else {
+            gyroDrive(43, -130);
         }
 
+        gyroDrive(-63, -140);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 }
+

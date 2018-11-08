@@ -18,6 +18,7 @@ public class BaseOpMode extends LinearOpMode {
 
     private HardwareDrivetrain drivetrain = new HardwareDrivetrain();
     private HardwareLift lift = new HardwareLift();
+    private HardwareIntake intake = new HardwareIntake();
 
     private AdafruitBNO055IMU gyro = null;                    // Additional Gyro device
     private DistanceSensor sensorRange1;
@@ -38,25 +39,23 @@ public class BaseOpMode extends LinearOpMode {
     static final double P_DRIVE_COEFF = 0.035;     // Larger is more responsive, but also less stable
 
     static final double RIGHT_KNOCKER_UP = 0;
-    static final double LEFT_KNOCKER_UP = 1;
-    static final double RIGHT_KNOCKER_CHECK = .705;
+    static final double RIGHT_KNOCKER_CHECK = .475;
     // need to update in future
-    static final double RIGHT_KNOCKER_KNOCK = 1;
-    static final double LEFT_KNOCKER_KNOCK = 0;
+    static final double RIGHT_KNOCKER_KNOCK = .6;
 
-    static final double LIFT_BOTH_UP = 1.19;
-    static final double LIFT_BOTH_DOWN = -1.19;
+    static final double P_PIVOT_COEFF=.5;
 
+    protected boolean isAuto = true;
 
     public class CheckForBlock implements Runnable {
         double minDistance = 500;
 
         public boolean foundBlock() {
-            return minDistance < 70 && !foundBall();
+            return minDistance < 70 && minDistance > 20 && !foundBall();
         }
 
         public boolean foundBall() {
-            return minDistance < 30;
+            return minDistance < 15 && minDistance > 8;
         }
 
         @Override
@@ -86,24 +85,24 @@ public class BaseOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        sensorRange1 = hardwareMap.get(DistanceSensor.class, "sensor_range1");
-        sensorRange2 = hardwareMap.get(DistanceSensor.class, "sensor_range2");
-        sensorRange3 = hardwareMap.get(DistanceSensor.class, "sensor_range3");
-        sensorRange4 = hardwareMap.get(DistanceSensor.class, "sensor_range4");
+        if(isAuto) {
+            sensorRange1 = hardwareMap.get(DistanceSensor.class, "sensor_range1");
+            sensorRange2 = hardwareMap.get(DistanceSensor.class, "sensor_range2");
+            sensorRange3 = hardwareMap.get(DistanceSensor.class, "sensor_range3");
+            sensorRange4 = hardwareMap.get(DistanceSensor.class, "sensor_range4");
+            gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
+
+            ((ServoImplEx) leftKnocker).setPwmRange(new PwmControl.PwmRange(500, 2500));
+            //((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
+
+
+            // you can also cast this to a Rev2mDistanceSensor if you want to use added
+            // methods associated with the Rev2mDistanceSensor class.
+            //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
+        }
+
         rightKnocker = hardwareMap.get(Servo.class, "range_servo");
-        leftKnocker = hardwareMap.get(Servo.class, "range_servo2");
 
-        gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
-
-        ((ServoImplEx)leftKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
-        ((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
-
-
-        // you can also cast this to a Rev2mDistanceSensor if you want to use added
-        // methods associated with the Rev2mDistanceSensor class.
-        //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
-
-        leftKnockerUp();
         rightKnockerUp();
 
         /*
@@ -112,13 +111,15 @@ public class BaseOpMode extends LinearOpMode {
          */
         lift.init(hardwareMap);
         drivetrain.init(hardwareMap);
+        intake.init(hardwareMap);
 
-        initGyro();
-
-        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
-        while (!isStarted()) {
-            telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().firstAngle);
-            telemetry.update();
+        if(isAuto) {
+            initGyro();
+            // Wait for the game to start (Display Gyro value), and reset gyro before we move..
+            while (!isStarted()) {
+                telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().firstAngle);
+                telemetry.update();
+            }
         }
     }
 
@@ -126,16 +127,8 @@ public class BaseOpMode extends LinearOpMode {
         rightKnocker.setPosition(RIGHT_KNOCKER_UP);
     }
 
-    protected void leftKnockerUp() {
-        leftKnocker.setPosition(LEFT_KNOCKER_UP);
-    }
-
     protected void rightKnockerCheck() {
         rightKnocker.setPosition(RIGHT_KNOCKER_CHECK);
-    }
-
-    protected void leftKnockerKnock() {
-        leftKnocker.setPosition(LEFT_KNOCKER_KNOCK);
     }
 
     protected void rightKnockerKnock() {
@@ -168,7 +161,7 @@ public class BaseOpMode extends LinearOpMode {
         drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    protected boolean onHeading(double speed, double angle, double PCoeff) {
+    protected boolean onHeading(double speed, double angle, double PCoeff, TurnType turnType) {
         double error;
         double steer;
         boolean onTarget = false;
@@ -185,11 +178,25 @@ public class BaseOpMode extends LinearOpMode {
             onTarget = true;
         } else {
             steer = getSteer(error, PCoeff);
-            rightSpeed = speed * steer;
-            if(Math.abs(rightSpeed) < TURN_SPEED_MIN) {
-                rightSpeed = TURN_SPEED_MIN * Math.signum(rightSpeed);
+            if(turnType == TurnType.BOTH || turnType == TurnType.RIGHT_ONLY) {
+                rightSpeed = speed * steer;
+                if (Math.abs(rightSpeed) < TURN_SPEED_MIN) {
+                    rightSpeed = TURN_SPEED_MIN * Math.signum(rightSpeed);
+                }
             }
-            leftSpeed = -rightSpeed;
+            else {
+                rightSpeed = 0;
+            }
+
+            if(turnType == TurnType.BOTH || turnType == TurnType.LEFT_ONLY) {
+                leftSpeed = -speed * steer;
+                if (Math.abs(leftSpeed) < TURN_SPEED_MIN) {
+                    leftSpeed = TURN_SPEED_MIN * Math.signum(leftSpeed);
+                }
+            }
+            else {
+                leftSpeed = 0;
+            }
         }
 
         // Send desired speeds to motors.
@@ -218,16 +225,22 @@ public class BaseOpMode extends LinearOpMode {
         return Range.clip(error * PCoeff, -1, 1);
     }
 
+    public enum TurnType {BOTH, RIGHT_ONLY, LEFT_ONLY}
+
     protected void gyroTurn(double angle) {
-        gyroTurn(TURN_SPEED, angle);
+        gyroTurn(TURN_SPEED, angle, TurnType.BOTH);
     }
 
-    protected void gyroTurn(double speed, double angle) {
+    protected void gyroTurn(double angle, TurnType turnType) {
+        gyroTurn(TURN_SPEED, angle, turnType);
+    }
+
+    protected void gyroTurn(double speed, double angle, TurnType turnType) {
         drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // keep looping while we are still active, and not on heading.
         int onHeadingCount = 0;
         while (opModeIsActive() && onHeadingCount < 2) {
-            if(onHeading(speed, -angle, P_TURN_COEFF)) {
+            if(onHeading(speed, -angle, P_TURN_COEFF, turnType)) {
                 onHeadingCount++;
             }
             else {
@@ -250,6 +263,10 @@ public class BaseOpMode extends LinearOpMode {
                              double distance,
                              double angle) {
         gyroDrive(speed, distance, angle, null);
+    }
+
+    protected void drive(DriveSignal signal) {
+        drivetrain.setPower(signal.rightMotor, signal.leftMotor);
     }
 
     protected void gyroDrive(double speed,
@@ -344,6 +361,10 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void moveLift(double height, double power, boolean returnImmediate) {
+        if(intake.getCurrentExtension() < 6) {
+            setIntakeExtension(6);
+        }
+
         lift.setTargetPosition(height);
 
         while (opModeIsActive() && lift.isBusy())
@@ -357,6 +378,79 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void movePower(double power) {
+
         drivetrain.setPower(power);
+    }
+
+    protected void extendIntake(double power) {
+        intake.extend(power);
+    }
+
+    protected void suckIntake() {
+        intake.suckinIntake();
+    }
+
+    public void collectInCrater(){
+        intake.extend(6);
+        //intake.foldDown();
+        intake.suckinIntake();
+    }
+
+    public void pivotIntakeUp(){
+
+    }
+
+    public void pivotIntakeDown(){
+    }
+
+    public void Pivetintake(double  position){
+        while (Math.abs(getPotError(position))>0.1 && opModeIsActive()){
+            double power =getPotError(position)*P_PIVOT_COEFF;
+            if(power>1)power=1;
+            else if(power<-1)power=-1;
+            intake.setpivet(power);
+        }
+    }
+
+    public double getPotError(double target) {
+       return intake.potPosision()- target;
+    }
+
+    public void sendTelemetry() {
+        telemetry.addData("Lift Height:", "%5.1f", lift.getCurrentHeight());
+        telemetry.addData("Extension:", "%5.1f", intake.getCurrentExtension());
+    }
+
+    public boolean isInCrater() {
+
+        return true;
+    }
+
+    public void setIntakeExtension(double extension) {
+        double target = extension;
+        if(extension > 30) {
+           target = 30;
+        }
+        if(extension < 2) {
+            target = 2;
+        }
+
+        if(intake.getExtensionMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+            intake.setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
+            intake.setExtensionPosition(target);
+            intake.setExtensionPower(1);
+        }
+    }
+
+    public void moveIntake(double power) {
+        if(intake.getCurrentExtension() > 30 || intake.getCurrentExtension() < 2) {
+            setIntakeExtension(intake.getCurrentExtension());
+            return;
+        }
+
+        if(intake.getExtensionMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+            intake.setExtensionMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        intake.setExtensionPower(power);
     }
 }
