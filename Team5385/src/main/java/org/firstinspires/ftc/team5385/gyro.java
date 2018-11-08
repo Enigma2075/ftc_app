@@ -204,8 +204,8 @@ public class gyro extends BigAutoBase {
         gyroDrive(.9,-10,0);
         gyroTurn(.9, -72);
         gyroDrive(.9, 32, -72);
-        gyroTurn(.9, -125);
-        gyroDrive(.9, 44, -125);
+        gyroTurn(.9, -128);
+        gyroDrive(.9, 22, -128);
     }
 
 }
