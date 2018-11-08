@@ -118,9 +118,7 @@ public class gyro extends BigAutoBase {
                 leftBlock();
             }
             else{
-                gyroDrive(.9, 3, 0);
-                gyroTurn(.9, 35);
-                gyroDrive(.9, 17, 35);
+                rightBlock();
             }
         }
 
@@ -183,7 +181,16 @@ public class gyro extends BigAutoBase {
     }
 
     public void rightBlock(){
-
+        gyroDrive(.9, 3, 0);
+        gyroTurn(.9, 35);
+        gyroDrive(.9, 17, 35);
+        gyroDrive(.9,-11,35);
+        gyroTurn(.9,-70);
+        gyroDrive(.9,24,-70);
+        gyroTurn(.9,-120, TurnType.RIGHT_ONLY);
+        gyroDrive(.9, 36, -120);
+        gyroTurn(.9, -135);
+        gyroDrive(.9, -55, -135);
     }
     public void leftBlock(){
         gyroDrive(.9, 3, 0);
@@ -204,8 +211,13 @@ public class gyro extends BigAutoBase {
         gyroDrive(.9,-10,0);
         gyroTurn(.9, -72);
         gyroDrive(.9, 32, -72);
-        gyroTurn(.9, -128);
-        gyroDrive(.9, 22, -128);
+        gyroTurn(.9, -122);
+        gyroDrive(.9, 27, -122);
+        gyroTurn(.9,-222, TurnType.RIGHT_ONLY);
+        gyroDrive(.9,4,-222);
+        gyroDrive(.9,-4,-222);
+        gyroTurn(.9,-131, TurnType.RIGHT_ONLY);
+        gyroDrive(.9,-50,-131);
     }
 
 }
