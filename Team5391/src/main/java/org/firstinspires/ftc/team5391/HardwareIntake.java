@@ -12,11 +12,13 @@ import java.util.ResourceBundle;
 public class HardwareIntake {
     static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
-    static final double SPOOL_CIRCUMFERENCE_INCHES = 4.71;     // For figuring circumference
+    static final double SPOOL_CIRCUMFERENCE_INCHES = 1.375 * Math.PI;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (SPOOL_CIRCUMFERENCE_INCHES);
 
-    static final double MAX_EXTENSION = 30;
+    static final double MAX_EXTENSION = 27;
+    static final double MIN_EXTENSION = 0;
+
 
     private DcMotor extensionMotor = null;
     private DcMotor intakeMotor = null;
@@ -69,18 +71,9 @@ public class HardwareIntake {
         extensionMotor.setPower(power);
     }
 
-    public void extend(double distance) {
-        setExtensionPosition(distance);
-        setExtensionPower(1);
-    }
-
     public void suckinIntake() {
         setIntakeMode(DcMotor.RunMode.RUN_USING_ENCODER);
         setintakePower(1);
-    }
-
-    public double potPosision(){
-        return sensor.getVoltage();
     }
 
     public void setpivet(double power){
@@ -89,28 +82,43 @@ public class HardwareIntake {
         rightPivot.setPower(PWR);
     }
 
+    public double getIntakePivot() {
+        return sensor.getVoltage();
+    }
 
     public void setExtensionPosition(double targetExtension) {
-        if (targetExtension > MAX_EXTENSION) {
-            targetExtension = MAX_EXTENSION;
+        double target = targetExtension;
+        if(targetExtension > MAX_EXTENSION) {
+            target = MAX_EXTENSION;
+        }
+        if(targetExtension < MIN_EXTENSION) {
+            target = MIN_EXTENSION;
         }
 
-        int targetPosition = (int) (targetExtension * COUNTS_PER_INCH);
-        extensionMotor.setTargetPosition(targetPosition);
+        if(getExtensionMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+            setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        if(getExtensionTarget() != target) {
+            extensionMotor.setTargetPosition((int)(target * COUNTS_PER_INCH));
+            setExtensionPower(1);
+        }
     }
 
 
     public double getCurrentExtension() {
-        return (double) extensionMotor.getCurrentPosition() * COUNTS_PER_INCH;
+        return (double) extensionMotor.getCurrentPosition() / COUNTS_PER_INCH;
     }
 
     public DcMotor.RunMode getExtensionMode() {
         return extensionMotor.getMode();
     }
 
-    public boolean isBusy() {
+    public boolean isExtensionBusy() {
         return extensionMotor.isBusy();
     }
+
+    public double getExtensionTarget() { return extensionMotor.getTargetPosition();}
 }
 
 

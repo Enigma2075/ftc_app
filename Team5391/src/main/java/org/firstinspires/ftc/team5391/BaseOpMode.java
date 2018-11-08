@@ -25,7 +25,6 @@ public class BaseOpMode extends LinearOpMode {
     private DistanceSensor sensorRange2;
     private DistanceSensor sensorRange3;
     private DistanceSensor sensorRange4;
-    private Servo leftKnocker;
     private Servo rightKnocker;
 
     // These constants define the desired driving/control characteristics
@@ -92,7 +91,7 @@ public class BaseOpMode extends LinearOpMode {
             sensorRange4 = hardwareMap.get(DistanceSensor.class, "sensor_range4");
             gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
 
-            ((ServoImplEx) leftKnocker).setPwmRange(new PwmControl.PwmRange(500, 2500));
+            //((ServoImplEx) leftKnocker).setPwmRange(new PwmControl.PwmRange(500, 2500));
             //((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
 
 
@@ -383,7 +382,7 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void extendIntake(double power) {
-        intake.extend(power);
+        intake.setintakePower(power);
     }
 
     protected void suckIntake() {
@@ -391,7 +390,7 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     public void collectInCrater(){
-        intake.extend(6);
+        setIntakeExtension(6);
         //intake.foldDown();
         intake.suckinIntake();
     }
@@ -413,37 +412,36 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     public double getPotError(double target) {
-       return intake.potPosision()- target;
+       return intake.getIntakePivot()- target;
     }
 
     public void sendTelemetry() {
         telemetry.addData("Lift Height:", "%5.1f", lift.getCurrentHeight());
         telemetry.addData("Extension:", "%5.1f", intake.getCurrentExtension());
+        telemetry.addData("Intake Pivot:", "%5.1f", intake.getIntakePivot());
     }
 
     public boolean isInCrater() {
-
-        return true;
+        return intake.getCurrentExtension() > 5.5;
     }
 
     public void setIntakeExtension(double extension) {
-        double target = extension;
-        if(extension > 30) {
-           target = 30;
-        }
-        if(extension < 2) {
-            target = 2;
-        }
+        setIntakeExtension(extension, false);
+    }
 
-        if(intake.getExtensionMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-            intake.setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intake.setExtensionPosition(target);
-            intake.setExtensionPower(1);
+    public void setIntakeExtension(double extension, boolean returnImmediate) {
+        intake.setExtensionPosition(extension);
+
+        while(isStarted() && intake.isExtensionBusy() && !returnImmediate) {
         }
     }
 
-    public void moveIntake(double power) {
-        if(intake.getCurrentExtension() > 30 || intake.getCurrentExtension() < 2) {
+    public void moveIntakeExtension(double power) {
+        if(intake.getCurrentExtension() > 27 && power > 0) {
+            setIntakeExtension(intake.getCurrentExtension());
+            return;
+        }
+        if(intake.getCurrentExtension() < 2 && power < 0) {
             setIntakeExtension(intake.getCurrentExtension());
             return;
         }

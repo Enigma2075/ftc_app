@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.team5391;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name= "TeleOp drive", group= "learn TeleOp"  )
 public class Teleop extends BaseOpMode {
@@ -35,10 +34,10 @@ public class Teleop extends BaseOpMode {
                 collectInCrater();
             }
             else if (gamepad2.b && Math.abs(gamepad2.right_stick_y) > .25 ) {
-                moveIntake(-gamepad2.right_stick_y);
+                moveIntakeExtension(-gamepad2.right_stick_y);
             }
             else {
-                moveIntake(0);
+                moveIntakeExtension(0);
             }
 
             sendTelemetry();

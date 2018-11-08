@@ -81,6 +81,7 @@ public class SingleAuto extends BaseOpMode {
 
         // are landing
         movePower(.013);
+        setIntakeExtension(6.5);
         moveLift(8);
         movePower(0);
 
@@ -91,7 +92,8 @@ public class SingleAuto extends BaseOpMode {
 
         //Turn parallel to the block and balls
         gyroTurn(-90);
-        //enything up needs to be unslashed
+
+        setIntakeExtension(2, true);
 
         // check if middle is a block
         CheckForBlock check = new CheckForBlock();
