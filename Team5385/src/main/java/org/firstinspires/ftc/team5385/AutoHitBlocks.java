@@ -69,7 +69,7 @@ public class AutoHitBlocks extends BigAutoBase {
 
         waitForStart();
 
-        moveLift(3.1);
+        moveLift(3.275);
         //CheckSensorAt(0.5);
         //sleep(2000);
     }

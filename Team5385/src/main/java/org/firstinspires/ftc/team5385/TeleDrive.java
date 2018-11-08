@@ -39,6 +39,13 @@ public class TeleDrive extends BigAutoBase {
                 currentLiftMode = LiftMode.STOP;
             }
 
+            if (currentLiftMode == LiftMode.UP && lift.getCurrentPosition() < 0.2){
+                lift.setPower(0);
+            }
+
+            else if(currentLiftMode == LiftMode.DOWN && lift.getCurrentPosition() > 3.1){
+                lift.setPower(0);
+            }
 
             telemetry.addData("liftPosition", lift.getCurrentPosition());
             telemetry.update();

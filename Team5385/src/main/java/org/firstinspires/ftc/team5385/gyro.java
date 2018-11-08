@@ -124,7 +124,7 @@ public class gyro extends BigAutoBase {
             }
         }
 
-        moveLift(3.0);
+        moveLift(3.275);
 
         while(opModeIsActive()){
 
@@ -203,7 +203,9 @@ public class gyro extends BigAutoBase {
         gyroDrive(.9, 18, 0);
         gyroDrive(.9,-10,0);
         gyroTurn(.9, -72);
-        gyroDrive(.9, 35, -72);
+        gyroDrive(.9, 32, -72);
+        gyroTurn(.9, -125);
+        gyroDrive(.9, 44, -125);
     }
 
 }
