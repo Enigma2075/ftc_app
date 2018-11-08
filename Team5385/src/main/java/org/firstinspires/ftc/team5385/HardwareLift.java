@@ -1,18 +1,10 @@
 package org.firstinspires.ftc.team5385;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PWMOutputController;
-import com.qualcomm.robotcore.hardware.PWMOutputControllerEx;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoController;
-import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
-import com.qualcomm.robotcore.hardware.configuration.ExpansionHubMotorControllerPositionParams;
-import java.util.List;
 
 public class HardwareLift {    /* Public OpMode members. */
     private static final double MAX_POT = 3.3 * (9300.0/9400.0);

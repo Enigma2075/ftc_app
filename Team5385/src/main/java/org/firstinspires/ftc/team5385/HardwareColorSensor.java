@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.team5385;
 
-import android.hardware.Sensor;
-
-import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
