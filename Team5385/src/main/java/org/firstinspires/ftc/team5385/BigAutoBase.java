@@ -11,6 +11,7 @@ public class BigAutoBase  extends LinearOpMode {
     HardwareDrivetrain drivetrain = new HardwareDrivetrain();   // Use a Pushbot's hardware
     HardwareLift lift = new HardwareLift();
     HardwareColorSensor colorSystem = new HardwareColorSensor();
+    HardwareArm arm = new HardwareArm();
     AdafruitBNO055IMU gyro = null;// Additional Gyro device
 
 
@@ -236,5 +237,16 @@ public class BigAutoBase  extends LinearOpMode {
         }
         return highestSensorValue;
 
+    }
+
+    public void moveArm(double shoulderPosition, double elbowPosition){
+        while(Math.abs(arm.getElbowError(elbowPosition)) > 0.05 && Math.abs(arm.getShoulderError(shoulderPosition)) > 0.05){
+            arm.goToTarget(shoulderPosition, elbowPosition);
+            telemetry.addData("shoulderPosition", arm.shoulderPosition());
+            telemetry.addData("elbowPosition", arm.elbowPosition());
+            telemetry.addData("elbowError", arm.getElbowError(elbowPosition));
+            telemetry.addData("shouldError", arm.getShoulderError(shoulderPosition));
+            telemetry.update();
+        }
     }
 }

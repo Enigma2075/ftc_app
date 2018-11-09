@@ -17,6 +17,9 @@ public class HardwareArm {    /* Public OpMode members. */
     private AnalogInput shoulderPot;
     private AnalogInput elbowPot;
 
+    private static final double SHOULDER_P_COEFF = 8;
+    private static final double ELBOW_P_COEFF = 10;
+
     /* local OpMode members. */
     HardwareMap hwMap = null;
 
@@ -47,17 +50,31 @@ public class HardwareArm {    /* Public OpMode members. */
         elbow.setPower(power);
     }
 
-    //public void set
+    public void setShoulderPower(double power){
+        shoulder.setPower(power);
+    }
 
-    public void setPower(double liftMotorPower) {
-       double position = 0.5 + .5 * liftMotorPower;
-       if (position > 1){
-           position = 1;
-       }
-       else if (position < 0){
-           position = 0;
-       }
-       //motor.setPosition(position);
+    public void goToTarget(double shoulderTarget, double elbowTarget){
+        double elbowPower = getElbowError(elbowTarget) * ELBOW_P_COEFF;
+        double shoulderPower = getShoulderError(shoulderTarget) * SHOULDER_P_COEFF;
+        setElbowPower(elbowPower);
+        setShoulderPower(shoulderPower);
+    }
+
+    public double shoulderPosition(){
+        return shoulderPot.getVoltage();
+    }
+
+    public double elbowPosition(){
+        return elbowPot.getVoltage();
+    }
+
+    public double getElbowError(double target){
+        return elbowPosition() - target;
+    }
+
+    public double getShoulderError(double target){
+        return shoulderPosition() - target;
     }
 
     //public double getCurrentPosition(){

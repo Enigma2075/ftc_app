@@ -15,6 +15,7 @@ public class AutoHitBlocks extends BigAutoBase {
     public void runOpMode() {
         super.runOpMode();
 
+        arm.init(hardwareMap);
         drivetrain.init(hardwareMap);
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "gyro");
         lift.init(hardwareMap);
@@ -32,6 +33,8 @@ public class AutoHitBlocks extends BigAutoBase {
         waitForStart();
 
         moveLift(3.275);
+
+        moveArm(0.84, 1.65);
     }
 
 }
