@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.team5385;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -37,7 +39,7 @@ public class HardwareArm {    /* Public OpMode members. */
         elbow = hwMap.get(DcMotor.class, "elbow");
 
         bucket = hwMap.get(Servo.class, "bucket");
-
+        shoulder.setDirection(DcMotorSimple.Direction.REVERSE);
         shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shoulder.setPower(0);
@@ -52,6 +54,14 @@ public class HardwareArm {    /* Public OpMode members. */
 
     public void setShoulderPower(double power){
         shoulder.setPower(power);
+    }
+
+    public double getElbowPower() {
+        return elbow.getPower();
+    }
+
+    public double getShoulderPower(){
+        return shoulder.getPower();
     }
 
     public void goToTarget(double shoulderTarget, double elbowTarget){
@@ -77,15 +87,11 @@ public class HardwareArm {    /* Public OpMode members. */
         return shoulderPosition() - target;
     }
 
-    //public double getCurrentPosition(){
-    //    return pot.getVoltage();
-    //}
-
-    //public double getError(double target){
-    //    return getCurrentPosition()-target;
-    //}
-    //public double getPosition(){
-    //    return motor.getPosition();
-    //}
+    public void setServoPos(double pos){
+        bucket.setPosition(pos);
+    }
+    public double getservoPos(){
+        return bucket.getPosition();
+    }
 
 }

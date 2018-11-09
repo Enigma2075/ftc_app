@@ -15,6 +15,8 @@ public class BigAutoBase  extends LinearOpMode {
     AdafruitBNO055IMU gyro = null;// Additional Gyro device
 
 
+    protected enum ArmPosition {HOME, DROP, REACH}
+
     static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = .75;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
@@ -239,14 +241,65 @@ public class BigAutoBase  extends LinearOpMode {
 
     }
 
-    public void moveArm(double shoulderPosition, double elbowPosition){
-        while(Math.abs(arm.getElbowError(elbowPosition)) > 0.05 && Math.abs(arm.getShoulderError(shoulderPosition)) > 0.05){
-            arm.goToTarget(shoulderPosition, elbowPosition);
+    public void moveArm(ArmPosition armPosition){
+
+        double[] target = targetEnum(armPosition);
+        double elbowPosition = target[0];
+        double shoulderPosition = target[1];
+        while((Math.abs(arm.getElbowError(elbowPosition)) > 0.05 || Math.abs(arm.getShoulderError(shoulderPosition)) > 0.05)&& opModeIsActive()){
+            target = targetEnum(armPosition);
+            elbowPosition = target[0];
+            shoulderPosition = target[1];
+            arm.goToTarget(shoulderPosition,elbowPosition);
             telemetry.addData("shoulderPosition", arm.shoulderPosition());
             telemetry.addData("elbowPosition", arm.elbowPosition());
             telemetry.addData("elbowError", arm.getElbowError(elbowPosition));
             telemetry.addData("shouldError", arm.getShoulderError(shoulderPosition));
+            telemetry.addData("elbowMotorPower", arm.getElbowPower());
+            telemetry.addData("shoulderMotorPower", arm.getShoulderPower());
             telemetry.update();
         }
     }
+
+    public void moveArmTeleOp(ArmPosition armPosition){
+        double[] target = targetEnum(armPosition);
+        double elbowPosition = target[0];
+        double shoulderPosition = target[1];
+        arm.goToTarget(shoulderPosition,elbowPosition);
+        telemetry.addData("shoulderPosition", arm.shoulderPosition());
+        telemetry.addData("elbowPosition", arm.elbowPosition());
+        telemetry.addData("elbowError", arm.getElbowError(elbowPosition));
+        telemetry.addData("shouldError", arm.getShoulderError(shoulderPosition));
+        telemetry.addData("elbowMotorPower", arm.getElbowPower());
+        telemetry.addData("shoulderMotorPower", arm.getShoulderPower());
+    }
+    private double[] targetEnum(ArmPosition armPosition){
+        // index 0 is Elbow
+        // index 1 is Shoulder
+        double[] output = new double[2];
+        switch(armPosition){
+            case DROP:
+                if(arm.shoulderPosition()>1.5) {
+                    output[0] = .5;
+                }
+                else output[0] =.67;
+                output[1] = 2.3;
+                break;
+            case REACH:
+                output[0] = 1.65;
+                output[1] = .95;
+                break;
+            default:
+                output[0] = .69;
+                output[1] = .64;
+                break;
+        }
+        return output;
+    }
+
+    public void setArmServo(double pos){
+        arm.setServoPos(pos);
+    }
+
+
 }

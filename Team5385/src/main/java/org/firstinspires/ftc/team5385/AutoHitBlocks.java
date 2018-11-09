@@ -34,7 +34,7 @@ public class AutoHitBlocks extends BigAutoBase {
 
         moveLift(3.275);
 
-        moveArm(0.84, 1.65);
+        moveArm(ArmPosition.HOME);
     }
 
 }
