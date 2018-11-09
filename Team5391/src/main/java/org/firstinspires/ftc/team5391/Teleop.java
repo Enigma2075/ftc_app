@@ -12,11 +12,17 @@ public class Teleop extends BaseOpMode {
         super.runOpMode();
 
         cheesyDrive = new CheesyDrive();
-
         waitForStart();
+
         while (opModeIsActive()) {
             //moves lift and drivetrain
-            DriveSignal powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y * -1, gamepad1.right_stick_x, false);
+
+            boolean quickTurn = false;
+            if(Math.abs(gamepad1.left_stick_y) < .1) {
+                quickTurn = true;
+            }
+
+            DriveSignal powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y * -1, gamepad1.right_stick_x, quickTurn);
             drive(powers);
 
             //goes up with operator y/yellow
@@ -39,6 +45,8 @@ public class Teleop extends BaseOpMode {
             else {
                 moveIntakeExtension(0);
             }
+
+            pivotIntake(.4);
 
             sendTelemetry();
             telemetry.update();

@@ -42,7 +42,7 @@ public class BaseOpMode extends LinearOpMode {
     // need to update in future
     static final double RIGHT_KNOCKER_KNOCK = .6;
 
-    static final double P_PIVOT_COEFF=.5;
+    static final double P_PIVOT_COEFF=2.5;
 
     protected boolean isAuto = true;
 
@@ -115,10 +115,11 @@ public class BaseOpMode extends LinearOpMode {
         if(isAuto) {
             initGyro();
             // Wait for the game to start (Display Gyro value), and reset gyro before we move..
-            while (!isStarted()) {
-                telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().firstAngle);
-                telemetry.update();
-            }
+        }
+
+        while (!isStarted()) {
+            sendTelemetry();
+            telemetry.update();
         }
     }
 
@@ -360,16 +361,15 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void moveLift(double height, double power, boolean returnImmediate) {
-        if(intake.getCurrentExtension() < 6) {
-            setIntakeExtension(6);
+        if(intake.getCurrentExtension() < 6.5) {
+            setIntakeExtension(6.5);
         }
 
         lift.setTargetPosition(height);
+        lift.setPower(power);
 
         while (opModeIsActive() && lift.isBusy())
         {
-            lift.setPower(power);
-
             if(returnImmediate) {
                 return;
             }
@@ -402,12 +402,17 @@ public class BaseOpMode extends LinearOpMode {
     public void pivotIntakeDown(){
     }
 
-    public void Pivetintake(double  position){
-        while (Math.abs(getPotError(position))>0.1 && opModeIsActive()){
+    public void pivotIntake(double  position){
+        while (Math.abs(getPotError(position))>0.001 && opModeIsActive()){
             double power =getPotError(position)*P_PIVOT_COEFF;
-            if(power>1)power=1;
-            else if(power<-1)power=-1;
-            intake.setpivet(power);
+            if(power>1)
+               power=1;
+            else if(power<-1)
+                power=-1;
+
+            intake.setPivot(power);
+            telemetry.addData("TEST", power);
+            telemetry.update();
         }
     }
 
@@ -416,9 +421,13 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     public void sendTelemetry() {
-        telemetry.addData("Lift Height:", "%5.1f", lift.getCurrentHeight());
-        telemetry.addData("Extension:", "%5.1f", intake.getCurrentExtension());
-        telemetry.addData("Intake Pivot:", "%5.1f", intake.getIntakePivot());
+        if(isAuto) {
+            telemetry.addData(">", "Robot Heading = %f", gyro.getAngularOrientation().firstAngle);
+        }
+
+        telemetry.addData("Lift Height:", "%5.3f", lift.getCurrentHeight());
+        telemetry.addData("Extension:", "%5.3f", intake.getCurrentExtension());
+        telemetry.addData("Intake Pivot:", "%5.3f", intake.getIntakePivot());
     }
 
     public boolean isInCrater() {
@@ -450,5 +459,10 @@ public class BaseOpMode extends LinearOpMode {
             intake.setExtensionMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         intake.setExtensionPower(power);
+    }
+
+    public void resetEncoders() {
+        intake.resetEncoders();
+        lift.resetEncoders();
     }
 }

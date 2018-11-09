@@ -38,8 +38,8 @@ public class HardwareLift {
 
         setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        initialCounts = liftMotor.getCurrentPosition();
-        initialCounts2 = liftMotor2.getCurrentPosition();
+        initialCounts = 0; //liftMotor.getCurrentPosition();
+        initialCounts2 = 0; //liftMotor2.getCurrentPosition();
 
         setPower(0);
     }
@@ -66,11 +66,16 @@ public class HardwareLift {
 
 
     public double getCurrentHeight() {
-        return ((double)liftMotor.getCurrentPosition() * COUNTS_PER_INCH) - initialCounts;
+        return ((double)liftMotor.getCurrentPosition() / COUNTS_PER_INCH) - initialCounts;
     }
 
     public boolean isBusy() {
         return liftMotor.isBusy();
+    }
+
+    public void resetEncoders() {
+        liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
 

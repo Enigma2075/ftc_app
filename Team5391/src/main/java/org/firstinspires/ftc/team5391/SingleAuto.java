@@ -82,11 +82,11 @@ public class SingleAuto extends BaseOpMode {
         // are landing
         movePower(.013);
         setIntakeExtension(6.5);
-        moveLift(8);
+        moveLift(8.05);
         movePower(0);
 
         //Pull away from lander
-        gyroDrive(13.25, 0.0);
+        gyroDrive(11.5, 0.0);
         moveLift(.5, true);
         rightKnockerCheck();
 
@@ -131,41 +131,27 @@ public class SingleAuto extends BaseOpMode {
                 gyroDrive(-27, -90);
 
                 //  If ball, continue
-                if (leftBall && centerBall) {
-                    rightBlock = true;
-                    rightKnockerKnock();
-                    sleep(100);
-                    gyroDrive(-6, -90);
-                    rightKnockerUp();
+                rightBlock = true;
+                rightKnockerKnock();
+                sleep(100);
+                gyroDrive(-6, -90);
+                rightKnockerUp();
+                if(moveToCrater) {
+                    gyroDrive(53, -90);
+                }
+                else {
                     gyroDrive(47, -90);
-                } else { //dont need to change the line ubove this slash
-                    check = new CheckForBlock();
-                    gyroDrive(DRIVE_SPEED * .2, -6, -90, check);
-                    // Check right mineral
-                    if (check.foundBlock()) {
-                        rightBlock = true;
-                        rightKnockerKnock();
-                        sleep(100);
-                        gyroDrive(6, -90);
-                        rightKnockerUp();
-                        gyroDrive(47, -90);
-                    } //dont need to change the line ubove this slash
-                    // If above aren't ball, hit right mineral
-                    else {
-                        //rightKnockerUp();
-                        gyroDrive(58, -90);
-                    } //dont need to change the line ubove this slash
                 }
             }
         }
 
         // At this point we should be right next to the wall in the same spot regardless.
-        gyroTurn(-145, TurnType.RIGHT_ONLY);
+        gyroTurn(1,-145, TurnType.RIGHT_ONLY);
 
         if(moveToCrater) {
-            gyroDrive(43, -130);
+            gyroDrive(15, -130);
 
-            gyroDrive(-63, -140);
+            gyroDrive(-55, -132);
             telemetry.addData("Path", "Complete");
             telemetry.update();
         }

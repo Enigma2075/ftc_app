@@ -2,12 +2,12 @@ package org.firstinspires.ftc.team5391;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import java.util.ResourceBundle;
+import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 public class HardwareIntake {
     static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
@@ -47,6 +47,9 @@ public class HardwareIntake {
         leftPivot= hwMap.get(CRServo.class, "leftPivot");
         sensor = hwMap.get(AnalogInput.class,"sensor");
 
+        ((CRServoImplEx) rightPivot).setPwmRange(new PwmControl.PwmRange(500, 2500));
+        ((CRServoImplEx) leftPivot).setPwmRange(new PwmControl.PwmRange(500, 2500));
+
         setIntakeMode(DcMotor.RunMode.RUN_TO_POSITION);
         setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
         extensionMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -76,10 +79,9 @@ public class HardwareIntake {
         setintakePower(1);
     }
 
-    public void setpivet(double power){
-        double PWR= .5+ .5*power;
-        leftPivot.setPower(PWR);
-        rightPivot.setPower(PWR);
+    public void setPivot(double power){
+        leftPivot.setPower(-power);
+        rightPivot.setPower(power);
     }
 
     public double getIntakePivot() {
@@ -119,6 +121,10 @@ public class HardwareIntake {
     }
 
     public double getExtensionTarget() { return extensionMotor.getTargetPosition();}
+
+    public void resetEncoders() {
+        extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
 }
 
 
