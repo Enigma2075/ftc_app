@@ -81,8 +81,8 @@ public class SingleAuto extends BaseOpMode {
 
         // are landing
         movePower(.013);
-        setIntakeExtension(6.5);
-        moveLift(8.05);
+        setIntakeExtension(7);
+        moveLift(8.065);
         movePower(0);
 
         //Pull away from lander
@@ -93,21 +93,25 @@ public class SingleAuto extends BaseOpMode {
         //Turn parallel to the block and balls
         gyroTurn(-90);
 
+        currentIntakePivot = HardwareIntake.IntakePivot.IN_DUMP;
+        //updateIntakePivot(false);
         setIntakeExtension(2, true);
+        //updateIntakePivot(true);
 
         // check if middle is a block
         CheckForBlock check = new CheckForBlock();
-        gyroDrive(DRIVE_SPEED * .2, 6, -90, check);
+        //updateIntakePivot(true);
+        gyroDrive(DRIVE_SPEED * .2, 6.5, -90, check);
 
         if (check.foundBlock()) {
             // The middle is a block
             centerBlock = true;
             rightKnockerKnock();
             sleep(100);
-            gyroDrive(-6, -90);
+            gyroDrive(-6.5, -90);
             rightKnockerUp();
 
-            gyroDrive(46, -90);
+            gyroDrive(48, -90);
         }   // dont need to change the line above this slash
         else {
             // Check if middle is ball
@@ -137,7 +141,7 @@ public class SingleAuto extends BaseOpMode {
                 gyroDrive(-6, -90);
                 rightKnockerUp();
                 if(moveToCrater) {
-                    gyroDrive(53, -90);
+                    gyroDrive(55, -90);
                 }
                 else {
                     gyroDrive(47, -90);
@@ -146,14 +150,18 @@ public class SingleAuto extends BaseOpMode {
         }
 
         // At this point we should be right next to the wall in the same spot regardless.
-        gyroTurn(1,-145, TurnType.RIGHT_ONLY);
+        gyroTurn(.8,-145, TurnType.RIGHT_ONLY);
 
         if(moveToCrater) {
-            gyroDrive(15, -130);
+            gyroDrive(30, -130);
 
-            gyroDrive(-55, -132);
+            slowIntake();
+            sleep(200);
+
+            gyroDrive(-62, -135);
             telemetry.addData("Path", "Complete");
             telemetry.update();
+            keepAlive.interrupt();
         }
     }
 }

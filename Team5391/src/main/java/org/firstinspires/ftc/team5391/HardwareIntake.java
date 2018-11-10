@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 public class HardwareIntake {
     static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
@@ -29,6 +28,21 @@ public class HardwareIntake {
 
     private HardwareMap hwMap = null;
 
+    static final double P_PIVOT_COEFF=3.5;
+
+    public enum IntakePivot {
+        NONE(-1.0), BALLS(1.105), BLOCKS(1.125), DROP(2.6), STORE(2.048), IN_DUMP(2.47);
+
+        private final double position;
+        IntakePivot(double position) {
+            this.position = position;
+        }
+
+        public double getPosition() {
+            return position;
+        }
+    }
+
     public HardwareIntake() {
     }
 
@@ -40,7 +54,7 @@ public class HardwareIntake {
         extensionMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
-        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rightPivot= hwMap.get(CRServo.class, "rightPivot");
@@ -50,43 +64,44 @@ public class HardwareIntake {
         ((CRServoImplEx) rightPivot).setPwmRange(new PwmControl.PwmRange(500, 2500));
         ((CRServoImplEx) leftPivot).setPwmRange(new PwmControl.PwmRange(500, 2500));
 
-        setIntakeMode(DcMotor.RunMode.RUN_TO_POSITION);
-        setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
         extensionMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         setExtensionPower(0);
-        setintakePower(0);
+        setIntakePower(0);
     }
 
-    public void setExtensionMode(DcMotor.RunMode mode) {
-        extensionMotor.setMode(mode);
+    public void setIntakePower(double power) {
+        if(intakeMotor.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+            intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        intakeMotor.setPower(power);
     }
 
-    public void setIntakeMode(DcMotor.RunMode mode) {
-        intakeMotor.setMode(mode);
+    public void movePivot(IntakePivot position){
+        if(position == IntakePivot.NONE) {
+            return;
+        }
+
+        if(isPivotBusy(position)){
+            double power =getPotError(position)*P_PIVOT_COEFF;
+            if(power>1)
+                power=1;
+            else if(power<-1)
+                power=-1;
+
+            leftPivot.setPower(-power);
+            rightPivot.setPower(power);
+        }
     }
 
-    public void setExtensionPower(double power) {
-        extensionMotor.setPower(power);
-    }
-
-    public void setintakePower(double power) {
-        extensionMotor.setPower(power);
-    }
-
-    public void suckinIntake() {
-        setIntakeMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        setintakePower(1);
-    }
-
-    public void setPivot(double power){
-        leftPivot.setPower(-power);
-        rightPivot.setPower(power);
-    }
-
-    public double getIntakePivot() {
+    public double getPivotPosition() {
         return sensor.getVoltage();
     }
+
+    public boolean isPivotBusy(IntakePivot position) {
+        return Math.abs(getPotError(position))>0.01;
+    }
+
 
     public void setExtensionPosition(double targetExtension) {
         double target = targetExtension;
@@ -97,23 +112,18 @@ public class HardwareIntake {
             target = MIN_EXTENSION;
         }
 
-        if(getExtensionMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-            setExtensionMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(extensionMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+            extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         if(getExtensionTarget() != target) {
             extensionMotor.setTargetPosition((int)(target * COUNTS_PER_INCH));
-            setExtensionPower(1);
+            extensionMotor.setPower(1);
         }
     }
 
-
     public double getCurrentExtension() {
         return (double) extensionMotor.getCurrentPosition() / COUNTS_PER_INCH;
-    }
-
-    public DcMotor.RunMode getExtensionMode() {
-        return extensionMotor.getMode();
     }
 
     public boolean isExtensionBusy() {
@@ -124,6 +134,25 @@ public class HardwareIntake {
 
     public void resetEncoders() {
         extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void setExtensionPower(double power) {
+        if(extensionMotor.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+            extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        extensionMotor.setPower(power);
+    }
+
+    public DcMotor.RunMode getExtensionMode() {
+        return extensionMotor.getMode();
+    }
+
+    private void setExtensionMode(DcMotor.RunMode mode) {
+        intakeMotor.setMode(mode);
+    }
+
+    private double getPotError(IntakePivot target) {
+        return getPivotPosition()- target.getPosition();
     }
 }
 

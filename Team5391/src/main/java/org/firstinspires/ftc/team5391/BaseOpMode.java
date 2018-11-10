@@ -1,15 +1,14 @@
 package org.firstinspires.ftc.team5391;
 
+import android.support.annotation.Keep;
+
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -42,9 +41,9 @@ public class BaseOpMode extends LinearOpMode {
     // need to update in future
     static final double RIGHT_KNOCKER_KNOCK = .6;
 
-    static final double P_PIVOT_COEFF=2.5;
-
     protected boolean isAuto = true;
+
+    protected HardwareIntake.IntakePivot currentIntakePivot = HardwareIntake.IntakePivot.NONE;
 
     public class CheckForBlock implements Runnable {
         double minDistance = 500;
@@ -90,14 +89,6 @@ public class BaseOpMode extends LinearOpMode {
             sensorRange3 = hardwareMap.get(DistanceSensor.class, "sensor_range3");
             sensorRange4 = hardwareMap.get(DistanceSensor.class, "sensor_range4");
             gyro = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
-
-            //((ServoImplEx) leftKnocker).setPwmRange(new PwmControl.PwmRange(500, 2500));
-            //((ServoImplEx)rightKnocker).setPwmRange(new PwmControl.PwmRange(500,2500));
-
-
-            // you can also cast this to a Rev2mDistanceSensor if you want to use added
-            // methods associated with the Rev2mDistanceSensor class.
-            //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
         }
 
         rightKnocker = hardwareMap.get(Servo.class, "range_servo");
@@ -117,11 +108,19 @@ public class BaseOpMode extends LinearOpMode {
             // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         }
 
-        while (!isStarted()) {
+        while (!opModeIsActive()) {
+            if(isStopRequested()) {
+                return;
+            }
             sendTelemetry();
             telemetry.update();
         }
+
+        keepAlive = new KeepAlive(this);
+        keepAlive.start();
     }
+
+    protected KeepAlive keepAlive;
 
     protected void rightKnockerUp() {
         rightKnocker.setPosition(RIGHT_KNOCKER_UP);
@@ -361,6 +360,9 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void moveLift(double height, double power, boolean returnImmediate) {
+        if(lift.getCurrentHeight() > 7 && height < 2 && intake.getCurrentExtension() < 8) {
+            setIntakeExtension(8);
+        }
         if(intake.getCurrentExtension() < 6.5) {
             setIntakeExtension(6.5);
         }
@@ -381,43 +383,26 @@ public class BaseOpMode extends LinearOpMode {
         drivetrain.setPower(power);
     }
 
-    protected void extendIntake(double power) {
-        intake.setintakePower(power);
+    protected void suckIntake() {
+        intake.setIntakePower(1);
     }
 
-    protected void suckIntake() {
-        intake.suckinIntake();
+    protected void spitIntake() {
+        intake.setIntakePower(-1);
+    }
+
+    protected void intakeOff() {
+        intake.setIntakePower(0);
+    }
+
+    protected void slowIntake() {
+        intake.setIntakePower(.5);
     }
 
     public void collectInCrater(){
         setIntakeExtension(6);
-        //intake.foldDown();
-        intake.suckinIntake();
-    }
-
-    public void pivotIntakeUp(){
-
-    }
-
-    public void pivotIntakeDown(){
-    }
-
-    public void pivotIntake(double  position){
-        while (Math.abs(getPotError(position))>0.001 && opModeIsActive()){
-            double power =getPotError(position)*P_PIVOT_COEFF;
-            if(power>1)
-               power=1;
-            else if(power<-1)
-                power=-1;
-
-            intake.setPivot(power);
-            telemetry.addData("TEST", power);
-            telemetry.update();
-        }
-    }
-
-    public double getPotError(double target) {
-       return intake.getIntakePivot()- target;
+        currentIntakePivot = HardwareIntake.IntakePivot.BALLS;
+        suckIntake();
     }
 
     public void sendTelemetry() {
@@ -427,11 +412,17 @@ public class BaseOpMode extends LinearOpMode {
 
         telemetry.addData("Lift Height:", "%5.3f", lift.getCurrentHeight());
         telemetry.addData("Extension:", "%5.3f", intake.getCurrentExtension());
-        telemetry.addData("Intake Pivot:", "%5.3f", intake.getIntakePivot());
+        telemetry.addData("Intake Pivot:", "%5.3f", intake.getPivotPosition());
     }
 
     public boolean isInCrater() {
         return intake.getCurrentExtension() > 5.5;
+    }
+
+    public void setIntakeExtension() {
+        if(intake.getExtensionMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+            setIntakeExtension(intake.getCurrentExtension(), true);
+        }
     }
 
     public void setIntakeExtension(double extension) {
@@ -441,7 +432,7 @@ public class BaseOpMode extends LinearOpMode {
     public void setIntakeExtension(double extension, boolean returnImmediate) {
         intake.setExtensionPosition(extension);
 
-        while(isStarted() && intake.isExtensionBusy() && !returnImmediate) {
+        while(opModeIsActive() && intake.isExtensionBusy() && !returnImmediate) {
         }
     }
 
@@ -455,10 +446,25 @@ public class BaseOpMode extends LinearOpMode {
             return;
         }
 
-        if(intake.getExtensionMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
-            intake.setExtensionMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double targetPower = power;
+        if(targetPower < 0) {
+            targetPower *= .5;
         }
-        intake.setExtensionPower(power);
+        intake.setExtensionPower(targetPower);
+    }
+
+    public void updateIntakePivot(boolean returnImmediate) {
+        while(intake.isPivotBusy(currentIntakePivot) && opModeIsActive()){
+            intake.movePivot(currentIntakePivot);
+
+            if(returnImmediate) {
+                return;
+            }
+        }
+    }
+
+    public double getLiftHeight() {
+        return lift.getCurrentHeight();
     }
 
     public void resetEncoders() {

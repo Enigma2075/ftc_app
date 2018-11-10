@@ -88,19 +88,25 @@ public class DoubleAuto extends SingleAuto {
             gyroTurn(-130);
         }
         else if(leftBlock) {
-            gyroDrive(19, -140);
+            gyroDrive(26, -140);
             gyroTurn(-210);
             gyroDrive(27, -210);
             gyroDrive(-27, -210);
             gyroTurn(-130);
+            gyroDrive(-3, -140);
         }
         else {
             gyroDrive(43, -130);
         }
 
+        slowIntake();
+        sleep(200);
+
         gyroDrive(-55, -140);
         telemetry.addData("Path", "Complete");
         telemetry.update();
+
+        keepAlive.interrupt();
     }
 }
 
