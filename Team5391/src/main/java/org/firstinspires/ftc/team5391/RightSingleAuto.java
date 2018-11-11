@@ -64,101 +64,26 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "Single Auto", group = "Main")
+@Autonomous(name = "Right Single", group = "Main")
 //@Disabled
-public class SingleAuto extends BaseOpMode {
-    protected boolean rightBlock = false;
-    protected boolean leftBlock = false;
-    protected boolean centerBlock = false;
-    protected boolean leftBall = false;
-    protected boolean centerBall = false;
-
-    protected boolean moveToCrater = true;
+public class RightSingleAuto extends LeftSingleAuto {
 
     @Override
     public void runOpMode() {
         super.runOpMode();
 
-        // are landing
-        movePower(.013);
-        setIntakeExtension(7);
-        moveLift(8.065);
-        movePower(0);
-
-        //Pull away from lander
-        gyroDrive(11.5, 0.0);
-        moveLift(.5, true);
-        rightKnockerCheck();
-
-        //Turn parallel to the block and balls
-        gyroTurn(-90);
-
-        currentIntakePivot = HardwareIntake.IntakePivot.IN_DUMP;
-        //updateIntakePivot(false);
-        setIntakeExtension(2, true);
-        //updateIntakePivot(true);
-
-        // check if middle is a block
-        CheckForBlock check = new CheckForBlock();
-        //updateIntakePivot(true);
-        gyroDrive(DRIVE_SPEED * .2, 6.5, -90, check);
-
-        if (check.foundBlock()) {
-            // The middle is a block
-            centerBlock = true;
-            rightKnockerKnock();
-            sleep(100);
-            gyroDrive(-6.5, -90);
-            rightKnockerUp();
-
-            gyroDrive(48, -90);
-        }   // dont need to change the line above this slash
-        else {
-            // Check if middle is ball
-            centerBall = check.foundBall();
-
-            // checks if the left is block
-            gyroDrive(9.75, -90);
-            check = new CheckForBlock();
-            gyroDrive(DRIVE_SPEED * .2, 6, -90, check);
-            if (check.foundBlock()) {
-                // The left is a block
-                leftBlock = true;
-                rightKnockerKnock();
-                sleep(100);
-                gyroDrive(-6, -90);
-                rightKnockerUp();
-                gyroDrive(31, -90);
-            }    //dont need to change the line ubove this slash
-            else {
-                leftBall = check.foundBall();
-                gyroDrive(-27, -90);
-
-                //  If ball, continue
-                rightBlock = true;
-                rightKnockerKnock();
-                sleep(100);
-                gyroDrive(-6, -90);
-                rightKnockerUp();
-                if(moveToCrater) {
-                    gyroDrive(55, -90);
-                }
-                else {
-                    gyroDrive(47, -90);
-                }
-            }
-        }
+        turn = false;
 
         // At this point we should be right next to the wall in the same spot regardless.
-        gyroTurn(.8,-145, TurnType.RIGHT_ONLY);
+        gyroTurn(.8,45, TurnType.RIGHT_ONLY);
 
         if(moveToCrater) {
-            gyroDrive(30, -130);
+            gyroDrive(30, -145);
 
             slowIntake();
             sleep(200);
 
-            gyroDrive(-62, -135);
+            gyroDrive(-62, 135);
             telemetry.addData("Path", "Complete");
             telemetry.update();
             keepAlive.interrupt();

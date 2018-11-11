@@ -149,7 +149,7 @@ public class BaseOpMode extends LinearOpMode {
         gyro.initialize(parameters);
 
         // make sure the gyro is calibrated before continuing
-        while (!isStopRequested() && gyro.isGyroCalibrated()) {
+        while (!isStopRequested() && !gyro.isGyroCalibrated()) {
             sleep(50);
             idle();
         }
@@ -160,7 +160,7 @@ public class BaseOpMode extends LinearOpMode {
         drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    protected boolean onHeading(double speed, double angle, double PCoeff, TurnType turnType) {
+    protected boolean onHeading(double speed, double angle, double PCoeff, TurnType turnType, boolean counterClockwise) {
         double error;
         double steer;
         boolean onTarget = false;
@@ -196,6 +196,11 @@ public class BaseOpMode extends LinearOpMode {
             else {
                 leftSpeed = 0;
             }
+        }
+
+        if(!counterClockwise) {
+            leftSpeed *= -1;
+            rightSpeed *= -1;
         }
 
         // Send desired speeds to motors.
@@ -235,11 +240,15 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void gyroTurn(double speed, double angle, TurnType turnType) {
+        gyroTurn(speed, angle, turnType, true);
+    }
+
+    protected void gyroTurn(double speed, double angle, TurnType turnType, boolean counterClockwise) {
         drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // keep looping while we are still active, and not on heading.
         int onHeadingCount = 0;
         while (opModeIsActive() && onHeadingCount < 2) {
-            if(onHeading(speed, -angle, P_TURN_COEFF, turnType)) {
+            if(onHeading(speed, -angle, P_TURN_COEFF, turnType, counterClockwise)) {
                 onHeadingCount++;
             }
             else {
@@ -265,7 +274,10 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void drive(DriveSignal signal) {
-        drivetrain.setPower(signal.rightMotor, signal.leftMotor);
+        double rightPower = signal.rightMotor *.5;
+        double leftPower = signal.leftMotor * .5;
+
+        drivetrain.setPower(rightPower, leftPower);
     }
 
     protected void gyroDrive(double speed,
@@ -447,9 +459,6 @@ public class BaseOpMode extends LinearOpMode {
         }
 
         double targetPower = power;
-        if(targetPower < 0) {
-            targetPower *= .5;
-        }
         intake.setExtensionPower(targetPower);
     }
 

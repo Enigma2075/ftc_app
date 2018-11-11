@@ -31,7 +31,7 @@ public class HardwareIntake {
     static final double P_PIVOT_COEFF=3.5;
 
     public enum IntakePivot {
-        NONE(-1.0), BALLS(1.105), BLOCKS(1.125), DROP(2.6), STORE(2.048), IN_DUMP(2.47);
+        NONE(-1.0), BALLS(1.109), BLOCKS(.88), TRANSFER(2.6), STORE(2), IN_DUMP(2.47);
 
         private final double position;
         IntakePivot(double position) {
@@ -118,7 +118,12 @@ public class HardwareIntake {
 
         if(getExtensionTarget() != target) {
             extensionMotor.setTargetPosition((int)(target * COUNTS_PER_INCH));
-            extensionMotor.setPower(1);
+
+            double targetPower = 1;
+            if(targetExtension < getCurrentExtension()) {
+                targetPower = .40;
+            }
+            extensionMotor.setPower(targetPower);
         }
     }
 
@@ -140,7 +145,12 @@ public class HardwareIntake {
         if(extensionMotor.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
             extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-        extensionMotor.setPower(power);
+
+        double targetPower = power;
+        if(targetPower < 0) {
+            targetPower *= .40;
+        }
+        extensionMotor.setPower(targetPower);
     }
 
     public DcMotor.RunMode getExtensionMode() {

@@ -64,9 +64,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "Double Auto", group = "Main")
+@Autonomous(name = "Left Double Auto", group = "Main")
 //@Disabled
-public class DoubleAuto extends SingleAuto {
+public class LeftDoubleAuto extends LeftSingleAuto {
     @Override
     public void runOpMode() {
         moveToCrater = false;
@@ -74,21 +74,21 @@ public class DoubleAuto extends SingleAuto {
         super.runOpMode();
 
         if(rightBlock) {
-            gyroDrive(4, -150);
-            gyroTurn(-120);
-            gyroDrive(24, -120);
-            gyroTurn(-120);
+            gyroDrive(8, -150);
+            //gyroTurn(-130);
+            gyroDrive(24, -130);
+            //gyroTurn(-130);
         }
         // Hit the corresponding mineral
         else if(centerBlock) {
-            gyroDrive(19, -140);
+            gyroDrive(23, -140);
             gyroTurn(-230);
             gyroDrive(17, -230);
             gyroDrive(-17, -230);
             gyroTurn(-130);
         }
         else if(leftBlock) {
-            gyroDrive(26, -140);
+            gyroDrive(28, -140);
             gyroTurn(-210);
             gyroDrive(27, -210);
             gyroDrive(-27, -210);

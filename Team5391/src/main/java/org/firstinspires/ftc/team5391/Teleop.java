@@ -19,7 +19,7 @@ public class Teleop extends BaseOpMode {
         while (opModeIsActive()) {
             //moves lift and drivetrain
             boolean quickTurn = false;
-            if(Math.abs(gamepad1.left_stick_y) < 0) {
+            if(Math.abs(gamepad1.left_stick_y) == 0) {
                 quickTurn = true;
             }
 
@@ -40,26 +40,29 @@ public class Teleop extends BaseOpMode {
                 moveLift(7.25);
             }
 
+            powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y * -1, gamepad1.right_stick_x, quickTurn);
+            drive(powers);
+
             if (gamepad2.right_bumper && !isInCrater()) {
                 collectInCrater();
             }
             else if (gamepad2.right_bumper && Math.abs(gamepad2.right_stick_y) > 0) {
                 suckIntake();
-                currentIntakePivot = HardwareIntake.IntakePivot.BALLS;
+                setIntakePivotIfNotOverride(HardwareIntake.IntakePivot.BALLS);
                 moveIntakeExtension(-gamepad2.right_stick_y);
             }
             else if(gamepad2.right_bumper){
-                currentIntakePivot = HardwareIntake.IntakePivot.BALLS;
+                setIntakePivotIfNotOverride(HardwareIntake.IntakePivot.BALLS);
                 setIntakeExtension();
             }
             else if(gamepad2.left_bumper){
-                currentIntakePivot = HardwareIntake.IntakePivot.DROP;
+                currentIntakePivot = HardwareIntake.IntakePivot.TRANSFER;
                 setIntakeExtension(.5, true);
                 slowIntake();
             }
             else if(gamepad2.dpad_up) {
-                currentIntakePivot = HardwareIntake.IntakePivot.BALLS;
-                moveLift(7.5);
+                setIntakePivotIfNotOverride(HardwareIntake.IntakePivot.BALLS);
+                moveLift(6.5);
                 sleep(500);
                 moveLift(8.1);
                 setIntakeExtension(9);
@@ -80,6 +83,9 @@ public class Teleop extends BaseOpMode {
                 }
             }
 
+            powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y * -1, gamepad1.right_stick_x, quickTurn);
+            drive(powers);
+
             if(gamepad1.a) {
                 currentIntakePivot = HardwareIntake.IntakePivot.BALLS;
             }
@@ -90,14 +96,27 @@ public class Teleop extends BaseOpMode {
                 currentIntakePivot = HardwareIntake.IntakePivot.STORE;
             }
             else if(gamepad1.x) {
-                currentIntakePivot = HardwareIntake.IntakePivot.DROP;
+                currentIntakePivot = HardwareIntake.IntakePivot.TRANSFER;
             }
+
+            powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y * -1, gamepad1.right_stick_x, quickTurn);
+            drive(powers);
 
             //updateIntakePivot(true);
 
             sendTelemetry();
             telemetry.update();
             keepAlive.interrupt();
+        }
+    }
+
+    private boolean driverOverride() {
+        return gamepad1.a || gamepad1.b ||gamepad1.x || gamepad1.y;
+    }
+
+    private void setIntakePivotIfNotOverride(HardwareIntake.IntakePivot pivot) {
+        if(!driverOverride()) {
+            currentIntakePivot = pivot;
         }
     }
 }
