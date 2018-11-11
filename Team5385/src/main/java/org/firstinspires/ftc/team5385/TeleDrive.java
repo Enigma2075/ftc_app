@@ -55,12 +55,16 @@ public class TeleDrive extends BigAutoBase {
             /** Code To Run The Arm In Tele-Op **/
             if(gamepad2.b && currentArmPosition != ArmPosition.HOME){
                 currentArmPosition = ArmPosition.HOME;
+                setArmServo(.25);
             }
             else if(gamepad2.x && currentArmPosition !=ArmPosition.DROP){
                 currentArmPosition = ArmPosition.DROP;
+
+
             }
             else if(gamepad2.y){
                 currentArmPosition = ArmPosition.REACH;
+                setArmServo(.65);
             }
 
             if(Math.abs(gamepad2.right_stick_y)>.1){
@@ -77,7 +81,9 @@ public class TeleDrive extends BigAutoBase {
             else if(gamepad2.left_bumper){
                 setArmServo(arm.getservoPos()-.05);
             }
-
+            if(arm.shoulderPosition()>1.0 && currentArmPosition == ArmPosition.DROP && arm.shoulderPosition()<2.0){
+                setArmServo(0);
+            }
             telemetry.addData("bucket pos", arm.getservoPos());
 
 

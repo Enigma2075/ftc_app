@@ -19,24 +19,42 @@ public class gyro extends BigAutoBase {
         gyro = hardwareMap.get(AdafruitBNO055IMU.class, "gyro");
         lift.init(hardwareMap);
         colorSystem.init(hardwareMap);
+        arm.init(hardwareMap);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
+        parameters.loggingEnabled      = false;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         gyro.initialize(parameters);
+        setArmServo(.3);
+
+        while(!opModeIsActive()) {
+            if(isStopRequested()) {
+                return;
+            }
+            telemetry.addData("Gyro", gyro.getAngularOrientation().firstAngle);
+            telemetry.update();
+        }
 
         waitForStart();
+
+        while(opModeIsActive() && !gyro.isGyroCalibrated()) {
+            if(isStopRequested()) {
+                return;
+            }
+            sleep(50);
+            idle();
+        }
 
         moveLift(0.2);
         double blue = checkSensorAt(.327);
         telemetry.addData("blueLight", blue);
         telemetry.update();
         if(blue <= 2){
-                middleBlock();
+            middleBlock();
         }
         else{
             blue = checkSensorAt(.5);
@@ -66,6 +84,7 @@ public class gyro extends BigAutoBase {
         gyroTurn(.9,-120, TurnType.RIGHT_ONLY);
         gyroDrive(.9, 36, -120);
         gyroTurn(.9, -135);
+        gyroDrive(.9, -12, -135);
         gyroDrive(.9, -55, -135);
     }
     public void leftBlock(){
@@ -78,8 +97,9 @@ public class gyro extends BigAutoBase {
         gyroDrive(.9, 27, -130);
         gyroTurn(.9, -215, TurnType.RIGHT_ONLY);
         gyroDrive(.9, 15, -215);
-        gyroDrive(.9, -19, -215);
+        gyroDrive(.9, -15, -215);
         gyroTurn(.9, -135, TurnType.RIGHT_ONLY);
+        gyroDrive(.9, -12, -135);
         gyroDrive(.9, -67, -130);
     }
     public void middleBlock(){
@@ -93,6 +113,7 @@ public class gyro extends BigAutoBase {
         gyroDrive(.9,4,-222);
         gyroDrive(.9,-4,-222);
         gyroTurn(.9,-131, TurnType.RIGHT_ONLY);
+        gyroDrive(.9, -12, -131);
         gyroDrive(.9,-50,-131);
     }
 

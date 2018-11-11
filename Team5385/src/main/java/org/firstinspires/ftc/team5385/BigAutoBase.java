@@ -15,7 +15,7 @@ public class BigAutoBase  extends LinearOpMode {
     AdafruitBNO055IMU gyro = null;// Additional Gyro device
 
 
-    protected enum ArmPosition {HOME, DROP, REACH}
+    protected enum ArmPosition {HOME, DROP, REACH, MARKER}
 
     static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = .75;     // This is < 1.0 if geared UP
@@ -246,10 +246,7 @@ public class BigAutoBase  extends LinearOpMode {
         double[] target = targetEnum(armPosition);
         double elbowPosition = target[0];
         double shoulderPosition = target[1];
-        while((Math.abs(arm.getElbowError(elbowPosition)) > 0.05 || Math.abs(arm.getShoulderError(shoulderPosition)) > 0.05)&& opModeIsActive()){
-            target = targetEnum(armPosition);
-            elbowPosition = target[0];
-            shoulderPosition = target[1];
+        while((Math.abs(arm.getElbowError(elbowPosition)) > 0.01 || Math.abs(arm.getShoulderError(shoulderPosition)) > 0.01)&& opModeIsActive()){
             arm.goToTarget(shoulderPosition,elbowPosition);
             telemetry.addData("shoulderPosition", arm.shoulderPosition());
             telemetry.addData("elbowPosition", arm.elbowPosition());
@@ -286,7 +283,11 @@ public class BigAutoBase  extends LinearOpMode {
                 output[1] = 2.3;
                 break;
             case REACH:
-                output[0] = 1.65;
+                output[0] = 1.6;
+                output[1] = .95;
+                break;
+            case MARKER:
+                output[0] = 1.75;
                 output[1] = .95;
                 break;
             default:

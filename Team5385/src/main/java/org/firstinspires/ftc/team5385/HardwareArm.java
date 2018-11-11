@@ -90,6 +90,7 @@ public class HardwareArm {    /* Public OpMode members. */
     public void setServoPos(double pos){
         bucket.setPosition(pos);
     }
+
     public double getservoPos(){
         return bucket.getPosition();
     }
