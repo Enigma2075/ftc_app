@@ -277,9 +277,9 @@ public class BigAutoBase  extends LinearOpMode {
         switch(armPosition){
             case DROP:
                 if(arm.shoulderPosition()>1.5) {
-                    output[0] = .5;
+                    output[0] = .69;
                 }
-                else output[0] =.67;
+                else output[0] =.69;
                 output[1] = 2.3;
                 break;
             case REACH:
