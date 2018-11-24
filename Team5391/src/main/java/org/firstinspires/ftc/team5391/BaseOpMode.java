@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.team5391;
 
-import android.support.annotation.Keep;
-
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -116,11 +114,11 @@ public class BaseOpMode extends LinearOpMode {
             telemetry.update();
         }
 
-        keepAlive = new KeepAlive(this);
-        keepAlive.start();
+        pivotThread = new PivotThread(this);
+        pivotThread.start();
     }
 
-    protected KeepAlive keepAlive;
+    protected PivotThread pivotThread;
 
     protected void rightKnockerUp() {
         rightKnocker.setPosition(RIGHT_KNOCKER_UP);
@@ -274,8 +272,8 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void drive(DriveSignal signal) {
-        double rightPower = signal.rightMotor *.5;
-        double leftPower = signal.leftMotor * .5;
+        double rightPower = signal.rightMotor *.85;
+        double leftPower = signal.leftMotor * .85;
 
         drivetrain.setPower(rightPower, leftPower);
     }
@@ -371,11 +369,19 @@ public class BaseOpMode extends LinearOpMode {
         moveLift(height, 1, false);
     }
 
+    protected void moveLift(double height, double power) {
+        moveLift(height, power, false);
+    }
+
     protected void moveLift(double height, double power, boolean returnImmediate) {
-        if(lift.getCurrentHeight() > 7 && height < 2 && intake.getCurrentExtension() < 8) {
-            setIntakeExtension(8);
+        if(lift.getCurrentHeight() > 7 && height < 2 && intake.getCurrentExtension() < 6.5) {
+            currentIntakePivot = HardwareIntake.IntakePivot.STORE;
+            sleep(500);
+            setIntakeExtension(6.5);
         }
         if(intake.getCurrentExtension() < 6.5) {
+            currentIntakePivot = HardwareIntake.IntakePivot.STORE;
+            sleep(500);
             setIntakeExtension(6.5);
         }
 
@@ -412,8 +418,10 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     public void collectInCrater(){
-        setIntakeExtension(6);
-        currentIntakePivot = HardwareIntake.IntakePivot.BALLS;
+        currentIntakePivot = HardwareIntake.IntakePivot.STORE;
+        if(intake.getPivotError(HardwareIntake.IntakePivot.STORE) < .5) {
+            setIntakeExtension(6, true);
+        }
         suckIntake();
     }
 
@@ -429,6 +437,10 @@ public class BaseOpMode extends LinearOpMode {
 
     public boolean isInCrater() {
         return intake.getCurrentExtension() > 5.5;
+    }
+
+    public double getIntakeExtension() {
+        return intake.getCurrentExtension();
     }
 
     public void setIntakeExtension() {

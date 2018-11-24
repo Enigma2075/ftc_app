@@ -28,10 +28,10 @@ public class HardwareIntake {
 
     private HardwareMap hwMap = null;
 
-    static final double P_PIVOT_COEFF=3.5;
+    static final double P_PIVOT_COEFF=2;
 
     public enum IntakePivot {
-        NONE(-1.0), BALLS(1.109), BLOCKS(.88), TRANSFER(2.6), STORE(2), IN_DUMP(2.47);
+        NONE(-1.0), BALLS(1.05), BLOCKS(.88), TRANSFER(2.6), STORE(1.6), IN_DUMP(2.47);
 
         private final double position;
         IntakePivot(double position) {
@@ -83,7 +83,7 @@ public class HardwareIntake {
         }
 
         if(isPivotBusy(position)){
-            double power =getPotError(position)*P_PIVOT_COEFF;
+            double power = getPivotError(position)*P_PIVOT_COEFF;
             if(power>1)
                 power=1;
             else if(power<-1)
@@ -99,7 +99,7 @@ public class HardwareIntake {
     }
 
     public boolean isPivotBusy(IntakePivot position) {
-        return Math.abs(getPotError(position))>0.01;
+        return Math.abs(getPivotError(position))>0.001;
     }
 
 
@@ -121,7 +121,7 @@ public class HardwareIntake {
 
             double targetPower = 1;
             if(targetExtension < getCurrentExtension()) {
-                targetPower = .40;
+                targetPower = .75;
             }
             extensionMotor.setPower(targetPower);
         }
@@ -148,7 +148,7 @@ public class HardwareIntake {
 
         double targetPower = power;
         if(targetPower < 0) {
-            targetPower *= .40;
+            targetPower *= .75;
         }
         extensionMotor.setPower(targetPower);
     }
@@ -161,7 +161,7 @@ public class HardwareIntake {
         intakeMotor.setMode(mode);
     }
 
-    private double getPotError(IntakePivot target) {
+    public double getPivotError(IntakePivot target) {
         return getPivotPosition()- target.getPosition();
     }
 }

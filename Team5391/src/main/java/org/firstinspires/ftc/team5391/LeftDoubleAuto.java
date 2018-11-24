@@ -106,7 +106,7 @@ public class LeftDoubleAuto extends LeftSingleAuto {
         telemetry.addData("Path", "Complete");
         telemetry.update();
 
-        keepAlive.interrupt();
+        pivotThread.interrupt();
     }
 }
 

@@ -86,7 +86,7 @@ public class RightSingleAuto extends LeftSingleAuto {
             gyroDrive(-62, 135);
             telemetry.addData("Path", "Complete");
             telemetry.update();
-            keepAlive.interrupt();
+            pivotThread.interrupt();
         }
     }
 }

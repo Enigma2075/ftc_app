@@ -1,15 +1,17 @@
 package org.firstinspires.ftc.team5391;
 
-public class KeepAlive extends Thread {
+public class PivotThread extends Thread {
     private BaseOpMode opMode;
 
-    KeepAlive(BaseOpMode opMode) {
+    PivotThread(BaseOpMode opMode) {
         this.opMode = opMode;
     }
 
     @Override
     public void run() {
-        while(!interrupted()) {
+        opMode.waitForStart();
+
+        while(!interrupted() && !opMode.isStopRequested() && opMode.isStarted()) {
             opMode.updateIntakePivot(true);
             try {
                 sleep(50);

@@ -83,7 +83,7 @@ public class LeftSingleAuto extends BaseOpMode {
 
         // are landing
         movePower(.013);
-        setIntakeExtension(7);
+        setIntakeExtension(6.5);
         moveLift(8.065);
         movePower(0);
 
@@ -166,7 +166,7 @@ public class LeftSingleAuto extends BaseOpMode {
             gyroDrive(-6, -135);
             telemetry.addData("Path", "Complete");
             telemetry.update();
-            keepAlive.interrupt();
+            pivotThread.interrupt();
         }
     }
 }
