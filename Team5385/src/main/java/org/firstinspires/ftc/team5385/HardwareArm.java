@@ -91,6 +91,11 @@ public class HardwareArm {    /* Public OpMode members. */
         bucket.setPosition(pos);
     }
 
+    public void stopArm(){
+        setElbowPower(0);
+        setShoulderPower(0);
+    }
+
     public double getservoPos(){
         return bucket.getPosition();
     }

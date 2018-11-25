@@ -5,9 +5,9 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
-@Autonomous(name="autoBlocks", group="Pushbot")
+@Autonomous(name="Reset Robot", group="Pushbot")
 
-public class AutoHitBlocks extends BigAutoBase {
+public class ResetRobot extends BigAutoBase {
 
     /* Declare OpMode members. */
 
