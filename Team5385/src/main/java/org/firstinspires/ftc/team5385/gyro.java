@@ -48,25 +48,30 @@ public class gyro extends BigAutoBase {
             sleep(50);
             idle();
         }
-
+        arm.setServoPos(0);
         moveLift(0.2);
         double blue = checkSensorAt(.327);
         telemetry.addData("blueLight", blue);
         telemetry.update();
-        if(blue <= 2){
+        if(blue <= 3){
+            colorSystem.setPosition(1);
             middleBlock();
         }
         else{
             blue = checkSensorAt(.5);
-            if(blue <= 2){
+            if(blue <= 3){
+                colorSystem.setPosition(1);
                 leftBlock();
             }
             else{
+                colorSystem.setPosition(1);
                 rightBlock();
             }
         }
 
-        moveLift(3.275);
+        moveLift(1.2);
+
+
 
         while(opModeIsActive()){
 
@@ -99,7 +104,9 @@ public class gyro extends BigAutoBase {
         gyroDrive(.9, 15, -215);
         gyroDrive(.9, -15, -215);
         gyroTurn(.9, -135, TurnType.RIGHT_ONLY);
-        gyroDrive(.9, -12, -135);
+        gyroDrive(.9, -12, -130);
+        moveArm(ArmPosition.MARKER);
+        moveArm(ArmPosition.HOME);
         gyroDrive(.9, -67, -130);
     }
     public void middleBlock(){

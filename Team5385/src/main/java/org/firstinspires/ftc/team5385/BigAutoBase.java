@@ -15,7 +15,7 @@ public class BigAutoBase  extends LinearOpMode {
     AdafruitBNO055IMU gyro = null;// Additional Gyro device
 
 
-    protected enum ArmPosition {HOME, DROP, REACH, MARKER}
+    protected enum ArmPosition {HOME, DROP, REACH, MARKER, HOLD}
 
     static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = .75;     // This is < 1.0 if geared UP
@@ -29,7 +29,7 @@ public class BigAutoBase  extends LinearOpMode {
     static final double TURN_SPEED = 0.7;     // Nominal half speed for better accuracy
 
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
-    static final double P_TURN_COEFF = 0.02;     // Larger is more responsive, but also less stable
+    static final double P_TURN_COEFF = 0.015;     // Larger is more responsive, but also less stable
     static final double P_MOVE_LIFT_COEFF = 6;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 1.0/20.0;
 
@@ -277,18 +277,22 @@ public class BigAutoBase  extends LinearOpMode {
         switch(armPosition){
             case DROP:
                 if(arm.shoulderPosition()>1.5) {
-                    output[0] = .69;
+                    output[0] = .67;
                 }
                 else output[0] =.69;
-                output[1] = 2.3;
+                output[1] = 2.4;
                 break;
             case REACH:
-                output[0] = 1.6;
+                output[0] = 1.5;
                 output[1] = .95;
                 break;
             case MARKER:
-                output[0] = 1.75;
-                output[1] = .95;
+                    output[0] = 2;
+                output[1] = 1.4;
+                break;
+            case HOLD:
+                output[0] = arm.elbowPosition();
+                output[1] = arm.shoulderPosition();
                 break;
             default:
                 output[0] = .69;

@@ -26,9 +26,14 @@ public class TeleDrive extends BigAutoBase {
         while(opModeIsActive()) {
 
             /** Code To Run The Drivetrain In Tele-Op **/
-            DriveSignal powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y*-1, gamepad1.right_stick_x, gamepad1.left_stick_y==0);
-            drivetrain.setPower(powers.leftMotor, powers.rightMotor);
-
+            if (gamepad1.right_bumper) {
+                DriveSignal powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y * -.5, gamepad1.right_stick_x*.5, gamepad1.left_stick_y == 0);
+                drivetrain.setPower(powers.leftMotor, powers.rightMotor);
+            }
+            else {
+                DriveSignal powers = cheesyDrive.cheesyDrive(gamepad1.left_stick_y * -1, gamepad1.right_stick_x, gamepad1.left_stick_y == 0);
+                drivetrain.setPower(powers.leftMotor, powers.rightMotor);
+            }
             /** Code To Run The Lift In Tele-Op **/
             if (gamepad2.dpad_up && currentLiftMode != LiftMode.UP){
                 lift.setPower(1);
@@ -47,7 +52,7 @@ public class TeleDrive extends BigAutoBase {
                 lift.setPower(0);
             }
 
-            else if(currentLiftMode == LiftMode.DOWN && lift.getCurrentPosition() > 3.1){
+            else if(currentLiftMode == LiftMode.DOWN && lift.getCurrentPosition() > 2.8){
                 lift.setPower(0);
             }
 
@@ -69,14 +74,15 @@ public class TeleDrive extends BigAutoBase {
 
             if(Math.abs(gamepad2.right_stick_y)>.1){
                 arm.setElbowPower(.5*gamepad2.right_stick_y);
+                currentArmPosition = ArmPosition.HOLD;
             }
             else{
                 moveArmTeleOp(currentArmPosition);
             }
 
             if(gamepad2.right_bumper){
+                if((currentArmPosition == ArmPosition.DROP && arm.getservoPos()<.6) || currentArmPosition != ArmPosition.DROP)
                 setArmServo(arm.getservoPos()+.05);
-
             }
             else if(gamepad2.left_bumper){
                 setArmServo(arm.getservoPos()-.05);
@@ -87,10 +93,10 @@ public class TeleDrive extends BigAutoBase {
             telemetry.addData("bucket pos", arm.getservoPos());
 
             if(gamepad1.dpad_left){
-                if(drivetrain.getJumperPower() <=0)drivetrain.setJumperPower(1);
+                if(drivetrain.getJumperPower() <=0)drivetrain.setJumperPower(.5);
             }
             else if(gamepad1.dpad_right){
-                if(drivetrain.getJumperPower() >=0) drivetrain.setJumperPower(-1);
+                if(drivetrain.getJumperPower() >=0) drivetrain.setJumperPower(-.5);
             }
             else{
                 if(drivetrain.getJumperPower() !=0) drivetrain.setJumperPower(0);

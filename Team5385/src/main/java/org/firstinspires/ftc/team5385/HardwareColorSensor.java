@@ -21,6 +21,7 @@ public class HardwareColorSensor {
         servo = hwMap.get(Servo.class, "colorServo");
         sensor = hwMap.get(ColorSensor.class, "colorSensor");
         sensor.resetDeviceConfigurationForOpMode();
+        servo.setPosition(.327);
     }
 
     public void setPosition(double pos){
