@@ -69,6 +69,14 @@ public class HardwareLift {
         return ((double)liftMotor.getCurrentPosition() / COUNTS_PER_INCH) - initialCounts;
     }
 
+    public double getCurrentHeightRight() {
+        return ((double)liftMotor.getCurrentPosition() / COUNTS_PER_INCH) - initialCounts;
+    }
+
+    public double getCurrentHeightLeft() {
+        return ((double)liftMotor2.getCurrentPosition() / COUNTS_PER_INCH) - initialCounts;
+    }
+
     public boolean isBusy() {
         return liftMotor.isBusy();
     }

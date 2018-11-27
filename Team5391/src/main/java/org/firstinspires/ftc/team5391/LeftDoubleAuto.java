@@ -74,9 +74,10 @@ public class LeftDoubleAuto extends LeftSingleAuto {
         super.runOpMode();
 
         if(rightBlock) {
+            gyroTurn(-150);
             gyroDrive(8, -150);
-            //gyroTurn(-130);
-            gyroDrive(24, -130);
+            gyroTurn(-120);
+            gyroDrive(24, -120);
             //gyroTurn(-130);
         }
         // Hit the corresponding mineral

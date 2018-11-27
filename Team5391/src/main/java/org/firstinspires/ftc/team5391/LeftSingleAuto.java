@@ -82,12 +82,13 @@ public class LeftSingleAuto extends BaseOpMode {
         super.runOpMode();
 
         // are landing
+        currentIntakePivot = HardwareIntake.IntakePivot.STORE;
+        moveLift(.5, true);
         movePower(.013);
         setIntakeExtension(6.5);
         moveLift(8.065);
         movePower(0);
 
-        currentIntakePivot = HardwareIntake.IntakePivot.STORE;
         //Pull away from lander
         gyroDrive(12.75, 0.0);
         moveLift(.5, true);
@@ -104,7 +105,7 @@ public class LeftSingleAuto extends BaseOpMode {
         // check if middle is a block
         CheckForBlock check = new CheckForBlock();
         //updateIntakePivot(true);
-        gyroDrive(DRIVE_SPEED * .2, 6.5, -90, check);
+        gyroDrive(.15, 6.5, -90, check);
 
         if (check.foundBlock()) {
             // The middle is a block
@@ -123,7 +124,7 @@ public class LeftSingleAuto extends BaseOpMode {
             // checks if the left is block
             gyroDrive(9.75, -90);
             check = new CheckForBlock();
-            gyroDrive(DRIVE_SPEED * .2, 6, -90, check);
+            gyroDrive(.15, 6, -90, check);
             if (check.foundBlock()) {
                 // The left is a block
                 leftBlock = true;

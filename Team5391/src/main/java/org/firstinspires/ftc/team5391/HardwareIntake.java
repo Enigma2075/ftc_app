@@ -28,7 +28,7 @@ public class HardwareIntake {
 
     private HardwareMap hwMap = null;
 
-    static final double P_PIVOT_COEFF=2;
+    static final double P_PIVOT_COEFF=2.5;
 
     public enum IntakePivot {
         NONE(-1.0), BALLS(1.05), BLOCKS(.88), TRANSFER(2.6), STORE(1.6), IN_DUMP(2.47);
@@ -121,7 +121,7 @@ public class HardwareIntake {
 
             double targetPower = 1;
             if(targetExtension < getCurrentExtension()) {
-                targetPower = .75;
+                targetPower = 1;
             }
             extensionMotor.setPower(targetPower);
         }
@@ -148,7 +148,7 @@ public class HardwareIntake {
 
         double targetPower = power;
         if(targetPower < 0) {
-            targetPower *= .75;
+            targetPower *= 1;
         }
         extensionMotor.setPower(targetPower);
     }

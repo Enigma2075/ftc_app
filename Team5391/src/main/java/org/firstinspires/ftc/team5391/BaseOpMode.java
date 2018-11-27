@@ -27,8 +27,8 @@ public class BaseOpMode extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific drivetrain drive train.
     static final double DRIVE_SPEED = .95;     // Nominal speed for better accuracy.
-    static final double TURN_SPEED = 0.4;     // Nominal half speed for better accuracy.
-    static final double TURN_SPEED_MIN = .1;
+    static final double TURN_SPEED = 0.5;     // Nominal half speed for better accuracy.
+    static final double TURN_SPEED_MIN = .15;
 
     static final double HEADING_THRESHOLD = .096;      // As tight as we can make it with an integer gyro
     static final double P_TURN_COEFF = 0.095;     // Larger is more responsive, but also less stable
@@ -177,6 +177,10 @@ public class BaseOpMode extends LinearOpMode {
             steer = getSteer(error, PCoeff);
             if(turnType == TurnType.BOTH || turnType == TurnType.RIGHT_ONLY) {
                 rightSpeed = speed * steer;
+                if(turnType == TurnType.RIGHT_ONLY) {
+                    rightSpeed *= 2;
+                }
+
                 if (Math.abs(rightSpeed) < TURN_SPEED_MIN) {
                     rightSpeed = TURN_SPEED_MIN * Math.signum(rightSpeed);
                 }
@@ -187,6 +191,9 @@ public class BaseOpMode extends LinearOpMode {
 
             if(turnType == TurnType.BOTH || turnType == TurnType.LEFT_ONLY) {
                 leftSpeed = -speed * steer;
+                if(turnType == TurnType.LEFT_ONLY) {
+                    rightSpeed *= 2;
+                }
                 if (Math.abs(leftSpeed) < TURN_SPEED_MIN) {
                     leftSpeed = TURN_SPEED_MIN * Math.signum(leftSpeed);
                 }
@@ -302,11 +309,11 @@ public class BaseOpMode extends LinearOpMode {
             // Set Target and Turn On RUN_TO_POSITION
             drivetrain.setTargetPosition(newRightTarget, newLeftTarget);
 
-            drivetrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
             drivetrain.setPower(speed, speed);
+
+            drivetrain.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // keep looping while we are still active, and BOTH motors are running.
             int notBusyCount = 0;
@@ -374,14 +381,13 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void moveLift(double height, double power, boolean returnImmediate) {
-        if(lift.getCurrentHeight() > 7 && height < 2 && intake.getCurrentExtension() < 6.5) {
+        if(currentIntakePivot == HardwareIntake.IntakePivot.TRANSFER) {
             currentIntakePivot = HardwareIntake.IntakePivot.STORE;
             sleep(500);
-            setIntakeExtension(6.5);
         }
-        if(intake.getCurrentExtension() < 6.5) {
-            currentIntakePivot = HardwareIntake.IntakePivot.STORE;
-            sleep(500);
+
+        setIntakeExtension(6.5, true);
+        if(intake.getCurrentExtension() < 5) {
             setIntakeExtension(6.5);
         }
 
@@ -431,6 +437,7 @@ public class BaseOpMode extends LinearOpMode {
         }
 
         telemetry.addData("Lift Height:", "%5.3f", lift.getCurrentHeight());
+        telemetry.addData("Lift Difference:", "%5.3f", lift.getCurrentHeightRight() - lift.getCurrentHeightLeft());
         telemetry.addData("Extension:", "%5.3f", intake.getCurrentExtension());
         telemetry.addData("Intake Pivot:", "%5.3f", intake.getPivotPosition());
     }
