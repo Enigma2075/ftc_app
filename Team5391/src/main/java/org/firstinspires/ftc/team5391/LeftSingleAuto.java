@@ -164,7 +164,7 @@ public class LeftSingleAuto extends BaseOpMode {
             slowIntake();
             sleep(200);
 
-            gyroDrive(-6, -135);
+            gyroDrive(-55, -135);
             telemetry.addData("Path", "Complete");
             telemetry.update();
             pivotThread.interrupt();

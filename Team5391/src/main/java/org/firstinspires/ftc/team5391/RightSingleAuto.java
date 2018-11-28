@@ -75,7 +75,7 @@ public class RightSingleAuto extends LeftSingleAuto {
         turn = false;
 
         // At this point we should be right next to the wall in the same spot regardless.
-        gyroTurn(.8,45, TurnType.RIGHT_ONLY);
+        gyroTurn(.8,45, TurnType.LEFT_ONLY);
 
         if(moveToCrater) {
             gyroDrive(30, -145);
