@@ -50,16 +50,16 @@ public class SingleBlockAutoCraterSide extends BigAutoBase{
         }
         arm.setServoPos(0);
         moveLift(0.2);
-        double blue = checkSensorAt(.327);
-        telemetry.addData("blueLight", blue);
+        boolean isBlue = checkSensorAt(.327);
+        telemetry.addData("blueLight", isBlue);
         telemetry.update();
-        if(blue <= 3){
+        if(isBlue){
             colorSystem.setPosition(1);
             middleBlock();
         }
         else{
-            blue = checkSensorAt(.5);
-            if(blue <= 3){
+            isBlue = checkSensorAt(.5);
+            if(isBlue){
                 colorSystem.setPosition(1);
                 leftBlock();
             }
@@ -108,11 +108,14 @@ public class SingleBlockAutoCraterSide extends BigAutoBase{
     }
     private void rightBlock(){
         gyroDrive(.9, 3, 0);
-        gyroTurn(.9, -35);
-        gyroDrive(.9, 17, -35);
-        gyroTurn(.9,-100);
-        gyroDrive(.9, 27, -100);
-        gyroTurn(.9, -130, TurnType.RIGHT_ONLY);
+        gyroTurn(.9, 35);
+        gyroDrive(.9, 17, 35);
+        gyroDrive(.9,-8,35);
+        gyroTurn(.9,-83);
+        gyroDrive(.9,38,-83);
+        gyroTurn(.9,-120, TurnType.RIGHT_ONLY);
+        moveArm(ArmPosition.MARKER);
+        moveArm(ArmPosition.PARK);
     }
 
 

@@ -230,14 +230,14 @@ public class BigAutoBase  extends LinearOpMode {
 
     }
 
-    public double checkSensorAt(double startPosition){
+    public boolean checkSensorAt(double startPosition){
         double highestSensorValue = 0;
         for(double i = startPosition; i< startPosition + .1; i += .005){
             colorSystem.setPosition(i);
             sleep(175);
-            if(colorSystem.getColor() > highestSensorValue) highestSensorValue = colorSystem.getColor();
+            if(colorSystem.getColor() > 2) return false;
         }
-        return highestSensorValue;
+        return true;
 
     }
 

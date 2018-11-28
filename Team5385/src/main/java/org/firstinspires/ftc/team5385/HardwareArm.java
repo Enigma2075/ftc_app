@@ -65,10 +65,25 @@ public class HardwareArm {    /* Public OpMode members. */
     }
 
     public void goToTarget(double shoulderTarget, double elbowTarget){
-        double elbowPower = getElbowError(elbowTarget) * ELBOW_P_COEFF;
-        double shoulderPower = getShoulderError(shoulderTarget) * SHOULDER_P_COEFF;
-        setElbowPower(elbowPower);
-        setShoulderPower(shoulderPower);
+        double shoulderError = getShoulderError(shoulderTarget);
+        double elbowError = getElbowError(elbowTarget);
+
+        double elbowPower = elbowError * ELBOW_P_COEFF;
+        double shoulderPower = shoulderError * SHOULDER_P_COEFF;
+
+        if(Math.abs(elbowPower) > .001) {
+            setElbowPower(elbowPower);
+        }
+        else {
+            setElbowPower(0);
+        }
+
+        if(Math.abs(shoulderPower) > .001) {
+            setShoulderPower(shoulderPower);
+        }
+        else {
+            setShoulderPower(0);
+        }
     }
 
     public double shoulderPosition(){

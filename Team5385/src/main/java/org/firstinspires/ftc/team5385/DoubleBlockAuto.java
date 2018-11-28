@@ -50,16 +50,16 @@ public class DoubleBlockAuto extends BigAutoBase {
         }
         arm.setServoPos(0);
         moveLift(0.2);
-        double blue = checkSensorAt(.327);
+        boolean blue = checkSensorAt(.327);
         telemetry.addData("blueLight", blue);
         telemetry.update();
-        if(blue <= 3){
+        if(blue){
             colorSystem.setPosition(1);
             middleBlock();
         }
         else{
             blue = checkSensorAt(.5);
-            if(blue <= 3){
+            if(blue){
                 colorSystem.setPosition(1);
                 leftBlock();
             }
