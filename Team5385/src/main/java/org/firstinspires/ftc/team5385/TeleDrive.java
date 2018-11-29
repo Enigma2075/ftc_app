@@ -92,10 +92,10 @@ public class TeleDrive extends BigAutoBase {
             }
             telemetry.addData("bucket pos", arm.getservoPos());
 
-            if(gamepad1.dpad_left){
+            if(gamepad1.dpad_right){
                 if(drivetrain.getJumperPower() <=0)drivetrain.setJumperPower(.5);
             }
-            else if(gamepad1.dpad_right){
+            else if(gamepad1.dpad_left){
                 if(drivetrain.getJumperPower() >=0) drivetrain.setJumperPower(-.5);
             }
             else{
