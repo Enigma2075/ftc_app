@@ -5,10 +5,11 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
+import com.sun.tools.javac.tree.JCTree;
 
 @Autonomous(name="Double Block Auto Crater Side", group="Pushbot")
 
-public class DoubleBlockAuto extends BigAutoBase {
+public class DoubleBlockAutoCraterSide extends BigAutoBase {
 
 
     @Override
@@ -83,14 +84,17 @@ public class DoubleBlockAuto extends BigAutoBase {
         gyroDrive(.9, 3, 0);
         gyroTurn(.9, 35);
         gyroDrive(.9, 17, 35);
-        gyroDrive(.9,-11,35);
-        gyroTurn(.9,-70);
-        gyroDrive(.9,24,-70);
-        gyroTurn(.9,-120, TurnType.RIGHT_ONLY);
-        gyroDrive(.9, 36, -120);
-        gyroTurn(.9, -135);
-        gyroDrive(.9, -12, -135);
-        gyroDrive(.9, -55, -135);
+        gyroDrive(.9,-8,35);
+        gyroTurn(.9,-83);
+        gyroDrive(.9,36,-83);
+        gyroTurn(.9,-140, TurnType.RIGHT_ONLY);
+        gyroDrive(.9,8,-140);
+        gyroTurn(.9,-120);
+        moveArm(ArmPosition.MARKER);
+        moveArm(ArmPosition.PARK);
+        gyroTurn(.9,-142);
+        gyroDrive(.9,-32,-142);
+
     }
     public void leftBlock(){
         gyroDrive(.9, 3, 0);
@@ -110,18 +114,26 @@ public class DoubleBlockAuto extends BigAutoBase {
         gyroDrive(.9, -67, -130);
     }
     public void middleBlock(){
-        gyroDrive(.9, 18, 0);
-        gyroDrive(.9,-10,0);
-        gyroTurn(.9, -72);
-        gyroDrive(.9, 32, -72);
-        gyroTurn(.9, -122);
-        gyroDrive(.9, 27, -122);
+        gyroDrive(.9, 19, 0);
+        gyroDrive(.9,-5,0);
+        gyroTurn(.9, -85);
+        gyroDrive(.9, 35, -85);
+        gyroTurn(.9, -120, TurnType.RIGHT_ONLY);
+        //possible Marker Drop
+        gyroDrive(.9,18,-120);
         gyroTurn(.9,-222, TurnType.RIGHT_ONLY);
-        gyroDrive(.9,4,-222);
+        gyroDrive(.9,5,-222);
+        gyroDrive(.9,-3,-222);
+        gyroTurn(.9,-135,TurnType.RIGHT_ONLY);
+        moveArm(ArmPosition.MARKER);
+        moveArm(ArmPosition.PARK);
+        gyroDrive(.9,-36,-135);
+        /*gyroDrive(.9,4,-222);
         gyroDrive(.9,-4,-222);
         gyroTurn(.9,-131, TurnType.RIGHT_ONLY);
         gyroDrive(.9, -12, -131);
         gyroDrive(.9,-50,-131);
+        */
     }
 
 }

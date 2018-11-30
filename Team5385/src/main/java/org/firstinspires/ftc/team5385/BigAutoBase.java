@@ -28,7 +28,7 @@ public class BigAutoBase  extends LinearOpMode {
     static final double DRIVE_SPEED = 1;     // Nominal speed for better accuracy.
     static final double TURN_SPEED = 0.7;     // Nominal half speed for better accuracy
 
-    static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer DoubleBlockAuto
+    static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer DoubleBlockAutoCraterSide
     static final double P_TURN_COEFF = 0.015;     // Larger is more responsive, but also less stable
     static final double P_MOVE_LIFT_COEFF = 6;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 1.0/20.0;
