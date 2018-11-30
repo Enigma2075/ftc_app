@@ -51,6 +51,11 @@ public class BaseOpMode extends LinearOpMode {
         double startDistance3 = 0;
         double startDistance4 = 0;
 
+        double lastDistance1 = 0;
+        double lastDistance2 = 0;
+        double lastDistance3 = 0;
+        double lastDistance4 = 0;
+
         public boolean foundBlock() {
             return minDistance > 10 && !foundBall();
         }
@@ -61,24 +66,10 @@ public class BaseOpMode extends LinearOpMode {
 
         public CheckForBlock() {
             //double timer = getRuntime();
-            while(startDistance1 <= 0 || startDistance1 > 100 || startDistance2 <= 0 || startDistance2 > 100 || startDistance3 <= 0 || startDistance3 > 100 || startDistance4 <= 0 || startDistance4 > 100) {
-                startDistance1 = sensorRange1.getDistance(DistanceUnit.MM);
-                startDistance2 = sensorRange2.getDistance(DistanceUnit.MM);
-                startDistance3 = sensorRange3.getDistance(DistanceUnit.MM);
-                startDistance4 = sensorRange4.getDistance(DistanceUnit.MM);
-                telemetry.addData("range1", String.format("%.01f mm", startDistance1));
-                telemetry.addData("range2", String.format("%.01f mm", startDistance2));
-                telemetry.addData("range3", String.format("%.01f mm", startDistance3));
-                telemetry.addData("range4", String.format("%.01f mm", startDistance4));
-                telemetry.update();
-
-//                if(getRuntime() - timer > 1000) {
-//                    if(startDistance1 <= 0 || startDistance1 > 100) {
-//
-//                    }
-//                    startDistance2 <= 0 || startDistance2 > 100 || startDistance3 <= 0 || startDistance3 > 100 || startDistance4 <= 0 || startDistance4 > 100)
-//                }
-            }
+            startDistance1 = sensorRange1.getDistance(DistanceUnit.MM);
+            startDistance2 = sensorRange2.getDistance(DistanceUnit.MM);
+            startDistance3 = sensorRange3.getDistance(DistanceUnit.MM);
+            startDistance4 = sensorRange4.getDistance(DistanceUnit.MM);
         }
 
         @Override
@@ -87,34 +78,38 @@ public class BaseOpMode extends LinearOpMode {
             if (distance > minDistance && distance != 0) {
                 minDistance = distance;
             }
-            telemetry.addData("range1", String.format("%.01f mm", startDistance1 - sensorRange1.getDistance(DistanceUnit.MM)));
-            telemetry.addData("range2", String.format("%.01f mm", startDistance2 - sensorRange2.getDistance(DistanceUnit.MM)));
-            telemetry.addData("range3", String.format("%.01f mm", startDistance3 - sensorRange3.getDistance(DistanceUnit.MM)));
-            telemetry.addData("range4", String.format("%.01f mm", startDistance4 - sensorRange4.getDistance(DistanceUnit.MM)));
-            telemetry.addData("minDistance", String.format("%.01f mm", minDistance));
             telemetry.addData("Block", foundBlock());
             telemetry.addData("Ball", foundBall());
+            telemetry.addData("range1", String.format("%.01f mm", startDistance1 - lastDistance1));
+            telemetry.addData("range2", String.format("%.01f mm", startDistance2 - lastDistance2));
+            telemetry.addData("range3", String.format("%.01f mm", startDistance3 - lastDistance3));
+            telemetry.addData("range4", String.format("%.01f mm", startDistance4 - lastDistance4));
+            telemetry.addData("StartRange1", String.format("%.01f mm", startDistance1));
+            telemetry.addData("StartRange2", String.format("%.01f mm", startDistance2));
+            telemetry.addData("StartRange3", String.format("%.01f mm", startDistance3));
+            telemetry.addData("StartRange4", String.format("%.01f mm", startDistance4));
+            telemetry.addData("minDistance", String.format("%.01f mm", minDistance));
         }
 
 
         public double getDistance() {
-            double distance1 = sensorRange1.getDistance(DistanceUnit.MM);
-            double distance2 = sensorRange2.getDistance(DistanceUnit.MM);
-            double distance3 = sensorRange3.getDistance(DistanceUnit.MM);
-            double distance4 = sensorRange4.getDistance(DistanceUnit.MM);
+            lastDistance1 = sensorRange1.getDistance(DistanceUnit.MM);
+            lastDistance2 = sensorRange2.getDistance(DistanceUnit.MM);
+            lastDistance3 = sensorRange3.getDistance(DistanceUnit.MM);
+            lastDistance4 = sensorRange4.getDistance(DistanceUnit.MM);
 
             double distance = 0;
-            if(distance1 > 0 && distance1 < 200) {
-                distance = startDistance1 - distance1;
+            if(lastDistance1 > 0 && lastDistance1 < 100 && startDistance1 < 100 && startDistance1 > 0) {
+                distance = startDistance1 - lastDistance1;
             }
-            if (distance < startDistance2 - distance2 && distance2 > 0 && distance2 < 200) {
-                distance = startDistance2 - distance2;
+            if (distance < startDistance2 - lastDistance2 && lastDistance2 > 0 && lastDistance2 < 100 && startDistance2 < 100 && startDistance2 > 0) {
+                distance = startDistance2 - lastDistance2;
             }
-            if (distance < startDistance3 - distance3 && distance3 > 0 && distance3 < 200) {
-                distance = startDistance3 - distance3;
+            if (distance < startDistance3 - lastDistance3 && lastDistance3 > 0 && lastDistance3 < 100 && startDistance3 < 100 && startDistance3 > 0) {
+                distance = startDistance3 - lastDistance3;
             }
-            if (distance < startDistance4 - distance4 && distance4 > 0 && distance4 < 200) {
-                distance = startDistance4 - distance4;
+            if (distance < startDistance4 - lastDistance4 && lastDistance4 > 0 && lastDistance4 < 100 && startDistance4 < 100 && startDistance4 > 0) {
+                distance = startDistance4 - lastDistance4;
             }
 
             return distance;
