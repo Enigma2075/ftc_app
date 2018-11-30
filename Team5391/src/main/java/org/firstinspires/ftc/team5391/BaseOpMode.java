@@ -27,11 +27,11 @@ public class BaseOpMode extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific drivetrain drive train.
     static final double DRIVE_SPEED = .95;     // Nominal speed for better accuracy.
-    static final double TURN_SPEED = 0.5;     // Nominal half speed for better accuracy.
-    static final double TURN_SPEED_MIN = .15;
+    static final double TURN_SPEED = 0.95;     // Nominal half speed for better accuracy.
+    static final double TURN_SPEED_MIN = .12;
 
     static final double HEADING_THRESHOLD = .096;      // As tight as we can make it with an integer gyro
-    static final double P_TURN_COEFF = 0.095;     // Larger is more responsive, but also less stable
+    static final double P_TURN_COEFF = 0.04;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 0.035;     // Larger is more responsive, but also less stable
 
     static final double RIGHT_KNOCKER_UP = 0;
@@ -44,38 +44,80 @@ public class BaseOpMode extends LinearOpMode {
     protected HardwareIntake.IntakePivot currentIntakePivot = HardwareIntake.IntakePivot.NONE;
 
     public class CheckForBlock implements Runnable {
-        double minDistance = 500;
+        double minDistance = 0;
+
+        double startDistance1 = 0;
+        double startDistance2 = 0;
+        double startDistance3 = 0;
+        double startDistance4 = 0;
 
         public boolean foundBlock() {
-            return minDistance < 70 && minDistance > 20 && !foundBall();
+            return minDistance > 10 && !foundBall();
         }
 
         public boolean foundBall() {
-            return minDistance < 15 && minDistance > 8;
+            return minDistance > 55 && minDistance < 100;// && minDistance > 8;
+        }
+
+        public CheckForBlock() {
+            //double timer = getRuntime();
+            while(startDistance1 <= 0 || startDistance1 > 100 || startDistance2 <= 0 || startDistance2 > 100 || startDistance3 <= 0 || startDistance3 > 100 || startDistance4 <= 0 || startDistance4 > 100) {
+                startDistance1 = sensorRange1.getDistance(DistanceUnit.MM);
+                startDistance2 = sensorRange2.getDistance(DistanceUnit.MM);
+                startDistance3 = sensorRange3.getDistance(DistanceUnit.MM);
+                startDistance4 = sensorRange4.getDistance(DistanceUnit.MM);
+                telemetry.addData("range1", String.format("%.01f mm", startDistance1));
+                telemetry.addData("range2", String.format("%.01f mm", startDistance2));
+                telemetry.addData("range3", String.format("%.01f mm", startDistance3));
+                telemetry.addData("range4", String.format("%.01f mm", startDistance4));
+                telemetry.update();
+
+//                if(getRuntime() - timer > 1000) {
+//                    if(startDistance1 <= 0 || startDistance1 > 100) {
+//
+//                    }
+//                    startDistance2 <= 0 || startDistance2 > 100 || startDistance3 <= 0 || startDistance3 > 100 || startDistance4 <= 0 || startDistance4 > 100)
+//                }
+            }
         }
 
         @Override
         public void run() {
+            double distance = getDistance();
+            if (distance > minDistance && distance != 0) {
+                minDistance = distance;
+            }
+            telemetry.addData("range1", String.format("%.01f mm", startDistance1 - sensorRange1.getDistance(DistanceUnit.MM)));
+            telemetry.addData("range2", String.format("%.01f mm", startDistance2 - sensorRange2.getDistance(DistanceUnit.MM)));
+            telemetry.addData("range3", String.format("%.01f mm", startDistance3 - sensorRange3.getDistance(DistanceUnit.MM)));
+            telemetry.addData("range4", String.format("%.01f mm", startDistance4 - sensorRange4.getDistance(DistanceUnit.MM)));
+            telemetry.addData("minDistance", String.format("%.01f mm", minDistance));
+            telemetry.addData("Block", foundBlock());
+            telemetry.addData("Ball", foundBall());
+        }
+
+
+        public double getDistance() {
             double distance1 = sensorRange1.getDistance(DistanceUnit.MM);
             double distance2 = sensorRange2.getDistance(DistanceUnit.MM);
             double distance3 = sensorRange3.getDistance(DistanceUnit.MM);
             double distance4 = sensorRange4.getDistance(DistanceUnit.MM);
-            if (distance1 < minDistance) {
-                minDistance = distance1;
+
+            double distance = 0;
+            if(distance1 > 0 && distance1 < 200) {
+                distance = startDistance1 - distance1;
             }
-            if (distance2 < minDistance) {
-                minDistance = distance2;
+            if (distance < startDistance2 - distance2 && distance2 > 0 && distance2 < 200) {
+                distance = startDistance2 - distance2;
             }
-            if (distance3 < minDistance) {
-                minDistance = distance3;
+            if (distance < startDistance3 - distance3 && distance3 > 0 && distance3 < 200) {
+                distance = startDistance3 - distance3;
             }
-            if (distance4 < minDistance) {
-                minDistance = distance4;
+            if (distance < startDistance4 - distance4 && distance4 > 0 && distance4 < 200) {
+                distance = startDistance4 - distance4;
             }
 
-            telemetry.addData("deviceName", sensorRange1.getDeviceName());
-            telemetry.addData("range", String.format("%.01f mm", sensorRange1.getDistance(DistanceUnit.MM)));
-            telemetry.addData("minDistance", String.format("%.01f mm", minDistance));
+            return distance;
         }
     }
 
@@ -178,7 +220,7 @@ public class BaseOpMode extends LinearOpMode {
             if(turnType == TurnType.BOTH || turnType == TurnType.RIGHT_ONLY) {
                 rightSpeed = speed * steer;
                 if(turnType == TurnType.RIGHT_ONLY) {
-                    rightSpeed *= 2;
+                    rightSpeed *= 3;
                 }
 
                 if (Math.abs(rightSpeed) < TURN_SPEED_MIN) {
@@ -192,7 +234,7 @@ public class BaseOpMode extends LinearOpMode {
             if(turnType == TurnType.BOTH || turnType == TurnType.LEFT_ONLY) {
                 leftSpeed = -speed * steer;
                 if(turnType == TurnType.LEFT_ONLY) {
-                    rightSpeed *= 2;
+                    rightSpeed *= 3;
                 }
                 if (Math.abs(leftSpeed) < TURN_SPEED_MIN) {
                     leftSpeed = TURN_SPEED_MIN * Math.signum(leftSpeed);
@@ -252,7 +294,7 @@ public class BaseOpMode extends LinearOpMode {
         drivetrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // keep looping while we are still active, and not on heading.
         int onHeadingCount = 0;
-        while (opModeIsActive() && onHeadingCount < 2) {
+        while (opModeIsActive() && onHeadingCount < 3) {
             if(onHeading(speed, -angle, P_TURN_COEFF, turnType, counterClockwise)) {
                 onHeadingCount++;
             }
@@ -287,7 +329,7 @@ public class BaseOpMode extends LinearOpMode {
 
     protected void gyroDrive(double speed,
                              double distance,
-                             double angle, Runnable method) {
+                             double angle, CheckForBlock method) {
 
         int newLeftTarget;
         int newRightTarget;
@@ -317,19 +359,25 @@ public class BaseOpMode extends LinearOpMode {
 
             // keep looping while we are still active, and BOTH motors are running.
             int notBusyCount = 0;
+            double targetSpeed = speed;
             while (opModeIsActive() &&
                     notBusyCount < 1) {
 
                 if(!drivetrain.isLeftBusy() && !drivetrain.isRightBusy()) {
                     notBusyCount++;
+                    return;
                 }
                 else {
                     notBusyCount = 0;
                 }
 
-                if (method != null) {
+                if (method != null && !method.foundBall()) {
                     method.run();
+                    if(method.foundBall()) {
+                        targetSpeed = .95;
+                    }
                 }
+
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -339,8 +387,8 @@ public class BaseOpMode extends LinearOpMode {
                 if (distance < 0)
                     steer *= -1.0;
 
-                leftSpeed = speed - steer;
-                rightSpeed = speed + steer;
+                leftSpeed = targetSpeed - steer;
+                rightSpeed = targetSpeed + steer;
 
                 // Normalize speeds if either one exceeds +/- 1.0;
                 max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
@@ -420,7 +468,7 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void slowIntake() {
-        intake.setIntakePower(.5);
+        intake.setIntakePower(1);
     }
 
     public void collectInCrater(){
