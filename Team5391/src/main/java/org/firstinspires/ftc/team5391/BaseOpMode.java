@@ -143,13 +143,18 @@ public class BaseOpMode extends LinearOpMode {
             // Wait for the game to start (Display Gyro value), and reset gyro before we move..
         }
 
+        sendTelemetry();
+        telemetry.update();
+        telemetry.setAutoClear(false);
+
         while (!opModeIsActive()) {
             if(isStopRequested()) {
                 return;
             }
-            sendTelemetry();
+            telemetry.addData("Status", "Waiting for start");
             telemetry.update();
         }
+        telemetry.setAutoClear(true);
 
         pivotThread = new PivotThread(this);
         pivotThread.start();
