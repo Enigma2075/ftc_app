@@ -42,10 +42,10 @@ public class LeftDoubleAuto extends LeftSingleAuto {
         sleep(300);
 
         if(rightBlock) {
-            gyroDrive(-57, -140);
+            gyroDrive(-58, -140);
         }
         else if(centerBlock) {
-            gyroDrive(-58, -140);
+            gyroDrive(-60, -140);
         }
         else if(leftBlock) {
             gyroDrive(-55, -140);

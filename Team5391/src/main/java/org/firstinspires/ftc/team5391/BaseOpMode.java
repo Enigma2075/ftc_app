@@ -27,7 +27,7 @@ public class BaseOpMode extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific drivetrain drive train.
     static final double DRIVE_SPEED = .95;     // Nominal speed for better accuracy.
-    static final double TURN_SPEED = 0.95;     // Nominal half speed for better accuracy.
+    static final double TURN_SPEED = 0.90;     // Nominal half speed for better accuracy.
     static final double TURN_SPEED_MIN = .12;
 
     static final double HEADING_THRESHOLD = .096;      // As tight as we can make it with an integer gyro
@@ -246,8 +246,14 @@ public class BaseOpMode extends LinearOpMode {
             rightSpeed *= -1;
         }
 
+        if (turnType == TurnType.BOTH){
+            leftSpeed *= .6;
+            rightSpeed *= .6;
+        }
+
         // Send desired speeds to motors.
         drivetrain.setPower(rightSpeed, leftSpeed);
+
 
         // Display it for the driver.
         telemetry.addData("Target", "%5.2f", angle);

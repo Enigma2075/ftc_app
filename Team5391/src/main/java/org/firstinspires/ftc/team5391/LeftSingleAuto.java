@@ -24,11 +24,11 @@ public class LeftSingleAuto extends BaseOpMode {
         //moveLift(.5, true);
         movePower(.013);
         setIntakeExtension(6.5, true);
-        moveLift(8.075);
+        moveLift(8.325);
         movePower(0);
 
         //Pull away from lander
-        gyroDrive(12.75, 0.0);
+        gyroDrive(13.25, 0.0);
         moveLift(.5, true);
         rightKnockerCheck();
 
@@ -43,14 +43,14 @@ public class LeftSingleAuto extends BaseOpMode {
         // check if middle is a block
         CheckForBlock check = new CheckForBlock();
         //updateIntakePivot(true);
-        gyroDrive(.1, 6.5, -90, check);
+        gyroDrive(.1, 7, -90, check);
 
         if (check.foundBlock()) {
             // The middle is a block
             centerBlock = true;
             rightKnockerKnock();
             sleep(100);
-            gyroDrive(-6.5, -90);
+            gyroDrive(-7, -90);
             rightKnockerUp();
 
             gyroDrive(48, -90);
@@ -60,7 +60,7 @@ public class LeftSingleAuto extends BaseOpMode {
             centerBall = check.foundBall();
 
             // checks if the left is block
-            gyroDrive(9.75, -90);
+            gyroDrive(9.25, -90);
             check = new CheckForBlock();
             gyroDrive(.1, 6, -90, check);
             if (check.foundBlock()) {
@@ -83,7 +83,7 @@ public class LeftSingleAuto extends BaseOpMode {
                 gyroDrive(-6, -90);
                 rightKnockerUp();
                 if(moveToCrater) {
-                    gyroDrive(57, -90);
+                    gyroDrive(58, -90);
                 }
                 else {
                     gyroDrive(47, -90);
@@ -93,7 +93,7 @@ public class LeftSingleAuto extends BaseOpMode {
 
         if(turn) {
             // At this point we should be right next to the wall in the same spot regardless.
-            gyroTurn(.8, -145, TurnType.RIGHT_ONLY);
+            gyroTurn(.8, -130, TurnType.RIGHT_ONLY);
         }
         else {
         //    gyroDrive(-6, -90);
