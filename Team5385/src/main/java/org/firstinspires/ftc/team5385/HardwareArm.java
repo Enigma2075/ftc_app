@@ -14,6 +14,7 @@ public class HardwareArm {    /* Public OpMode members. */
     private static final double MIN_POT = 3.3 * (300.0/9400.0);
 
     private Servo bucket;
+    private Servo score;
     private DcMotor shoulder;
     private DcMotor elbow;
     private AnalogInput shoulderPot;
@@ -39,6 +40,8 @@ public class HardwareArm {    /* Public OpMode members. */
         elbow = hwMap.get(DcMotor.class, "elbow");
 
         bucket = hwMap.get(Servo.class, "bucket");
+        score = hwMap.get(Servo.class, "score");
+
         shoulder.setDirection(DcMotorSimple.Direction.REVERSE);
         shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -104,6 +107,10 @@ public class HardwareArm {    /* Public OpMode members. */
 
     public void setServoPos(double pos){
         bucket.setPosition(pos);
+    }
+
+    public void setScorePos(double pos) {
+        score.setPosition(pos);
     }
 
     public void stopArm(){

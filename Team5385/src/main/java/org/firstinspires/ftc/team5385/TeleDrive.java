@@ -64,20 +64,29 @@ public class TeleDrive extends BigAutoBase {
             }
             else if(gamepad2.x && currentArmPosition !=ArmPosition.DROP){
                 currentArmPosition = ArmPosition.DROP;
-
-
             }
             else if(gamepad2.y){
                 currentArmPosition = ArmPosition.REACH;
-                setArmServo(.65);
+                setArmServo(.60);
             }
 
-            if(Math.abs(gamepad2.right_stick_y)>.1){
+            if(Math.abs(gamepad2.right_stick_y)>.1 && (currentArmPosition == ArmPosition.HOLD || currentArmPosition == ArmPosition.REACH)){
                 arm.setElbowPower(.5*gamepad2.right_stick_y);
                 currentArmPosition = ArmPosition.HOLD;
             }
             else{
                 moveArmTeleOp(currentArmPosition);
+            }
+
+            if((currentArmPosition == ArmPosition.HOLD || currentArmPosition == ArmPosition.REACH)
+                    && arm.shoulderPosition() > .9 && arm.elbowPosition() > 1.4) {
+                arm.setScorePos(0);
+            }
+            else if(gamepad2.a) {
+                arm.setScorePos(0);
+            }
+            else {
+                arm.setScorePos(.25);
             }
 
             if(gamepad2.right_bumper){
@@ -88,7 +97,7 @@ public class TeleDrive extends BigAutoBase {
                 setArmServo(arm.getservoPos()-.05);
             }
             if(arm.shoulderPosition()>1.0 && currentArmPosition == ArmPosition.DROP && arm.shoulderPosition()<2.0){
-                setArmServo(0);
+                setArmServo(.7);
             }
             telemetry.addData("bucket pos", arm.getservoPos());
 
@@ -101,7 +110,6 @@ public class TeleDrive extends BigAutoBase {
             else{
                 if(drivetrain.getJumperPower() !=0) drivetrain.setJumperPower(0);
             }
-
 
             telemetry.addData("liftPosition", lift.getCurrentPosition());
             telemetry.update();

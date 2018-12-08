@@ -271,6 +271,7 @@ public class BigAutoBase  extends LinearOpMode {
         telemetry.addData("elbowMotorPower", arm.getElbowPower());
         telemetry.addData("shoulderMotorPower", arm.getShoulderPower());
     }
+
     private double[] targetEnum(ArmPosition armPosition){
         // index 0 is Elbow
         // index 1 is Shoulder
@@ -278,7 +279,7 @@ public class BigAutoBase  extends LinearOpMode {
         switch(armPosition){
             case DROP:
                 if(arm.shoulderPosition()>1.5) {
-                    output[0] = .67;
+                    output[0] = .55;
                 }
                 else output[0] =.69;
                 output[1] = 2.4;
