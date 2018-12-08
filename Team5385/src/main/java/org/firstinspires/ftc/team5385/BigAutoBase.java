@@ -235,7 +235,7 @@ public class BigAutoBase  extends LinearOpMode {
         for(double i = startPosition; i< startPosition + .1; i += .005){
             colorSystem.setPosition(i);
             sleep(175);
-            if(colorSystem.getColor() > 2) return false;
+            if(colorSystem.getColor() > 3) return false;
         }
         return true;
 
