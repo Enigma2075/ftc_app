@@ -112,7 +112,6 @@ public class SingleBlockAutoCraterSide extends BigAutoBase{
         gyroDrive(.9, 17, 35);
         gyroDrive(.9,-8,35);
         gyroTurn(.9,-83);
-        sleep(8000);
         gyroDrive(.9,38,-83);
         gyroTurn(.9,-120, TurnType.RIGHT_ONLY);
         gyroDrive(.9,8,-120);

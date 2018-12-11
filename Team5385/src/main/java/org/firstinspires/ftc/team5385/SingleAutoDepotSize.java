@@ -88,7 +88,7 @@ public class SingleAutoDepotSize extends BigAutoBase{
         moveArm(ArmPosition.MARKER);
         moveArm(ArmPosition.PARK);
         gyroTurn(.9,64);
-        gyroDrive(.9,-34,64);
+        gyroDrive(.75,-34,64);
     }
     private void middleBlock(){
         gyroDrive(.9, 20, 0);
@@ -98,7 +98,7 @@ public class SingleAutoDepotSize extends BigAutoBase{
         gyroTurn(.9,90);
         gyroDrive(.9,-38,90);
         gyroTurn(.9,60);
-        gyroDrive(.9,-14,60);
+        gyroDrive(.75,-14,60);
 
     }
     private void rightBlock(){
@@ -111,7 +111,7 @@ public class SingleAutoDepotSize extends BigAutoBase{
         gyroDrive(.9,24,45);
         moveArm(ArmPosition.MARKER);
         moveArm(ArmPosition.PARK);
-        gyroDrive(.9,-28,45);
+        gyroDrive(.75,-28,45);
 
 
 
