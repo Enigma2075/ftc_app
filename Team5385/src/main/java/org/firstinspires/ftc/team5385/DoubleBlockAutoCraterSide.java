@@ -101,17 +101,17 @@ public class DoubleBlockAutoCraterSide extends BigAutoBase {
         gyroTurn(.9, -35);
         gyroDrive(.9, 17, -35);
         gyroTurn(.9,-100);
-        gyroDrive(.9, 27, -100);
-        gyroTurn(.9, -130, TurnType.RIGHT_ONLY);
-        gyroDrive(.9, 17, -130);
+        gyroDrive(.9, 30, -100);
+        gyroTurn(.9, -120, TurnType.RIGHT_ONLY);
+        gyroDrive(.9, 20, -120);
         gyroTurn(.9, -215, TurnType.RIGHT_ONLY);
         gyroDrive(.9, 15, -215);
-        gyroDrive(.9, -15, -215);
+        gyroDrive(.9, -17, -215);
         gyroTurn(.9, -135, TurnType.RIGHT_ONLY);
-        gyroDrive(.9, -18, -130);
+        gyroDrive(.9, -18, -135);
         moveArm(ArmPosition.MARKER);
         moveArm(ArmPosition.HOME);
-        gyroDrive(.9, -67, -130);
+        gyroDrive(.9, -67, -135);
     }
     public void middleBlock(){
         gyroDrive(.9, 19, 0);
@@ -120,14 +120,15 @@ public class DoubleBlockAutoCraterSide extends BigAutoBase {
         gyroDrive(.9, 35, -85);
         gyroTurn(.9, -120, TurnType.RIGHT_ONLY);
         //possible Marker Drop
-        gyroDrive(.9,18,-120);
+        gyroDrive(.9,17,-120);
         gyroTurn(.9,-222, TurnType.RIGHT_ONLY);
         gyroDrive(.9,5,-222);
-        gyroDrive(.9,-3,-222);
-        gyroTurn(.9,-135,TurnType.RIGHT_ONLY);
+        gyroDrive(.9,-5,-222);
+        gyroTurn(.9,-130,TurnType.RIGHT_ONLY);
+        gyroDrive(.9,-12,-130);
         moveArm(ArmPosition.MARKER);
         moveArm(ArmPosition.PARK);
-        gyroDrive(.9,-36,-135);
+        gyroDrive(.9,-36,-130);
         /*gyroDrive(.9,4,-222);
         gyroDrive(.9,-4,-222);
         gyroTurn(.9,-131, TurnType.RIGHT_ONLY);

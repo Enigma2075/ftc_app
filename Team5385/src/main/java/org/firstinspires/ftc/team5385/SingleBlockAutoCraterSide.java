@@ -104,7 +104,7 @@ public class SingleBlockAutoCraterSide extends BigAutoBase{
         moveArm(ArmPosition.PARK);
         gyroDrive(.9,-9,-120);
         gyroTurn(.9,-145, TurnType.LEFT_ONLY);
-        gyroDrive(.9,-16,-145);
+        gyroDrive(.9,-19,-145);
     }
     private void rightBlock(){
         gyroDrive(.9, 3, 0);
@@ -117,9 +117,9 @@ public class SingleBlockAutoCraterSide extends BigAutoBase{
         gyroDrive(.9,8,-120);
         moveArm(ArmPosition.MARKER);
         moveArm(ArmPosition.PARK);
-        //gyroDrive(.9,-18,-120);
-        //gyroTurn(.9,-145, TurnType.LEFT_ONLY);
-        //gyroDrive(.9,-13,-145);
+        gyroDrive(.9,-18,-120);
+        gyroTurn(.9,-160, TurnType.LEFT_ONLY);
+        gyroDrive(.9,-13,-160);
 
     }
 
