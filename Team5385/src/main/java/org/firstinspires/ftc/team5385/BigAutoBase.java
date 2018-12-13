@@ -38,8 +38,9 @@ public class BigAutoBase  extends LinearOpMode {
 
     }
 
-
-
+    /*When TeleOp is running, the gyro gets the position of the drivetrain,
+     the error from our goal and the current position, then moves towards the target.
+     Lke a PID loop.*/
     public void gyroDrive(double speed, double distance, double angle) {
 
         int newLeftTarget;
