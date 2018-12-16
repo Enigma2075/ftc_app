@@ -107,11 +107,11 @@ public class SingleAutoDepotSize extends BigAutoBase{
         gyroDrive(.9, 20, 35);
         gyroTurn(.9,90,TurnType.RIGHT_ONLY);
         gyroDrive(.9,-48,90);
-        gyroTurn(.9,45,TurnType.LEFT_ONLY);
-        gyroDrive(.9,24,45);
+        gyroTurn(.9,40,TurnType.LEFT_ONLY);
+        gyroDrive(.9,24,40);
         moveArm(ArmPosition.MARKER);
         moveArm(ArmPosition.PARK);
-        gyroDrive(.75,-28,45);
+        gyroDrive(.75,-30,40);
 
 
 
