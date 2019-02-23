@@ -323,8 +323,8 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected void drive(DriveSignal signal) {
-        double rightPower = signal.rightMotor *.85;
-        double leftPower = signal.leftMotor * .85;
+        double rightPower = signal.rightMotor *1;
+        double leftPower = signal.leftMotor * 1;
 
         drivetrain.setPower(rightPower, leftPower);
     }
